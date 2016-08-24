@@ -1,7 +1,13 @@
-Native/Framework/source/Library.Desktop/obj/
-Native/Framework/source/Library.Desktop/bin/
+Native/Framework/source/*/bin/
+Native/Framework/source/*/obj/
 Native/Framework/lib/
 Native/Framework/include/
-Native/Framework/source/Tools/ModelPipeline/obj/
-Native/Framework/source/Tools/ModelPipeline/bin/
+Native/Framework/source/Tools/*/obj/
+Native/Framework/source/Tools/*/bin/
 Native/Framework/build/packages/
+Native/Framework/source/Samples/*/bin/
+Native/Framework/source/Samples/*/obj/
+Native/Framework/build/ipch/
+Native/Framework/content/
+*.opendb
+*.db
