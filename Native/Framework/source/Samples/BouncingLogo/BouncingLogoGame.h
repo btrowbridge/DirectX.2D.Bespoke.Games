@@ -1,10 +1,16 @@
 #pragma once
 
 #include "Game.h"
+#include "Rectangle.h"
 
 namespace Library
 {
 	class KeyboardComponent;
+}
+
+namespace DirectX 
+{
+	class SpriteBatch;
 }
 
 namespace BouncingLogo
@@ -17,6 +23,7 @@ namespace BouncingLogo
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
+		virtual void Shutdown() override;
 
 		void Exit();
 
@@ -24,6 +31,10 @@ namespace BouncingLogo
 		static const DirectX::XMVECTORF32 BackgroundColor;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
+		Library::Rectangle mBounds;
+		//std::unique_ptr<SpriteBatch> mSpriteBatch;
+		DirectX::XMFLOAT2 mVelocity;
 
 	};
 }
