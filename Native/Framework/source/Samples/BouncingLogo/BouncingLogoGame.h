@@ -15,6 +15,8 @@ namespace DirectX
 
 namespace BouncingLogo
 {
+	class Ball;
+
 	class BouncingLogoGame : public Library::Game
 	{
 	public:
@@ -31,10 +33,7 @@ namespace BouncingLogo
 		static const DirectX::XMVECTORF32 BackgroundColor;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
-		Library::Rectangle mBounds;
-		//std::unique_ptr<SpriteBatch> mSpriteBatch;
-		DirectX::XMFLOAT2 mVelocity;
+		std::shared_ptr<Ball> mBall;
 
 	};
 }
