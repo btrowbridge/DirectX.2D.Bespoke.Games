@@ -185,11 +185,15 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BouncingLogoGame.h" />
+    <ClInclude Include="Paddle.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PlayerPaddle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BouncingLogoGame.cpp" />
+    <ClCompile Include="Paddle.cpp" />
+    <ClCompile Include="PlayerPaddle.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
