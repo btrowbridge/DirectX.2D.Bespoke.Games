@@ -3,13 +3,29 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="BouncingLogoGame.h" />
-    <ClInclude Include="Ball.h" />
+    <ClInclude Include="Ball.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Paddle.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerPaddle.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="BouncingLogoGame.cpp" />
-    <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Ball.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Paddle.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerPaddle.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
