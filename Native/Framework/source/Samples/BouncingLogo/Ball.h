@@ -19,6 +19,10 @@ namespace BouncingLogo
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
+
+		Library::Point Position();
+		DirectX::XMFLOAT2 Velocity();
+
 	private:
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
 

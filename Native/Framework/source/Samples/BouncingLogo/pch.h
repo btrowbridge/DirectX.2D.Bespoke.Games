@@ -101,3 +101,4 @@
 #include "Ball.h"
 #include "PlayerPaddle.h"
 #include "Paddle.h"
+#include "ComputerPaddle.h"

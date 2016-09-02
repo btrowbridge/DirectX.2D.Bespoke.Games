@@ -18,8 +18,8 @@ namespace BouncingLogo
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
-		int RightSide();
-		int LeftSide();
+		
+		Library::Rectangle Bounds();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;

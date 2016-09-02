@@ -12,7 +12,6 @@ namespace BouncingLogo {
 
 	PlayerPaddle::PlayerPaddle(Library::Game & game, Library::KeyboardComponent & keyboard) : Paddle(game), mKeyboard(&keyboard)
 	{
-		
 	}
 
 	void PlayerPaddle::Initialize()

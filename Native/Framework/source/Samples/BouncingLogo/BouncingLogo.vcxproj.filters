@@ -12,6 +12,9 @@
     <ClInclude Include="PlayerPaddle.h">
       <Filter>Game Components</Filter>
     </ClInclude>
+    <ClInclude Include="ComputerPaddle.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -24,6 +27,9 @@
       <Filter>Game Components</Filter>
     </ClCompile>
     <ClCompile Include="PlayerPaddle.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputerPaddle.cpp">
       <Filter>Game Components</Filter>
     </ClCompile>
   </ItemGroup>
