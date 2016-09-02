@@ -16,6 +16,7 @@ namespace DirectX
 namespace BouncingLogo
 {
 	class Ball;
+	class PlayerPaddle;
 
 	class BouncingLogoGame : public Library::Game
 	{
@@ -34,6 +35,7 @@ namespace BouncingLogo
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Ball> mBall;
+		std::shared_ptr<PlayerPaddle> mPlayer;
 
 	};
 }

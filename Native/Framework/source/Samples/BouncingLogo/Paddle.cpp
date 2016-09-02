@@ -15,7 +15,7 @@ void BouncingLogo::Paddle::Initialize()
 {
 	// Load a texture
 	ComPtr<ID3D11Resource> textureResource;
-	wstring textureName = L"Content\\Textures\\PlayerPaddle.png";
+	wstring textureName = L"Content\\Textures\\Paddle.png";
 
 	ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(),
 		textureResource.ReleaseAndGetAddressOf(), mTexture.ReleaseAndGetAddressOf()),
@@ -55,7 +55,6 @@ void BouncingLogo::Paddle::Draw(const Library::GameTime & gameTime)
 	mSpriteBatch->Begin();
 	mSpriteBatch->Draw(mTexture.Get(), position);
 	mSpriteBatch->End();
-
 }
 
 int BouncingLogo::Paddle::RightSide()
