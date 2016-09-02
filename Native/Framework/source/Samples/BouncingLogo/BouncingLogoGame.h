@@ -17,6 +17,7 @@ namespace BouncingLogo
 {
 	class Ball;
 	class PlayerPaddle;
+	class ComputerPaddle;
 
 	class BouncingLogoGame : public Library::Game
 	{
@@ -36,6 +37,7 @@ namespace BouncingLogo
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Ball> mBall;
 		std::shared_ptr<PlayerPaddle> mPlayer;
+		std::shared_ptr<ComputerPaddle> mComPaddle;
 
 	};
 }

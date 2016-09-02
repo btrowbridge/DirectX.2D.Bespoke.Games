@@ -57,12 +57,7 @@ void BouncingLogo::Paddle::Draw(const Library::GameTime & gameTime)
 	mSpriteBatch->End();
 }
 
-int BouncingLogo::Paddle::RightSide()
+Library::Rectangle BouncingLogo::Paddle::Bounds()
 {
-	return mBounds.X + mBounds.Width/2;
-}
-
-int BouncingLogo::Paddle::LeftSide()
-{
-	return mBounds.X - mBounds.Width/2;
+	return mBounds;
 }

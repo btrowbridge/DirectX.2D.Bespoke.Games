@@ -185,6 +185,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BouncingLogoGame.h" />
+    <ClInclude Include="ComputerPaddle.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayerPaddle.h" />
@@ -192,6 +193,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BouncingLogoGame.cpp" />
+    <ClCompile Include="ComputerPaddle.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayerPaddle.cpp" />
     <ClCompile Include="Program.cpp" />

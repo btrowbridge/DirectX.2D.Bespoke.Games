@@ -50,10 +50,13 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 	float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 	auto& mViewport = mGame->Viewport();
+	
 
 	XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 	mBounds.X += static_cast<int>(std::round(positionDelta.x));
 	mBounds.Y += static_cast<int>(std::round(positionDelta.y));
+
+	
 
 	if (mBounds.X + mBounds.Width > mViewport.Width && mVelocity.x > 0.0f)
 	{
@@ -72,6 +75,8 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 	{
 		mVelocity.y *= -1;
 	}
+	
+	if (mBounds.X <= )
 
 }
 
@@ -85,4 +90,14 @@ void BouncingLogo::Ball::Draw(const Library::GameTime & gameTime)
 
 	//SpriteManager::DrawTexture2D(mTexture.Get(), position);
 
+}
+
+Library::Point BouncingLogo::Ball::Position()
+{
+	return mBounds.Center();
+}
+
+DirectX::XMFLOAT2 BouncingLogo::Ball::Velocity()
+{
+	return mVelocity;
 }
