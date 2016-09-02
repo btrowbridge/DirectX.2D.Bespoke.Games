@@ -99,3 +99,5 @@
 
 //GameComponents
 #include "Ball.h"
+#include "PlayerPaddle.h"
+#include "Paddle.h"

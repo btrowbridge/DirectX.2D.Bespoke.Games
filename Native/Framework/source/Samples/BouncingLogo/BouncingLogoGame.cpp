@@ -23,6 +23,9 @@ namespace BouncingLogo
 
 		mBall = make_shared<Ball>(*this);
 		mComponents.push_back(mBall);
+
+		mPlayer = make_shared<PlayerPaddle>(*this,*mKeyboard);
+		mComponents.push_back(mPlayer);
 		
 
 		Game::Initialize();

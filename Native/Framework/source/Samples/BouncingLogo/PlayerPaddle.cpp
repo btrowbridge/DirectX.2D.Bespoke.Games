@@ -8,32 +8,47 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 
 namespace BouncingLogo {
-	const int BouncingLogo::PlayerPaddle::mSpeed = 10;
+	const int BouncingLogo::PlayerPaddle::mSpeed = 400;
 
-	PlayerPaddle::PlayerPaddle(Library::Game & game, std::shared_ptr<Library::KeyboardComponent> keyboard) : Paddle(game), mKeyboard(keyboard)
+	PlayerPaddle::PlayerPaddle(Library::Game & game, Library::KeyboardComponent & keyboard) : Paddle(game), mKeyboard(&keyboard)
 	{
+		
 	}
 
 	void PlayerPaddle::Initialize()
 	{
+		Paddle::Initialize();
 		mVelocity.x = 0;
 		mVelocity.y = 0;
 		
-		mBounds.X = mTextureHalfSize.X;
-		mBounds.Y = mGame->Viewport().Height / 2;
+		mBounds.X = mBounds.Width;
+		mBounds.Y = (mGame->Viewport().Height / 2) - mBounds.Height;
 	}
 
 	void PlayerPaddle::Update(const Library::GameTime & gameTime)
 	{
-		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		Paddle::Update(gameTime);
 
-		if (mKeyboard->IsKeyDown(Keys::Up) && mBounds.Y - mTextureHalfSize.Y - mVelocity.y > 0)
+		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		auto& mViewport = mGame->Viewport();
+
+		XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
+		int dY = static_cast<int>(std::round(positionDelta.y));
+
+		if((mBounds.Y + mBounds.Height + dY < mViewport.Height ) && (mBounds.Y + dY > 0))
+			mBounds.Y += dY;		
+
+		if (mKeyboard->IsKeyDown(Keys::Up))
 		{
-			mVelocity.y = mSpeed * elapsedTime;
+			mVelocity.y = -mSpeed;
 		}
-		else if (mKeyboard->IsKeyDown(Keys::Down) && mBounds.Y - mTextureHalfSize.Y - mVelocity.y < mGame->Viewport().Height)
+		else if (mKeyboard->IsKeyDown(Keys::Down))
 		{
-			mVelocity.y = -mSpeed * elapsedTime;
+			mVelocity.y = mSpeed;
+		}
+		else 
+		{
+			mVelocity.y = 0;
 		}
 	}
 	

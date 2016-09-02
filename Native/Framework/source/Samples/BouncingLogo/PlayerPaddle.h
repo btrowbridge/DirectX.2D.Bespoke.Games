@@ -14,7 +14,7 @@ namespace BouncingLogo
 	class PlayerPaddle final : public Paddle
 	{
 	public:
-		PlayerPaddle( Library::Game& game, std::shared_ptr<Library::KeyboardComponent> Keyboard);
+		PlayerPaddle( Library::Game& game, Library::KeyboardComponent & keyboard);
 
 
 		virtual void Initialize() override;
@@ -22,6 +22,6 @@ namespace BouncingLogo
 
 	private:
 		static const int mSpeed;
-		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
+		Library::KeyboardComponent * mKeyboard;
 	};
 }
