@@ -27,6 +27,7 @@ namespace BouncingLogo
 
 	protected:
 		Library::Rectangle mBounds;
+		Library::Point mTextureHalfSize;
 		DirectX::XMFLOAT2 mVelocity;
 	};
 }

@@ -15,7 +15,7 @@ void BouncingLogo::Paddle::Initialize()
 {
 	// Load a texture
 	ComPtr<ID3D11Resource> textureResource;
-	wstring textureName = L"Content\\Textures\\Paddle.png";
+	wstring textureName = L"Content\\Textures\\PlayerPaddle.png";
 
 	ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(),
 		textureResource.ReleaseAndGetAddressOf(), mTexture.ReleaseAndGetAddressOf()),
@@ -26,8 +26,20 @@ void BouncingLogo::Paddle::Initialize()
 
 	mBounds = TextureHelper::GetTextureBounds(texture.Get());
 
+	mTextureHalfSize.X = mBounds.Width / 2;
+	mTextureHalfSize.Y = mBounds.Height / 2;
 
+	auto& mViewport = mGame->Viewport();
 
+	Library::Rectangle viewportSize(static_cast<int>(mViewport.TopLeftX), static_cast<int>(mViewport.TopLeftY),
+		static_cast<int>(mViewport.Width), static_cast<int>(mViewport.Height));
+	Point center = viewportSize.Center();
+
+	mBounds.X = center.X - mTextureHalfSize.X;
+	mBounds.Y = center.Y - mTextureHalfSize.Y;
+
+	mVelocity.x = 0;
+	mVelocity.y = 0;
 
 	mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 }
@@ -48,10 +60,10 @@ void BouncingLogo::Paddle::Draw(const Library::GameTime & gameTime)
 
 int BouncingLogo::Paddle::RightSide()
 {
-	return 0;
+	return mBounds.X + mBounds.Width/2;
 }
 
 int BouncingLogo::Paddle::LeftSide()
 {
-	return 0;
+	return mBounds.X - mBounds.Width/2;
 }
