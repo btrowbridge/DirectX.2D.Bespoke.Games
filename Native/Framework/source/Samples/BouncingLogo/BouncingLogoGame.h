@@ -31,6 +31,10 @@ namespace BouncingLogo
 
 		void Exit();
 
+		Ball* getBall();
+		PlayerPaddle* getPlayer();
+		ComputerPaddle* getComputer();
+
 	private:
 		static const DirectX::XMVECTORF32 BackgroundColor;
 

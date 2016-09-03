@@ -1,13 +1,15 @@
 #include "pch.h"
 #include "Ball.h"
 #include "SpriteBatch.h"
+#include "BouncingLogoGame.h"
 
 using namespace Library;
 using namespace std;
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
-BouncingLogo::Ball::Ball(Library::Game & game) : DrawableGameComponent(game), mBounds(Rectangle::Empty)
+BouncingLogo::Ball::Ball(Library::Game & game) : 
+	DrawableGameComponent(game), mBounds(Rectangle::Empty)
 {
 }
 
@@ -50,7 +52,8 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 	float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 	auto& mViewport = mGame->Viewport();
-	
+	mPlayer = mGame->As<BouncingLogoGame>()->getPlayer();
+	mComputer = mGame->As<BouncingLogoGame>()->getComputer();
 
 	XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 	mBounds.X += static_cast<int>(std::round(positionDelta.x));
@@ -76,7 +79,20 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 		mVelocity.y *= -1;
 	}
 	
-	if (mBounds.X <= )
+	if (mBounds.X <= mPlayer->Bounds()->X + mPlayer->Bounds()->Width&&
+		mBounds.Y + mBounds.Height < mPlayer->Bounds()->Y &&
+		mBounds.Y < mPlayer->Bounds()->Y + mPlayer->Bounds()->Height)
+	{
+		mVelocity.x *= -1;
+	}
+
+	if (mBounds.X >= mComputer->Bounds()->X &&
+		mBounds.Y + mBounds.Height < mComputer->Bounds()->Y &&
+		mBounds.Y < mComputer->Bounds()->Y + mPlayer->Bounds()->Height)
+	{
+		mVelocity.x *= -1;
+	}
+	
 
 }
 

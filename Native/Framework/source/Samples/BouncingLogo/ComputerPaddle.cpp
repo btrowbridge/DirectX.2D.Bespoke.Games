@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ComputerPaddle.h"
 #include "SpriteBatch.h"
+#include "BouncingLogoGame.h"
 
 using namespace Library;
 using namespace std;
@@ -10,7 +11,7 @@ using namespace DirectX;
 namespace BouncingLogo {
 	const int BouncingLogo::ComputerPaddle::mSpeed = 2000;
 
-	ComputerPaddle::ComputerPaddle(Library::Game & game, Ball & ball) : Paddle(game), mBall(&ball)
+	ComputerPaddle::ComputerPaddle(Library::Game & game) : Paddle(game)
 	{
 	}
 
@@ -30,6 +31,7 @@ namespace BouncingLogo {
 
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 		auto& mViewport = mGame->Viewport();
+		mBall = mGame->As<BouncingLogoGame>()->getBall();
 
 		XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 
