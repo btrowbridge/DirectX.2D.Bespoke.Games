@@ -27,8 +27,10 @@ namespace BouncingLogo
 		mPlayer = make_shared<PlayerPaddle>(*this,*mKeyboard);
 		mComponents.push_back(mPlayer);
 		
-		mComPaddle = make_shared<ComputerPaddle>(*this, *mBall);
+		mComPaddle = make_shared<ComputerPaddle>(*this);
 		mComponents.push_back(mComPaddle);
+
+
 
 		Game::Initialize();
 	}
@@ -68,18 +70,25 @@ namespace BouncingLogo
 	
 	}
 
-	PlayerPaddle& BouncingLogoGame::Player()
-	{
-		return *mPlayer;
-	}
-
-	ComputerPaddle& BouncingLogoGame::Computer()
-	{
-		return *mComPaddle;
-	}
 
 	void BouncingLogoGame::Exit()
 	{
 		PostQuitMessage(0);
 	}
+
+	Ball * BouncingLogoGame::getBall()
+	{
+		return mBall.get();
+	}
+
+	PlayerPaddle * BouncingLogoGame::getPlayer()
+	{
+		return mPlayer.get();
+	}
+
+	ComputerPaddle * BouncingLogoGame::getComputer()
+	{
+		return mComPaddle.get();
+	}
+
 }

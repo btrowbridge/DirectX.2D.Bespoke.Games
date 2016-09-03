@@ -1,20 +1,15 @@
 #pragma once
-#include "DrawableGameComponent.h"
-#include <d3d11_2.h>
-#include "Rectangle.h"
-#include <DirectXMath.h>
-#include <wrl.h>
 #include "Paddle.h"
 
 
 namespace BouncingLogo
 {
-
+	class Ball;
 
 	class ComputerPaddle final : public Paddle
 	{
 	public:
-		ComputerPaddle(Library::Game& game, Ball & ball);
+		ComputerPaddle(Library::Game& game);
 
 
 		virtual void Initialize() override;
