@@ -9,7 +9,7 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 
 namespace BouncingLogo {
-	const int BouncingLogo::ComputerPaddle::mSpeed = 2000;
+	const int BouncingLogo::ComputerPaddle::mSpeed = 1500;
 
 	ComputerPaddle::ComputerPaddle(Library::Game & game) : Paddle(game)
 	{

@@ -79,18 +79,16 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 		mVelocity.y *= -1;
 	}
 	
-	if (mBounds.X <= mPlayer->Bounds()->X + mPlayer->Bounds()->Width&&
-		mBounds.Y + mBounds.Height < mPlayer->Bounds()->Y &&
-		mBounds.Y < mPlayer->Bounds()->Y + mPlayer->Bounds()->Height)
+	if (mBounds.Intersects(mPlayer->Bounds()))
 	{
-		mVelocity.x *= -1;
+		mVelocity.x = abs(mVelocity.x);
+		mBounds.X = mPlayer->Bounds().X + mPlayer->Bounds().Width;
 	}
-
-	if (mBounds.X >= mComputer->Bounds()->X &&
-		mBounds.Y + mBounds.Height < mComputer->Bounds()->Y &&
-		mBounds.Y < mComputer->Bounds()->Y + mPlayer->Bounds()->Height)
+	else if (mBounds.Intersects(mComputer->Bounds()))
 	{
-		mVelocity.x *= -1;
+		mVelocity.x = abs(mVelocity.x) * -1;
+		mBounds.X = mComputer->Bounds().X - mBounds.Width;
+
 	}
 	
 

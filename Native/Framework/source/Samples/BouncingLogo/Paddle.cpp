@@ -58,8 +58,8 @@ namespace BouncingLogo {
 		mSpriteBatch->End();
 	}
 
-	Library::Rectangle* BouncingLogo::Paddle::Bounds()
+	Library::Rectangle BouncingLogo::Paddle::Bounds()
 	{
-		return &mBounds;
+		return mBounds;
 	}
 }
