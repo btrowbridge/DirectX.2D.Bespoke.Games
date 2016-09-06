@@ -24,6 +24,8 @@ namespace BouncingLogo
 		DirectX::XMFLOAT2 Velocity();
 
 	private:
+		float getSpeed();
+
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
 
 		Library::Rectangle mBounds;

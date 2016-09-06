@@ -20,6 +20,7 @@ namespace BouncingLogo
 		virtual void Draw(const Library::GameTime& gameTime) override;
 		
 		Library::Rectangle Bounds();
+		DirectX::XMFLOAT2 Velocity();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;

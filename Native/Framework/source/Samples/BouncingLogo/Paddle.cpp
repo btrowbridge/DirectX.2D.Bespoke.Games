@@ -62,4 +62,8 @@ namespace BouncingLogo {
 	{
 		return mBounds;
 	}
+	DirectX::XMFLOAT2 Paddle::Velocity()
+	{
+		return mVelocity;
+	}
 }

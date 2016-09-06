@@ -54,6 +54,7 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 	auto& mViewport = mGame->Viewport();
 	mPlayer = mGame->As<BouncingLogoGame>()->getPlayer();
 	mComputer = mGame->As<BouncingLogoGame>()->getComputer();
+	float mSpeed = getSpeed();
 
 	XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 	mBounds.X += static_cast<int>(std::round(positionDelta.x));
@@ -81,13 +82,41 @@ void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
 	
 	if (mBounds.Intersects(mPlayer->Bounds()))
 	{
-		mVelocity.x = abs(mVelocity.x);
-		mBounds.X = mPlayer->Bounds().X + mPlayer->Bounds().Width;
+		
+		if ((abs(mBounds.Left() - mPlayer->Bounds().Right()) >	//Bounce off the bottom or top
+			abs(mBounds.Bottom() - mPlayer->Bounds().Top())) || 
+			(abs(mBounds.Left() - mPlayer->Bounds().Right())>
+			abs(mBounds.Top() - mPlayer->Bounds().Bottom()))) 
+		{
+			mVelocity.y = abs(mVelocity.y) * (((mBounds.Center().Y - mPlayer->Bounds().Center().Y < 0)) ? -1 : 1);
+		}
+		else {
+			mVelocity.x *= -1;
+		}
+
+		if (mPlayer->Velocity().y != 0 )
+		{
+			mVelocity.y = (mPlayer->Velocity().y + mVelocity.y) / 2; //transfer some paddle momentum
+		}
 	}
 	else if (mBounds.Intersects(mComputer->Bounds()))
 	{
-		mVelocity.x = abs(mVelocity.x) * -1;
-		mBounds.X = mComputer->Bounds().X - mBounds.Width;
+		if ((abs(mBounds.Right() - mComputer->Bounds().Left()) >	//Bounce off the bottom or top
+			abs(mBounds.Bottom() - mComputer->Bounds().Top()))||
+			(abs(mBounds.Right() - mComputer->Bounds().Left()) >
+				abs(mBounds.Top() - mComputer->Bounds().Bottom()))) 
+		{
+			mVelocity.y = abs(mVelocity.y) * (((mBounds.Center().Y - mComputer->Bounds().Center().Y < 0)) ? -1 : 1);
+		}
+		else {
+			mVelocity.x *= -1;
+			
+		}
+		if (mComputer->Velocity().y != 0)
+		{
+			mVelocity.y = (mComputer->Velocity().y + mVelocity.y)/2;//transfer some paddle momentum
+		}
+		
 
 	}
 	
@@ -114,4 +143,9 @@ Library::Point BouncingLogo::Ball::Position()
 DirectX::XMFLOAT2 BouncingLogo::Ball::Velocity()
 {
 	return mVelocity;
+}
+
+float BouncingLogo::Ball::getSpeed()
+{
+	return sqrt(pow(mVelocity.x,2) + pow(mVelocity.y,2));
 }
