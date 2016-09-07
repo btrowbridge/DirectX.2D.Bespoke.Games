@@ -21,6 +21,12 @@ namespace BouncingLogo {
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
+		
+		void PlayerScores();
+		void ComputerScores();
+
+		void ResetScores();
+		
 	private:
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 		std::unique_ptr<DirectX::SpriteFont> mSpriteFont;
@@ -28,6 +34,8 @@ namespace BouncingLogo {
 		DirectX::XMFLOAT2 mComputerScorePosition;
 
 		static const DirectX::XMFLOAT2 mMargin;
+
+		static const int mScoreToWin;
 
 		int mPlayerScore;
 		int mComputerScore;

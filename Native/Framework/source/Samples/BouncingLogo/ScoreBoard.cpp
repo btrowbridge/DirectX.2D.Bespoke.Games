@@ -8,6 +8,7 @@ using namespace DirectX;
 namespace BouncingLogo {
 
 	const XMFLOAT2 ScoreBoard::mMargin(0, 50);
+	const int mScoreToWin = 10;
 
 	ScoreBoard::ScoreBoard(Library::Game & game) : DrawableGameComponent(game), mPlayerScore(0), mComputerScore(0)
 	{
@@ -23,8 +24,8 @@ namespace BouncingLogo {
 		auto& mViewport = mGame->Viewport();
 
 
-		mPlayerScorePosition = XMFLOAT2(mMargin);
-		mComputerScorePosition = XMFLOAT2(mMargin);
+		mPlayerScorePosition = XMFLOAT2(mViewport.Width * .25, mMargin.y);
+		mComputerScorePosition = XMFLOAT2(mViewport.Width * .75 ,mMargin.y);
 	}
 
 	void ScoreBoard::Update(const Library::GameTime & gameTime)
@@ -38,16 +39,29 @@ namespace BouncingLogo {
 		mSpriteBatch->Begin();
 
 		wostringstream playerScoreLabel;
-		playerScoreLabel << setw(mViewport.Width) << mPlayerScore;
+		playerScoreLabel << setprecision(10) << left << mPlayerScore;
 		
 		mSpriteFont->DrawString(mSpriteBatch.get(), playerScoreLabel.str().c_str(), mPlayerScorePosition);
 
 		wostringstream computerScoreLabel;
-
-		computerScoreLabel << setw(mViewport.Width) << mComputerScore;
+		 
+		computerScoreLabel << setprecision(10) << left << mComputerScore;
 		mSpriteFont->DrawString(mSpriteBatch.get(), computerScoreLabel.str().c_str(), mComputerScorePosition);
-
+		
 		mSpriteBatch->End();
 
+	}
+	void ScoreBoard::PlayerScores()
+	{
+		mPlayerScore++;
+	}
+	void ScoreBoard::ComputerScores()
+	{
+		mComputerScore++;
+	}
+	void ScoreBoard::ResetScores()
+	{
+		mPlayerScore = 0;
+		mComputerScore = 0;
 	}
 }

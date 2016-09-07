@@ -9,6 +9,7 @@ namespace BouncingLogo
 {
 	class PlayerPaddle;
 	class ComputerPaddle;
+	class ScoreBoard;
 
 	class Ball final : public Library::DrawableGameComponent
 	{
@@ -20,20 +21,32 @@ namespace BouncingLogo
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
+		void ResetBall();
+
 		Library::Point Position();
 		DirectX::XMFLOAT2 Velocity();
 
+
 	private:
-		float getSpeed();
+		
+		static const int mMinSpeed;
+		static const int mMaxSpeed;
+
+		DirectX::XMFLOAT2 RandomVelocity();
 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
 
 		Library::Rectangle mBounds;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
+		std::unique_ptr<DirectX::SoundEffect> mSoundEffect;
+
 		DirectX::XMFLOAT2 mVelocity;
 
 		PlayerPaddle* mPlayer;
 		ComputerPaddle* mComputer;
+		ScoreBoard* mScoreBoard;
+
+		
 	};
 }
 

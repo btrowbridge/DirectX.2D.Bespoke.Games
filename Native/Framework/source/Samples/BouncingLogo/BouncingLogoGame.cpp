@@ -21,6 +21,10 @@ namespace BouncingLogo
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
+		mAudio = make_shared<AudioEngineComponent>(*this);
+		mComponents.push_back(mAudio);
+		mServices.AddService(AudioEngineComponent::TypeIdClass(), mAudio.get());
+
 		mBall = make_shared<Ball>(*this);
 		mComponents.push_back(mBall);
 
@@ -29,6 +33,9 @@ namespace BouncingLogo
 		
 		mComPaddle = make_shared<ComputerPaddle>(*this);
 		mComponents.push_back(mComPaddle);
+
+		mScoreBoard = make_shared<ScoreBoard>(*this);
+		mComponents.push_back(mScoreBoard);
 
 
 
@@ -89,6 +96,16 @@ namespace BouncingLogo
 	ComputerPaddle * BouncingLogoGame::getComputer()
 	{
 		return mComPaddle.get();
+	}
+
+	ScoreBoard * BouncingLogoGame::getScoreBoard()
+	{
+		return mScoreBoard.get();
+	}
+
+	Library::AudioEngineComponent * BouncingLogoGame::getAudio()
+	{
+		return mAudio.get();
 	}
 
 }
