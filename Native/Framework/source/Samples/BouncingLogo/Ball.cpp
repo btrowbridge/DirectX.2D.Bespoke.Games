@@ -129,12 +129,12 @@ namespace BouncingLogo {
 			else if (mBounds.Intersects(mComputer->Bounds()))
 			{
 				mSoundEffectPong->Play();
-				if ((abs(mBounds.Right() - mComputer->Bounds().Left()) >	//Bounce off the bottom or top
+				if ((abs(mBounds.Right() - mComputer->Bounds().Left()) >	//Bounce off the bottom or top>
 					abs(mBounds.Bottom() - mComputer->Bounds().Top())) ||
 					(abs(mBounds.Right() - mComputer->Bounds().Left()) >
 						abs(mBounds.Top() - mComputer->Bounds().Bottom())))
 				{
-					if (mBounds.Center().Y - mPlayer->Bounds().Center().Y < 0) {
+					if (mBounds.Center().Y - mComputer->Bounds().Center().Y < 0) {
 						mVelocity.y = abs(mVelocity.y) * -1;
 						mBounds.Y = mComputer->Bounds().Top() - mBounds.Height; //put above
 					}
@@ -196,6 +196,7 @@ namespace BouncingLogo {
 	{
 		return mVelocity;
 	}
+
 	DirectX::XMFLOAT2 Ball::RandomVelocity()
 	{
 		int range = mMaxSpeed - mMinSpeed;

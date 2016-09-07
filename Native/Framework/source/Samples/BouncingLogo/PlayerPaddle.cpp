@@ -39,8 +39,9 @@ namespace BouncingLogo {
 			int dY = static_cast<int>(std::round(positionDelta.y));
 
 			if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
+			{
 				mBounds.Y += dY;
-
+			}
 			if (mKeyboard->IsKeyDown(Keys::Up))
 			{
 				mVelocity.y = -mSpeed;
@@ -53,6 +54,9 @@ namespace BouncingLogo {
 			{
 				mVelocity.y = 0;
 			}
+
+
+			
 		}
 	}
 }

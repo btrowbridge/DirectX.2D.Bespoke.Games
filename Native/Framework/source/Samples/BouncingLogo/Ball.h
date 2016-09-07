@@ -40,7 +40,6 @@ namespace BouncingLogo
 		DirectX::XMFLOAT2 RandomVelocity();
 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
-
 		Library::Rectangle mBounds;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 
