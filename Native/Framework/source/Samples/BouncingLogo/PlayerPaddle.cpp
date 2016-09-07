@@ -10,7 +10,7 @@ using namespace DirectX;
 namespace BouncingLogo {
 	const int BouncingLogo::PlayerPaddle::mSpeed = 400;
 
-	PlayerPaddle::PlayerPaddle(Library::Game & game, Library::KeyboardComponent & keyboard) : Paddle(game), mKeyboard(&keyboard)
+	PlayerPaddle::PlayerPaddle(Library::Game & game) : Paddle(game)
 	{
 	}
 
@@ -22,6 +22,10 @@ namespace BouncingLogo {
 		
 		mBounds.X = mBounds.Width;
 		mBounds.Y = static_cast<int>((mGame->Viewport().Height / 2) - (float)mBounds.Height);
+
+		mKeyboard = reinterpret_cast<KeyboardComponent*>( mGame->Services().GetService(Library::KeyboardComponent::TypeIdClass()));
+		
+		assert(mKeyboard != nullptr);
 	}
 
 	void PlayerPaddle::Update(const Library::GameTime & gameTime)

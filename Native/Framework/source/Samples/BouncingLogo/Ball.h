@@ -6,6 +6,10 @@
 #include <wrl.h>
 #include <Audio.h>
 
+namespace Library 
+{
+	class AudioEngineComponent;
+}
 namespace BouncingLogo 
 {
 	class PlayerPaddle;
@@ -39,6 +43,7 @@ namespace BouncingLogo
 
 		Library::Rectangle mBounds;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
+
 		std::unique_ptr<DirectX::SoundEffect> mSoundEffectPing;
 		std::unique_ptr<DirectX::SoundEffect> mSoundEffectPong;
 		std::unique_ptr<DirectX::SoundEffect> mSoundEffectWall;
@@ -50,7 +55,7 @@ namespace BouncingLogo
 		ComputerPaddle* mComputer;
 		ScoreBoard* mScoreBoard;
 
-		
+		Library::AudioEngineComponent* mAudioEngineComponent;
 	};
 }
 

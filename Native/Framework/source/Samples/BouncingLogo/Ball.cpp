@@ -41,8 +41,13 @@ namespace BouncingLogo {
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
 		//Sounds
-		auto& mAudioEngine = mGame->As<BouncingLogoGame>()->getAudio()->AudioEngine();
+		mAudioEngineComponent = reinterpret_cast<Library::AudioEngineComponent*>(
+			mGame->Services().GetService(Library::AudioEngineComponent::TypeIdClass()));
 
+		assert(mAudioEngineComponent != nullptr);
+
+		auto& mAudioEngine = mAudioEngineComponent->AudioEngine();
+		
 		mSoundEffectPing = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Ping.wav");
 		
 		mSoundEffectPong = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Pong.wav");
@@ -51,6 +56,10 @@ namespace BouncingLogo {
 		
 		mSoundEffectScore = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Score.wav");
 
+		mPlayer = mGame->As<BouncingLogoGame>()->getPlayer();
+		mComputer = mGame->As<BouncingLogoGame>()->getComputer();
+		mScoreBoard = mGame->As<BouncingLogoGame>()->getScoreBoard();
+
 	}
 
 	void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
@@ -58,9 +67,7 @@ namespace BouncingLogo {
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 		auto& mViewport = mGame->Viewport();
-		mPlayer = mGame->As<BouncingLogoGame>()->getPlayer();
-		mComputer = mGame->As<BouncingLogoGame>()->getComputer();
-		mScoreBoard = mGame->As<BouncingLogoGame>()->getScoreBoard();
+
 
 
 		XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
@@ -71,7 +78,6 @@ namespace BouncingLogo {
 
 		if (mBounds.X + mBounds.Width > mViewport.Width && mVelocity.x > 0.0f)
 		{
-			/*mVelocity.x *= -1;*/
 			mScoreBoard->PlayerScores();
 			mSoundEffectScore->Play();
 			ResetBall();
@@ -79,7 +85,6 @@ namespace BouncingLogo {
 		}
 		else if (mBounds.X < 0 && mVelocity.x < 0.0f)
 		{
-			/*mVelocity.x *= -1;*/
 			mScoreBoard->ComputerScores();
 			mSoundEffectScore->Play();
 			ResetBall();
@@ -106,11 +111,25 @@ namespace BouncingLogo {
 				(abs(mBounds.Left() - mPlayer->Bounds().Right()) >
 					abs(mBounds.Top() - mPlayer->Bounds().Bottom())))
 			{
-				mVelocity.y = abs(mVelocity.y) * (((mBounds.Center().Y - mPlayer->Bounds().Center().Y < 0)) ? -1 : 1);
+				if (mBounds.Center().Y - mPlayer->Bounds().Center().Y < 0) {
+					mVelocity.y = abs(mVelocity.y) * -1;
+					mBounds.Y = mPlayer->Bounds().Top() - mBounds.Height; //put above
+				}
+				else {
+					mVelocity.y = abs(mVelocity.y);
+					mBounds.Y = mPlayer->Bounds().Bottom(); //put below
+				}
 
 			}
 			else {
 				mVelocity.x *= -1;
+				if (mBounds.Center().X > mPlayer->Bounds().Center().X) {
+					mBounds.X = mPlayer->Bounds().Right();
+				}
+				else {
+					mBounds.X = mPlayer->Bounds().Left() - mBounds.Width;
+
+				}
 			}
 
 			if (mPlayer->Velocity().y != 0)
@@ -126,10 +145,25 @@ namespace BouncingLogo {
 				(abs(mBounds.Right() - mComputer->Bounds().Left()) >
 					abs(mBounds.Top() - mComputer->Bounds().Bottom())))
 			{
-				mVelocity.y = abs(mVelocity.y) * (((mBounds.Center().Y - mComputer->Bounds().Center().Y < 0)) ? -1 : 1);
+				if (mBounds.Center().Y - mPlayer->Bounds().Center().Y < 0) {
+					mVelocity.y = abs(mVelocity.y) * -1;
+					mBounds.Y = mComputer->Bounds().Top() - mBounds.Height; //put above
+				}
+				else {
+					mVelocity.y = abs(mVelocity.y);
+					mBounds.Y = mComputer->Bounds().Bottom(); //put below
+				}
 			}
 			else {
+
 				mVelocity.x *= -1;
+				if (mBounds.Center().X > mComputer->Bounds().Center().X) {
+					mBounds.X = mComputer->Bounds().Right();
+				}
+				else {
+					mBounds.X = mComputer->Bounds().Left() - mBounds.Width;
+
+				}
 
 			}
 			if (mComputer->Velocity().y != 0)
@@ -150,8 +184,6 @@ namespace BouncingLogo {
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);
 		mSpriteBatch->End();
-
-		//SpriteManager::DrawTexture2D(mTexture.Get(), position);
 
 	}
 
@@ -190,8 +222,9 @@ namespace BouncingLogo {
 
 		int xdir = (rand() % 2 == 1) ? 1 : -1;
 		int ydir = (rand() % 2 == 1) ? 1 : -1;
-
-		return XMFLOAT2(xmag * xdir, ymag * ydir);
+		float dx = static_cast<float>(xmag * xdir);
+		float dy = static_cast<float>(ymag * ydir);
+		return XMFLOAT2(dx,dy);
 	}
 }
 

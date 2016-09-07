@@ -38,13 +38,12 @@ namespace BouncingLogo
 		ComputerPaddle* getComputer();
 		ScoreBoard* getScoreBoard();
 
-		Library::AudioEngineComponent* getAudio();
-
 	private:
 		static const DirectX::XMVECTORF32 BackgroundColor;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::AudioEngineComponent>mAudio;
+
 		std::shared_ptr<Ball> mBall;
 		std::shared_ptr<PlayerPaddle> mPlayer;
 		std::shared_ptr<ComputerPaddle> mComPaddle;

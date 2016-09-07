@@ -28,7 +28,7 @@ namespace BouncingLogo
 		mBall = make_shared<Ball>(*this);
 		mComponents.push_back(mBall);
 
-		mPlayer = make_shared<PlayerPaddle>(*this,*mKeyboard);
+		mPlayer = make_shared<PlayerPaddle>(*this);
 		mComponents.push_back(mPlayer);
 		
 		mComPaddle = make_shared<ComputerPaddle>(*this);
@@ -101,11 +101,6 @@ namespace BouncingLogo
 	ScoreBoard * BouncingLogoGame::getScoreBoard()
 	{
 		return mScoreBoard.get();
-	}
-
-	Library::AudioEngineComponent * BouncingLogoGame::getAudio()
-	{
-		return mAudio.get();
 	}
 
 }

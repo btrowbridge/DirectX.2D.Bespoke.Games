@@ -8,7 +8,7 @@ namespace BouncingLogo
 	class PlayerPaddle final : public Paddle
 	{
 	public:
-		PlayerPaddle( Library::Game& game, Library::KeyboardComponent & keyboard);
+		PlayerPaddle(Library::Game& game);
 
 
 		virtual void Initialize() override;
