@@ -21,7 +21,7 @@ namespace BouncingLogo {
 		mVelocity.y = 0;
 		
 		mBounds.X = mBounds.Width;
-		mBounds.Y = (mGame->Viewport().Height / 2) - mBounds.Height;
+		mBounds.Y = static_cast<int>((mGame->Viewport().Height / 2) - (float)mBounds.Height);
 	}
 
 	void PlayerPaddle::Update(const Library::GameTime & gameTime)

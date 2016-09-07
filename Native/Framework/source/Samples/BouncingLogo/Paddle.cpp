@@ -51,7 +51,7 @@ namespace BouncingLogo {
 
 	void BouncingLogo::Paddle::Draw(const Library::GameTime & gameTime)
 	{
-		XMFLOAT2 position(mBounds.X, mBounds.Y);
+		XMFLOAT2 position((float)mBounds.X, (float)mBounds.Y);
 
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);

@@ -4,6 +4,7 @@
 #include "Rectangle.h"
 #include <DirectXMath.h>
 #include <wrl.h>
+#include <Audio.h>
 
 namespace BouncingLogo 
 {
@@ -38,7 +39,10 @@ namespace BouncingLogo
 
 		Library::Rectangle mBounds;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
-		std::unique_ptr<DirectX::SoundEffect> mSoundEffect;
+		std::unique_ptr<DirectX::SoundEffect> mSoundEffectPing;
+		std::unique_ptr<DirectX::SoundEffect> mSoundEffectPong;
+		std::unique_ptr<DirectX::SoundEffect> mSoundEffectWall;
+		std::unique_ptr<DirectX::SoundEffect> mSoundEffectScore;
 
 		DirectX::XMFLOAT2 mVelocity;
 

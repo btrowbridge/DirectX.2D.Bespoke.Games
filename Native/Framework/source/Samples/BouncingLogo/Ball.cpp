@@ -40,12 +40,17 @@ namespace BouncingLogo {
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
+		//Sounds
 		auto& mAudioEngine = mGame->As<BouncingLogoGame>()->getAudio()->AudioEngine();
 
-		const wchar_t * audioName = L"Content\\Audio\\ping.wav";
-
-		mSoundEffect = make_unique<SoundEffect>(new SoundEffect(mAudioEngine.get(), audioName));
+		mSoundEffectPing = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Ping.wav");
 		
+		mSoundEffectPong = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Pong.wav");
+
+		mSoundEffectWall = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Wall.wav");
+		
+		mSoundEffectScore = make_unique<SoundEffect>(mAudioEngine.get(), L"Content\\Audio\\Score.wav");
+
 	}
 
 	void BouncingLogo::Ball::Update(const Library::GameTime & gameTime)
@@ -68,6 +73,7 @@ namespace BouncingLogo {
 		{
 			/*mVelocity.x *= -1;*/
 			mScoreBoard->PlayerScores();
+			mSoundEffectScore->Play();
 			ResetBall();
 			return;
 		}
@@ -75,6 +81,7 @@ namespace BouncingLogo {
 		{
 			/*mVelocity.x *= -1;*/
 			mScoreBoard->ComputerScores();
+			mSoundEffectScore->Play();
 			ResetBall();
 			return;
 		}
@@ -82,15 +89,18 @@ namespace BouncingLogo {
 		if (mBounds.Y + mBounds.Height > mViewport.Height && mVelocity.y > 0.0f)
 		{
 			mVelocity.y *= -1;
+			mSoundEffectWall->Play();
 		}
 		else if (mBounds.Y < 0 && mVelocity.y < 0.0f)
 		{
 			mVelocity.y *= -1;
+			mSoundEffectWall->Play();
+
 		}
 
 		if (mBounds.Intersects(mPlayer->Bounds()))
 		{
-
+			mSoundEffectPing->Play();
 			if ((abs(mBounds.Left() - mPlayer->Bounds().Right()) >	//Bounce off the bottom or top
 				abs(mBounds.Bottom() - mPlayer->Bounds().Top())) ||
 				(abs(mBounds.Left() - mPlayer->Bounds().Right()) >
@@ -110,6 +120,7 @@ namespace BouncingLogo {
 		}
 		else if (mBounds.Intersects(mComputer->Bounds()))
 		{
+			mSoundEffectPong->Play();
 			if ((abs(mBounds.Right() - mComputer->Bounds().Left()) >	//Bounce off the bottom or top
 				abs(mBounds.Bottom() - mComputer->Bounds().Top())) ||
 				(abs(mBounds.Right() - mComputer->Bounds().Left()) >
@@ -134,7 +145,7 @@ namespace BouncingLogo {
 
 	void BouncingLogo::Ball::Draw(const Library::GameTime & gameTime)
 	{
-		XMFLOAT2 position(mBounds.X, mBounds.Y);
+		XMFLOAT2 position(static_cast<float>(mBounds.X), static_cast<float>(mBounds.Y));
 
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);

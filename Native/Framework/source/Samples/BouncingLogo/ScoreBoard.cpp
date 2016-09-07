@@ -16,7 +16,7 @@ namespace BouncingLogo {
 
 	void ScoreBoard::Initialize()
 	{
-
+		
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 
@@ -24,8 +24,8 @@ namespace BouncingLogo {
 		auto& mViewport = mGame->Viewport();
 
 
-		mPlayerScorePosition = XMFLOAT2(mViewport.Width * .25, mMargin.y);
-		mComputerScorePosition = XMFLOAT2(mViewport.Width * .75 ,mMargin.y);
+		mPlayerScorePosition = XMFLOAT2(mViewport.Width * 1/4, mMargin.y);
+		mComputerScorePosition = XMFLOAT2(mViewport.Width * 3/4 ,mMargin.y);
 	}
 
 	void ScoreBoard::Update(const Library::GameTime & gameTime)
