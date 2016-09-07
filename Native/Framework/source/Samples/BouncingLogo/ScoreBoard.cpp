@@ -7,7 +7,7 @@ using namespace DirectX;
 
 namespace BouncingLogo {
 
-	const XMFLOAT2 ScoreBoard::mMargin(100, 50);
+	const XMFLOAT2 ScoreBoard::mMargin(0, 50);
 
 	ScoreBoard::ScoreBoard(Library::Game & game) : DrawableGameComponent(game), mPlayerScore(0), mComputerScore(0)
 	{
@@ -23,8 +23,8 @@ namespace BouncingLogo {
 		auto& mViewport = mGame->Viewport();
 
 
-		mPlayerScorePosition = XMFLOAT2(mViewport.TopLeftX*.25 + mMargin.x,mMargin.y);
-		mComputerScorePosition = XMFLOAT2(mViewport.Width*.75, mMargin.y);
+		mPlayerScorePosition = XMFLOAT2(mMargin);
+		mComputerScorePosition = XMFLOAT2(mMargin);
 	}
 
 	void ScoreBoard::Update(const Library::GameTime & gameTime)
