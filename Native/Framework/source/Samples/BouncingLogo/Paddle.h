@@ -5,11 +5,8 @@
 #include <DirectXMath.h>
 #include <wrl.h>
 
-
 namespace BouncingLogo
 {
-
-
 	class Paddle : public Library::DrawableGameComponent
 	{
 	public:
@@ -18,7 +15,9 @@ namespace BouncingLogo
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
-		
+
+		virtual void ResetPaddle();
+
 		Library::Rectangle Bounds();
 		DirectX::XMFLOAT2 Velocity();
 
@@ -27,10 +26,11 @@ namespace BouncingLogo
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 
 	protected:
+		Library::Point mDefaultPosition;
+
 		Library::Rectangle mBounds;
 		Library::Point mTextureHalfSize;
+
 		DirectX::XMFLOAT2 mVelocity;
 	};
 }
-
-

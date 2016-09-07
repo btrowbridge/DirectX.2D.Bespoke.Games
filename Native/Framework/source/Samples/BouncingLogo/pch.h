@@ -103,3 +103,4 @@
 #include "Paddle.h"
 #include "ComputerPaddle.h"
 #include "ScoreBoard.h"
+#include "BouncingLogoGame.h"

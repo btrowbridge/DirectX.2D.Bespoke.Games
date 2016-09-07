@@ -32,6 +32,8 @@ namespace BouncingLogo {
 		std::unique_ptr<DirectX::SpriteFont> mSpriteFont;
 		DirectX::XMFLOAT2 mPlayerScorePosition;
 		DirectX::XMFLOAT2 mComputerScorePosition;
+		DirectX::XMFLOAT2 mCenterTextPosition;
+
 
 		static const DirectX::XMFLOAT2 mMargin;
 

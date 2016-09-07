@@ -18,38 +18,34 @@ namespace BouncingLogo {
 	void ComputerPaddle::Initialize()
 	{
 		Paddle::Initialize();
-		mVelocity.x = 0;
-		mVelocity.y = 0;
 
-		mBounds.X = static_cast<int>(mGame->Viewport().Width - 2 * mBounds.Width);
-		mBounds.Y = static_cast<int>((mGame->Viewport().Height / 2) - mBounds.Height);
+		Paddle::mDefaultPosition.X = static_cast<int>(mGame->Viewport().Width - 2 * mBounds.Width);
+		Paddle::mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - mBounds.Height);
+
+		ResetPaddle();
 	}
 
 	void ComputerPaddle::Update(const Library::GameTime & gameTime)
 	{
 		Paddle::Update(gameTime);
+		if (mGame->As<BouncingLogoGame>()->GameState() == GameState::Play) {
+			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+			auto& mViewport = mGame->Viewport();
+			mBall = mGame->As<BouncingLogoGame>()->getBall();
 
-		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
-		auto& mViewport = mGame->Viewport();
-		mBall = mGame->As<BouncingLogoGame>()->getBall();
+			XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 
-		XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
+			int dY = static_cast<int>(std::round(positionDelta.y));
 
-		int dY = static_cast<int>(std::round(positionDelta.y));
-	    
+			if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
+			{
+				mBounds.Y += dY;
+			}
 
-		if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
-		{
-			mBounds.Y += dY;
+			int distanceY = mBall->Position().Y - mBounds.Center().Y;
+
+			if (mBall->Position().Y < mBounds.Y + .5 * mBounds.Height || mBall->Position().Y > mBounds.Y + .5 * mBounds.Height)
+				mVelocity.y = distanceY / mViewport.Height * mSpeed;
 		}
-
-		int distanceY = mBall->Position().Y - mBounds.Center().Y;
-		
-		if(mBall->Position().Y < mBounds.Y + .5 * mBounds.Height || mBall->Position().Y > mBounds.Y + .5 * mBounds.Height)
-			mVelocity.y =  distanceY/mViewport.Height * mSpeed;
-
-
 	}
-
-
 }

@@ -27,20 +27,20 @@ namespace BouncingLogo {
 
 		mBounds = TextureHelper::GetTextureBounds(texture.Get());
 
-		mTextureHalfSize.X = mBounds.Width / 2;
-		mTextureHalfSize.Y = mBounds.Height / 2;
+		//mTextureHalfSize.X = mBounds.Width / 2;
+		//mTextureHalfSize.Y = mBounds.Height / 2;
 
-		auto& mViewport = mGame->Viewport();
+		//auto& mViewport = mGame->Viewport();
 
-		Library::Rectangle viewportSize(static_cast<int>(mViewport.TopLeftX), static_cast<int>(mViewport.TopLeftY),
-			static_cast<int>(mViewport.Width), static_cast<int>(mViewport.Height));
-		Point center = viewportSize.Center();
+		//Library::Rectangle viewportSize(static_cast<int>(mViewport.TopLeftX), static_cast<int>(mViewport.TopLeftY),
+		//	static_cast<int>(mViewport.Width), static_cast<int>(mViewport.Height));
+		//Point center = viewportSize.Center();
 
-		mBounds.X = center.X - mTextureHalfSize.X;
-		mBounds.Y = center.Y - mTextureHalfSize.Y;
+		//mBounds.X = center.X - mTextureHalfSize.X;
+		//mBounds.Y = center.Y - mTextureHalfSize.Y;
 
-		mVelocity.x = 0;
-		mVelocity.y = 0;
+		//mVelocity.x = 0;
+		//mVelocity.y = 0;
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 	}
@@ -56,6 +56,13 @@ namespace BouncingLogo {
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);
 		mSpriteBatch->End();
+	}
+
+	void Paddle::ResetPaddle()
+	{
+		mVelocity = XMFLOAT2();
+		mBounds.X = mDefaultPosition.X;
+		mBounds.Y = mDefaultPosition.Y;
 	}
 
 	Library::Rectangle BouncingLogo::Paddle::Bounds()

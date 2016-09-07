@@ -11,7 +11,7 @@ namespace BouncingLogo
 	const XMVECTORF32 BouncingLogoGame::BackgroundColor = Colors::Black;
 
 	BouncingLogoGame::BouncingLogoGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
-		Game(getWindowCallback, getRenderTargetSizeCallback)
+		Game(getWindowCallback, getRenderTargetSizeCallback), mGameState(GameState::Play)
 	{
 	}
 
@@ -30,14 +30,12 @@ namespace BouncingLogo
 
 		mPlayer = make_shared<PlayerPaddle>(*this);
 		mComponents.push_back(mPlayer);
-		
+
 		mComPaddle = make_shared<ComputerPaddle>(*this);
 		mComponents.push_back(mComPaddle);
 
 		mScoreBoard = make_shared<ScoreBoard>(*this);
 		mComponents.push_back(mScoreBoard);
-
-
 
 		Game::Initialize();
 	}
@@ -47,6 +45,21 @@ namespace BouncingLogo
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape))
 		{
 			Exit();
+		}
+		else if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			if (mGameState == GameState::Play)
+			{
+				setGameState(GameState::Paused);
+			}
+			else if (mGameState == GameState::Paused)
+			{
+				setGameState(GameState::Play);
+			}
+			else
+			{
+				Reset();
+			}
 		}
 
 		Game::Update(gameTime);
@@ -74,13 +87,30 @@ namespace BouncingLogo
 
 	void BouncingLogoGame::Shutdown()
 	{
-	
 	}
-
 
 	void BouncingLogoGame::Exit()
 	{
 		PostQuitMessage(0);
+	}
+
+	void BouncingLogoGame::Reset()
+	{
+		mBall->ResetBall();
+		mPlayer->ResetPaddle();
+		mComPaddle->ResetPaddle();
+		mScoreBoard->ResetScores();
+		setGameState(GameState::Play);
+	}
+
+	void BouncingLogoGame::setGameState(BouncingLogo::GameState state)
+	{
+		mGameState = state;
+	}
+
+	BouncingLogo::GameState & BouncingLogoGame::GameState()
+	{
+		return mGameState;
 	}
 
 	Ball * BouncingLogoGame::getBall()
@@ -102,5 +132,4 @@ namespace BouncingLogo
 	{
 		return mScoreBoard.get();
 	}
-
 }

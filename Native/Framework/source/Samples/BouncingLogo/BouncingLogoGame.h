@@ -9,7 +9,7 @@ namespace Library
 	class AudioEngineComponent;
 }
 
-namespace DirectX 
+namespace DirectX
 {
 	class SpriteBatch;
 }
@@ -21,9 +21,17 @@ namespace BouncingLogo
 	class ComputerPaddle;
 	class ScoreBoard;
 
+	const enum GameState {
+		Play,
+		Paused,
+		PlayerWin,
+		ComputerWin
+	};
+
 	class BouncingLogoGame : public Library::Game
 	{
 	public:
+
 		BouncingLogoGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback);
 
 		virtual void Initialize() override;
@@ -32,6 +40,11 @@ namespace BouncingLogo
 		virtual void Shutdown() override;
 
 		void Exit();
+
+		void Reset();
+
+		void setGameState(GameState state);
+		GameState& GameState();
 
 		Ball* getBall();
 		PlayerPaddle* getPlayer();
@@ -49,6 +62,6 @@ namespace BouncingLogo
 		std::shared_ptr<ComputerPaddle> mComPaddle;
 		std::shared_ptr<ScoreBoard> mScoreBoard;
 
-
+		BouncingLogo::GameState mGameState;
 	};
 }
