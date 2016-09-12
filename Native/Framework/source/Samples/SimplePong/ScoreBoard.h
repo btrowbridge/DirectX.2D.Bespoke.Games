@@ -26,14 +26,27 @@ namespace Pong {
 		void Player2Scores();
 
 		void ResetScores();
+
 		
+	
 	private:
+
+		enum ScorePosition
+		{
+			ScorePositionLeft = 1,
+			ScorePositionRight = 2,
+			ScorePositionBoth = ScorePositionLeft | ScorePositionRight
+		};
+
+		void UpdateScorePositions(ScorePosition positionToUpdate);
+
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 		std::unique_ptr<DirectX::SpriteFont> mSpriteFont;
 		DirectX::XMFLOAT2 mPlayer1ScorePosition;
 		DirectX::XMFLOAT2 mPlayer2ScorePosition;
 		DirectX::XMFLOAT2 mCenterTextPosition;
 
+		D3D11_VIEWPORT mViewport;
 
 		static const DirectX::XMFLOAT2 mMargin;
 

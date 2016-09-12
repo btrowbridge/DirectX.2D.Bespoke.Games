@@ -7,7 +7,7 @@ using namespace DirectX;
 
 namespace Pong {
 
-	const XMFLOAT2 ScoreBoard::mMargin(0, 50);
+	const XMFLOAT2 ScoreBoard::mMargin(100, 30);
 	const int mScoreToWin = 10;
 
 	ScoreBoard::ScoreBoard(Library::Game & game) : DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0)
@@ -18,13 +18,19 @@ namespace Pong {
 	{
 		
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
-		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
+		//mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 
-		auto& mViewport = mGame->Viewport();
+		mViewport = mGame->Viewport();
 
 		mPlayer1ScorePosition = XMFLOAT2(mViewport.Width * 1/4, mMargin.y);
 		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width * 3/4 ,mMargin.y);
 		mCenterTextPosition = XMFLOAT2(mViewport.Width * 1/10 , mViewport.Height - mMargin.y);
+
+		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_36_Regular.spritefont");
+		mPlayer1ScorePosition = XMFLOAT2(static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
+		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width - static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
+
+
 	}
 
 	void ScoreBoard::Update(const Library::GameTime & gameTime)
@@ -38,15 +44,8 @@ namespace Pong {
 
 		mSpriteBatch->Begin();
 
-		wostringstream Player1ScoreLabel;
-		Player1ScoreLabel << setw(2) << mPlayer1Score; 
-		
-		mSpriteFont->DrawString(mSpriteBatch.get(), Player1ScoreLabel.str().c_str(), mPlayer1ScorePosition);
-
-		wostringstream Player2ScoreLabel;
-		 
-		Player2ScoreLabel << setw(2) << mPlayer2Score;
-		mSpriteFont->DrawString(mSpriteBatch.get(), Player2ScoreLabel.str().c_str(), mPlayer2ScorePosition);
+		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer1Score).c_str(), mPlayer1ScorePosition);
+		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer2Score).c_str(), mPlayer2ScorePosition);
 
 		GameState currentGameState = mGame->As<PongGame>()->GameState();
 		
@@ -65,17 +64,38 @@ namespace Pong {
 		{
 			centertext = L"Congratulations, You Win! Press space to play again.";
 		}
-		wostringstream centerLabel;
 
-		centerLabel << setprecision(10) << centertext;
-		mSpriteFont->DrawString(mSpriteBatch.get(), centerLabel.str().c_str(), mCenterTextPosition);
+		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);
+		XMVECTOR viewportSize= XMLoadFloat2(&tempViewportSize);
 
-		
+		XMVECTOR messageSize = mSpriteFont->MeasureString(centertext.c_str());
 
-		
+
+		XMStoreFloat2(&mCenterTextPosition, (viewportSize - messageSize) / 2);
+		mCenterTextPosition.y -= XMVectorGetY(messageSize);
+
+		mSpriteFont->DrawString(mSpriteBatch.get(), centertext.c_str(), mCenterTextPosition);
+
 		mSpriteBatch->End();
 
 	}
+	void ScoreBoard::UpdateScorePositions(ScorePosition positionToUpdate)
+	{
+		if (positionToUpdate & ScorePositionLeft)
+		{
+			wstring scoreMessage = to_wstring(mPlayer1Score);
+			XMVECTOR scoreWidth = mSpriteFont->MeasureString(scoreMessage.c_str());
+			mPlayer1ScorePosition.x = static_cast<float>(mMargin.x) - XMVectorGetX(scoreWidth);
+		}
+
+		if (positionToUpdate & ScorePositionRight)
+		{
+			wstring scoreMessage = to_wstring(mPlayer2Score);
+			XMVECTOR scoreWidth = mSpriteFont->MeasureString(scoreMessage.c_str());
+			mPlayer2ScorePosition.x = static_cast<float>(mGame->Viewport().Width) - mMargin.x - XMVectorGetX(scoreWidth);
+		}
+	}
+
 	void ScoreBoard::Player1Scores()
 	{
 		mPlayer1Score++;
