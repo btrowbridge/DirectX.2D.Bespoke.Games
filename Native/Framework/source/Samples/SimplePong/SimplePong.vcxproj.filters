@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="PongGame.h" />
+    <ClInclude Include="Paddle.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreBoard.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="PongGame.cpp" />
+    <ClCompile Include="Paddle.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreBoard.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Content\Fonts\Arial_36_Regular.spritefont">
+      <Filter>Content\Fonts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Content">
+      <UniqueIdentifier>{f9017ea1-ce6d-44aa-b125-0b927ece9c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Textures">
+      <UniqueIdentifier>{d2559e5f-d776-4cd3-890e-b76c5ba9a1a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Audio">
+      <UniqueIdentifier>{31812b4e-caeb-4494-896e-c50c25458525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Fonts">
+      <UniqueIdentifier>{ae83f002-1b0e-4708-a9b1-898c09df5880}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Components">
+      <UniqueIdentifier>{77127d84-a7b9-47f2-82a4-fb73730259ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Content\Audio\Beep.wav">
+      <Filter>Content\Audio</Filter>
+    </Media>
+    <Media Include="Content\Audio\GameOver.wav">
+      <Filter>Content\Audio</Filter>
+    </Media>
+    <Media Include="Content\Audio\tada.wav">
+      <Filter>Content\Audio</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Textures\Ball.png">
+      <Filter>Content\Textures</Filter>
+    </Image>
+    <Image Include="Content\Textures\Paddle.png">
+      <Filter>Content\Textures</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
