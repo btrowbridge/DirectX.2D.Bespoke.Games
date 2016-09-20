@@ -12,6 +12,7 @@
     <ClInclude Include="ScoreBoard.h">
       <Filter>Game Components</Filter>
     </ClInclude>
+    <ClInclude Include="PlayScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="ScoreBoard.cpp">
       <Filter>Game Components</Filter>
     </ClCompile>
+    <ClCompile Include="PlayScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -48,6 +50,9 @@
     </Filter>
     <Filter Include="Game Components">
       <UniqueIdentifier>{77127d84-a7b9-47f2-82a4-fb73730259ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screens">
+      <UniqueIdentifier>{4f1aebc9-9584-441f-bb06-5969b708b7b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

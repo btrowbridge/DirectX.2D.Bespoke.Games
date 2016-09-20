@@ -26,7 +26,7 @@ namespace Pong {
 		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width * 3/4 ,mMargin.y);
 		mCenterTextPosition = XMFLOAT2(mViewport.Width * 1/10 , mViewport.Height - mMargin.y);
 
-		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_36_Regular.spritefont");
+		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 		mPlayer1ScorePosition = XMFLOAT2(static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
 		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width - static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
 

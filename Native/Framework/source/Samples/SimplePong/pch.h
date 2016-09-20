@@ -83,6 +83,7 @@
 #include "Grid.h"
 #include "AudioEngineComponent.h"
 #include "TextureHelper.h"
+#include "ScreenManager.h"
 
 // Library.Desktop
 #include "UtilityWin32.h"

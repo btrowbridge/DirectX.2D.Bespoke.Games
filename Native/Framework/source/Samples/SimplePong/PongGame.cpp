@@ -11,7 +11,7 @@ namespace Pong
 	const XMVECTORF32 PongGame::BackgroundColor = Colors::Black;
 
 	PongGame::PongGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
-		Game(getWindowCallback, getRenderTargetSizeCallback), mGameState(GameState::Play)
+		Game(getWindowCallback, getRenderTargetSizeCallback)
 	{
 	}
 
@@ -25,17 +25,8 @@ namespace Pong
 		mComponents.push_back(mAudio);
 		mServices.AddService(AudioEngineComponent::TypeIdClass(), mAudio.get());
 
-		mBall = make_shared<Ball>(*this);
-		mComponents.push_back(mBall);
-
-		mPlayer1 = make_shared<Paddle>(*this,PlayerOptions::Player1);
-		mComponents.push_back(mPlayer1);
-
-		mPlayer2 = make_shared<Paddle>(*this,PlayerOptions::Player2WithAI);
-		mComponents.push_back(mPlayer2);
-
-		mScoreBoard = make_shared<ScoreBoard>(*this);
-		mComponents.push_back(mScoreBoard);
+		mScreenManager = make_shared<ScreenManager>(*this);
+		mComponents.push_back(mScreenManager);
 
 		Game::Initialize();
 	}
@@ -46,22 +37,7 @@ namespace Pong
 		{
 			Exit();
 		}
-		else if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			if (mGameState == GameState::Play)
-			{
-				setGameState(GameState::Paused);
-			}
-			else if (mGameState == GameState::Paused)
-			{
-				setGameState(GameState::Play);
-			}
-			else
-			{
-				Reset();
-			}
-		}
-
+		
 		Game::Update(gameTime);
 	}
 
@@ -92,44 +68,5 @@ namespace Pong
 	void PongGame::Exit()
 	{
 		PostQuitMessage(0);
-	}
-
-	void PongGame::Reset()
-	{
-		mBall->ResetBall();
-		mPlayer1->ResetPaddle();
-		mPlayer2->ResetPaddle();
-		mScoreBoard->ResetScores();
-		setGameState(GameState::Play);
-	}
-
-	void PongGame::setGameState(Pong::GameState state)
-	{
-		mGameState = state;
-	}
-
-	Pong::GameState & PongGame::GameState()
-	{
-		return mGameState;
-	}
-
-	Ball * PongGame::getBall()
-	{
-		return mBall.get();
-	}
-
-	Paddle * PongGame::getPlayer1()
-	{
-		return mPlayer1.get();
-	}
-
-	Paddle * PongGame::getPlayer2()
-	{
-		return mPlayer2.get();
-	}
-
-	ScoreBoard * PongGame::getScoreBoard()
-	{
-		return mScoreBoard.get();
 	}
 }
