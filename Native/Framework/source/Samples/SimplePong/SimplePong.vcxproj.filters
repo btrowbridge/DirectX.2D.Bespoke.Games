@@ -12,7 +12,9 @@
     <ClInclude Include="ScoreBoard.h">
       <Filter>Game Components</Filter>
     </ClInclude>
-    <ClInclude Include="PlayScreen.h" />
+    <ClInclude Include="PlayScreen.h">
+      <Filter>Screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -27,7 +29,9 @@
     <ClCompile Include="ScoreBoard.cpp">
       <Filter>Game Components</Filter>
     </ClCompile>
-    <ClCompile Include="PlayScreen.cpp" />
+    <ClCompile Include="PlayScreen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

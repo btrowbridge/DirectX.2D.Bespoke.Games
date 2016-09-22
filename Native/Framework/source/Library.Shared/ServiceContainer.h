@@ -16,6 +16,7 @@ namespace Library
 		void RemoveService(std::uint64_t typeID);
 		virtual void* GetService(std::uint64_t typeID) const override;;
 
+	private:
 		std::map<std::uint64_t, void*> mServices;
 	};
 }

@@ -10,15 +10,14 @@ namespace Pong {
 	const XMFLOAT2 ScoreBoard::mMargin(100, 30);
 	const int mScoreToWin = 10;
 
-	ScoreBoard::ScoreBoard(Library::Game & game) : DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0)
+	ScoreBoard::ScoreBoard(Library::Game & game, PlayScreen* screen) : 
+		DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0), mScreen(screen)
 	{
 	}
 
 	void ScoreBoard::Initialize()
 	{
-		
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
-		//mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 
 		mViewport = mGame->Viewport();
 
@@ -30,24 +29,23 @@ namespace Pong {
 		mPlayer1ScorePosition = XMFLOAT2(static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
 		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width - static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
 
-
+		DrawableGameComponent::Initialize();
 	}
 
 	void ScoreBoard::Update(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
+		DrawableGameComponent::Update(gameTime);
 	}
 
 	void ScoreBoard::Draw(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
+		
 		mSpriteBatch->Begin();
 
 		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer1Score).c_str(), mPlayer1ScorePosition);
 		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer2Score).c_str(), mPlayer2ScorePosition);
-
-		GameState currentGameState = mGame->As<PongGame>()->GameState();
+		
+		GameState currentGameState = mScreen->getGameState();
 		
 		wstring centertext = L"";
 		if (currentGameState == GameState::Play) {
@@ -78,6 +76,8 @@ namespace Pong {
 
 		mSpriteBatch->End();
 
+		DrawableGameComponent::Draw(gameTime);
+
 	}
 	void ScoreBoard::UpdateScorePositions(ScorePosition positionToUpdate)
 	{
@@ -99,15 +99,17 @@ namespace Pong {
 	void ScoreBoard::Player1Scores()
 	{
 		mPlayer1Score++;
+		UpdateScorePositions(ScorePosition::ScorePositionLeft);
 		if (mPlayer1Score == 10) {
-			mGame->As<PongGame>()->setGameState(GameState::Player1Win);
+			mScreen->setGameState(GameState::Player1Win);
 		}
 	}
 	void ScoreBoard::Player2Scores()
 	{
 		mPlayer2Score++;
+		UpdateScorePositions(ScorePosition::ScorePositionRight);
 		if (mPlayer2Score == 10) {
-			mGame->As<PongGame>()->setGameState(GameState::Player2Win);
+			mScreen->setGameState(GameState::Player2Win);
 		}
 
 	}
@@ -115,5 +117,7 @@ namespace Pong {
 	{
 		mPlayer1Score = 0;
 		mPlayer2Score = 0;
+
+		UpdateScorePositions(ScorePosition::ScorePositionBoth);
 	}
 }

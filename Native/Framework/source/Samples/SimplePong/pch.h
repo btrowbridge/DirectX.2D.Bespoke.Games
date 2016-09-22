@@ -84,6 +84,7 @@
 #include "AudioEngineComponent.h"
 #include "TextureHelper.h"
 #include "ScreenManager.h"
+#include "SpriteManager.h"
 
 // Library.Desktop
 #include "UtilityWin32.h"
@@ -93,3 +94,4 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "ScoreBoard.h"
+#include "PlayScreen.h"

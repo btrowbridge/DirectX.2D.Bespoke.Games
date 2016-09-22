@@ -7,11 +7,12 @@
 
 namespace Pong
 {
+	enum PlayerOptions;
 
 	class Paddle final : public Library::DrawableGameComponent
 	{
 	public:
-		Paddle(Library::Game& game, PlayerOptions playerOption);
+		Paddle(Library::Game& game, PlayScreen* screen, PlayerOptions playerOption);
 
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
@@ -33,14 +34,16 @@ namespace Pong
 		Library::Point mTextureHalfSize;
 		Library::Point mDefaultPosition;
 		Library::Rectangle mBounds;
-		
 
-		static const int mSpeed;
 		Library::KeyboardComponent * mKeyboard;
-
+		static const int mSpeed;
+		static const int mAISpeedMultiplier;
 		DirectX::XMFLOAT2 mVelocity;
 
 		bool isAIEnabled;
 		Ball * mBall;
+
+		PlayScreen* mScreen;
+
 	};
 }

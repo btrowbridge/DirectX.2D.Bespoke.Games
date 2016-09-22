@@ -12,8 +12,8 @@ namespace Pong {
 	const int Ball::mMinSpeed = 100;
 	const int Ball::mMaxSpeed = 300;
 
-	Pong::Ball::Ball(Library::Game & game) :
-		DrawableGameComponent(game), mBounds(Rectangle::Empty)
+	Pong::Ball::Ball(Library::Game & game, PlayScreen* screen) :
+		DrawableGameComponent(game), mBounds(Rectangle::Empty), mScreen(screen)
 	{
 	}
 
@@ -52,14 +52,16 @@ namespace Pong {
 
 		mSoundEffectScore = make_unique<SoundEffect>(mAudioEngine, L"Content\\Audio\\Score.wav");
 
-		mPlayer1 = mGame->As<PongGame>()->getPlayer1();
-		mPlayer2 = mGame->As<PongGame>()->getPlayer2();
-		mScoreBoard = mGame->As<PongGame>()->getScoreBoard();
+		mPlayer1 = mScreen->getPlayer1();
+		mPlayer2 = mScreen->getPlayer2();
+		mScoreBoard = mScreen->getScoreBoard();
+
+		DrawableGameComponent::Initialize();
 	}
 
 	void Pong::Ball::Update(const Library::GameTime & gameTime)
 	{
-		if (mGame->As<PongGame>()->GameState() == GameState::Play) {
+		if (mScreen->getGameState() == GameState::Play) {
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 			auto& mViewport = mGame->Viewport();
@@ -158,18 +160,19 @@ namespace Pong {
 				}
 			}
 		}
+		DrawableGameComponent::Update(gameTime);
 	}
 
 	void Pong::Ball::Draw(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 
 		XMFLOAT2 position(static_cast<float>(mBounds.X), static_cast<float>(mBounds.Y));
 
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);
 		mSpriteBatch->End();
+
+		DrawableGameComponent::Draw(gameTime);
 	}
 
 	void Pong::Ball::ResetBall()

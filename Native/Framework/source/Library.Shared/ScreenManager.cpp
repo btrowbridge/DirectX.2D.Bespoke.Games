@@ -29,7 +29,7 @@ namespace Library
 		return mScreens;
 	}
 
-	const IServiceProvider & ScreenManager::Services() const
+	const IServiceProvider& ScreenManager::Services() const
 	{
 		return mGame->Services();
 	}
@@ -93,19 +93,23 @@ namespace Library
 		}
 	}
 
-	void ScreenManager::AddScreen(shared_ptr<GameScreen> screen)
+	void ScreenManager::AddScreen(shared_ptr<GameScreen> screen, bool shouldInitializeScreen)
 	{
-		screen->Initialize();
+		if (shouldInitializeScreen)
+		{
+			screen->Initialize();
+		}
+
 		mScreens.push_back(screen);
 	}
 
-	void ScreenManager::AddScreens(const vector<shared_ptr<GameScreen>>& screens)
+	void ScreenManager::AddScreens(const vector<shared_ptr<GameScreen>>& screens, bool shouldInitializeScreens)
 	{
 		for (auto& screen : screens)
 		{
 			if (ContainsScreen(screen) == false)
 			{
-				AddScreen(screen);
+				AddScreen(screen, shouldInitializeScreens);
 			}		
 		}
 	}

@@ -15,7 +15,7 @@ namespace Pong {
 		public Library::DrawableGameComponent
 	{
 	public:
-		ScoreBoard(Library::Game& game);
+		ScoreBoard(Library::Game& game, PlayScreen* screen);
 
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
@@ -54,6 +54,8 @@ namespace Pong {
 
 		int mPlayer1Score;
 		int mPlayer2Score;
+
+		PlayScreen* mScreen;
 	};
 }
 

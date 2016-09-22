@@ -7,26 +7,30 @@ using namespace Library;
 namespace Pong {
 
 	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager) :
-		GameScreen(screenManager), mGameState(Pong::GameState::Play)
+		GameScreen(screenManager), mGameState(GameState::Play)
 	{
-
+			GameScreen::mTransitionOnTime = 300ms;
+			GameScreen::mTransitionOnTime = 300ms;
 	}
 
 	void PlayScreen::Initialize()
 	{
+		Game * mGame = GetGame();
 		
-		mBall = make_shared<Ball>(*this);
+		mBall = make_shared<Ball>(*mGame,this);
 		mComponents.push_back(mBall);
 
-		mPlayer1 = make_shared<Paddle>(*this,PlayerOptions::Player1);
+		mPlayer1 = make_shared<Paddle>(*mGame,this,PlayerOptions::Player1WithAI);
 		mComponents.push_back(mPlayer1);
 
-		mPlayer2 = make_shared<Paddle>(*this,PlayerOptions::Player2WithAI);
+		mPlayer2 = make_shared<Paddle>(*mGame,this,PlayerOptions::Player2WithAI);
 		mComponents.push_back(mPlayer2);
 
-		mScoreBoard = make_shared<ScoreBoard>(*this);
+		mScoreBoard = make_shared<ScoreBoard>(*mGame,this);
 		mComponents.push_back(mScoreBoard);
 		
+		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
+
 		
 
 		GameScreen::Initialize();
@@ -39,11 +43,13 @@ namespace Pong {
 
 	void PlayScreen::Draw(const Library::GameTime & gameTime)
 	{
+		mScreenManager->FadeScreenToBlack(TransitionPosition());
 		GameScreen::Draw(gameTime);
 	}
 
 	void PlayScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
+
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
 			if (mGameState == GameState::Play)
@@ -59,6 +65,8 @@ namespace Pong {
 				Reset();
 			}
 		}
+
+		GameScreen::Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 	}
 
 	void PlayScreen::HandleInput(Library::ScreenInputManager & inputManager)
@@ -75,14 +83,34 @@ namespace Pong {
 		setGameState(GameState::Play);
 	}
 
-	void PlayScreen::setGameState(Pong::GameState state)
+	void PlayScreen::setGameState(GameState state)
 	{
 		mGameState = state;
 	}
 
-	GameState & PlayScreen::GameState()
+	GameState & PlayScreen::getGameState()
 	{
 		return mGameState;
+	}
+
+	Ball * PlayScreen::getBall()
+	{
+		return mBall.get();
+	}
+
+	Paddle * PlayScreen::getPlayer1()
+	{
+		return mPlayer1.get();
+	}
+
+	Paddle * PlayScreen::getPlayer2()
+	{
+		return mPlayer2.get();
+	}
+
+	ScoreBoard * PlayScreen::getScoreBoard()
+	{
+		return mScoreBoard.get();
 	}
 
 }

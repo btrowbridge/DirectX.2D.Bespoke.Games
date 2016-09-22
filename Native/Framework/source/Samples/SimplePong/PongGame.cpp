@@ -27,8 +27,15 @@ namespace Pong
 
 		mScreenManager = make_shared<ScreenManager>(*this);
 		mComponents.push_back(mScreenManager);
+		mServices.AddService(ScreenManager::TypeIdClass(), mScreenManager.get());
+
+		mPlayScreen = make_shared<PlayScreen>(mScreenManager);
+		mScreenManager->AddScreen(mPlayScreen, false);
+
+		SpriteManager::Initialize(*this);
 
 		Game::Initialize();
+
 	}
 
 	void PongGame::Update(const GameTime &gameTime)

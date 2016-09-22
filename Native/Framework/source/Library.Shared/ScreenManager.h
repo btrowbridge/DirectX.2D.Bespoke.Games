@@ -28,8 +28,8 @@ namespace Library
 		virtual void Update(const GameTime& gameTime) override;
 		virtual void Draw(const GameTime& gameTime) override;
 
-		void AddScreen(std::shared_ptr<GameScreen> screen);
-		void AddScreens(const std::vector<std::shared_ptr<GameScreen>>& screens);
+		void AddScreen(std::shared_ptr<GameScreen> screen, bool shouldInitializeScreen = false);
+		void AddScreens(const std::vector<std::shared_ptr<GameScreen>>& screens, bool shouldInitializeScreens = false);
 		void RemoveScreen(GameScreen& screen);
 		void RemoveAllScreens();
 		bool ContainsScreen(std::shared_ptr<GameScreen> screen) const;

@@ -19,7 +19,7 @@ namespace Pong
 	{
 	public:
 		
-		Ball(Library::Game& game);
+		Ball(Library::Game& game, PlayScreen* screen);
 		
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
@@ -54,6 +54,8 @@ namespace Pong
 		ScoreBoard* mScoreBoard;
 
 		Library::AudioEngineComponent* mAudioEngineComponent;
+
+		PlayScreen* mScreen;
 	};
 }
 

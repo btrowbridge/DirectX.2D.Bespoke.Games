@@ -9,10 +9,11 @@ using namespace DirectX;
 
 namespace Pong {
 
-	const int Paddle::mSpeed = 400;
+	const int Paddle::mSpeed = 500;
+	const int Paddle::mAISpeedMultiplier = 4;
 
-	Pong::Paddle::Paddle(Library::Game& game, PlayerOptions playerOption) 
-		: DrawableGameComponent(game), mBounds(Rectangle::Empty), mPlayerOption(playerOption)
+	Pong::Paddle::Paddle(Library::Game& game, PlayScreen* screen, PlayerOptions playerOption) 
+		: DrawableGameComponent(game), mBounds(Rectangle::Empty), mPlayerOption(playerOption), mScreen(screen)
 	{
 	}
 
@@ -33,7 +34,7 @@ namespace Pong {
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
-		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - (float)mBounds.Height);
+		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - (float)mBounds.Height/2);
 
 		if (mPlayerOption & PlayerOptions::Player1)
 		{
@@ -57,12 +58,15 @@ namespace Pong {
 
 		assert(mKeyboard != nullptr);
 
-		mBall = mGame->As<PongGame>()->getBall();
+		mBall = mScreen->getBall();
+
+		DrawableGameComponent::Initialize();
+
 	}
 
 	void Pong::Paddle::Update(const Library::GameTime & gameTime)
 	{
-		if (mGame->As<PongGame>()->GameState() == GameState::Play) {
+		if (mScreen->getGameState() == GameState::Play) {
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 			auto& mViewport = mGame->Viewport();
 
@@ -75,10 +79,18 @@ namespace Pong {
 					mBounds.Y += dY;
 				}
 
-				int distanceY = mBall->Position().Y - mBounds.Center().Y;
-
-				if (mBall->Position().Y < mBounds.Y + .5 * mBounds.Height || mBall->Position().Y > mBounds.Y + .5 * mBounds.Height)
-					mVelocity.y = 4 * distanceY / mViewport.Height * mSpeed;
+				int distanceY;
+				if ((mBall->Position().X > mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player1)) ||
+					(mBall->Position().X <  mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player2))) {
+					distanceY = mDefaultPosition.Y - mBounds.Center().Y;
+				}
+				else {
+					distanceY = mBall->Position().Y - mBounds.Center().Y;
+					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1:-1;
+					
+				}
+				
+				mVelocity.y = mAISpeedMultiplier * distanceY/ mViewport.Height * mSpeed;
 			}
 			else {
 				if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
@@ -99,17 +111,21 @@ namespace Pong {
 				}
 			}
 		}
+		DrawableGameComponent::Update(gameTime);
 	}
 
 	void Pong::Paddle::Draw(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
+	
 
 		XMFLOAT2 position((float)mBounds.X, (float)mBounds.Y);
 
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);
 		mSpriteBatch->End();
+
+
+		DrawableGameComponent::Draw(gameTime);
 	}
 
 	void Paddle::ResetPaddle()
@@ -127,4 +143,5 @@ namespace Pong {
 	{
 		return mVelocity;
 	}
+
 }
