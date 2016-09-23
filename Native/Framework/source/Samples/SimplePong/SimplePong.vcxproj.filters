@@ -15,6 +15,9 @@
     <ClInclude Include="PlayScreen.h">
       <Filter>Screens</Filter>
     </ClInclude>
+    <ClInclude Include="MenuScreen.h">
+      <Filter>Screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -30,6 +33,9 @@
       <Filter>Game Components</Filter>
     </ClCompile>
     <ClCompile Include="PlayScreen.cpp">
+      <Filter>Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScreen.cpp">
       <Filter>Screens</Filter>
     </ClCompile>
   </ItemGroup>

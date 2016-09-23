@@ -18,7 +18,7 @@ namespace DirectX
 
 namespace Pong
 {
-	class PlayScreen;
+	class MenuScreen;
 
 	class PongGame : public Library::Game
 	{
@@ -39,7 +39,7 @@ namespace Pong
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::AudioEngineComponent> mAudio;
 
-		std::shared_ptr<Pong::PlayScreen> mPlayScreen;
+		std::shared_ptr<Pong::MenuScreen> mMenuScreen;
 		std::shared_ptr<Library::ScreenManager> mScreenManager;
 		std::shared_ptr<Library::SpriteManager> mSpriteManager;
 

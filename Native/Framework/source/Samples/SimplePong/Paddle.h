@@ -7,6 +7,8 @@
 
 namespace Pong
 {
+	class PlayScreen;
+
 	enum PlayerOptions;
 
 	class Paddle final : public Library::DrawableGameComponent

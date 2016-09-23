@@ -8,10 +8,9 @@ using namespace DirectX;
 namespace Pong {
 
 	const XMFLOAT2 ScoreBoard::mMargin(100, 30);
-	const int mScoreToWin = 10;
 
 	ScoreBoard::ScoreBoard(Library::Game & game, PlayScreen* screen) : 
-		DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0), mScreen(screen)
+		DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0), mScreen(screen), mScoreToWin(5)
 	{
 	}
 
@@ -23,7 +22,6 @@ namespace Pong {
 
 		mPlayer1ScorePosition = XMFLOAT2(mViewport.Width * 1/4, mMargin.y);
 		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width * 3/4 ,mMargin.y);
-		mCenterTextPosition = XMFLOAT2(mViewport.Width * 1/10 , mViewport.Height - mMargin.y);
 
 		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 		mPlayer1ScorePosition = XMFLOAT2(static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
@@ -52,15 +50,15 @@ namespace Pong {
 			centertext = L"Press space to pause.";
 		}
 		else if (currentGameState == GameState::Paused) {
-			centertext = L"PAUSED Press space to continue.";
+			centertext = L"PAUSED Press space to continue. Backspace to return to Menu.";
 		}
 		else if (currentGameState == GameState::Player2Win) 
 		{
-			centertext = L"Game Over, You Lose! Press space to try again.";
+			centertext = L"Game Over, You Lose! Press space to try again. Backspace to return to Menu.";
 		}
 		else if (currentGameState == GameState::Player1Win)
 		{
-			centertext = L"Congratulations, You Win! Press space to play again.";
+			centertext = L"Congratulations, You Win! Press space to play again. Backspace to return to Menu.";
 		}
 
 		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);
@@ -70,7 +68,7 @@ namespace Pong {
 
 
 		XMStoreFloat2(&mCenterTextPosition, (viewportSize - messageSize) / 2);
-		mCenterTextPosition.y -= XMVectorGetY(messageSize);
+		mCenterTextPosition.y += XMVectorGetY(messageSize) + (mViewport.Height/4);
 
 		mSpriteFont->DrawString(mSpriteBatch.get(), centertext.c_str(), mCenterTextPosition);
 
@@ -100,7 +98,7 @@ namespace Pong {
 	{
 		mPlayer1Score++;
 		UpdateScorePositions(ScorePosition::ScorePositionLeft);
-		if (mPlayer1Score == 10) {
+		if (mPlayer1Score == mScoreToWin) {
 			mScreen->setGameState(GameState::Player1Win);
 		}
 	}
@@ -108,7 +106,7 @@ namespace Pong {
 	{
 		mPlayer2Score++;
 		UpdateScorePositions(ScorePosition::ScorePositionRight);
-		if (mPlayer2Score == 10) {
+		if (mPlayer2Score == mScoreToWin) {
 			mScreen->setGameState(GameState::Player2Win);
 		}
 

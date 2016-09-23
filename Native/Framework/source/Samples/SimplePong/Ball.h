@@ -12,6 +12,7 @@ namespace Library
 }
 namespace Pong 
 {
+	class PlayScreen;
 	class Paddle;
 	class ScoreBoard;
 
@@ -35,6 +36,7 @@ namespace Pong
 		
 		static const int mMinSpeed;
 		static const int mMaxSpeed;
+		static const float mSpeedUp;
 
 		DirectX::XMFLOAT2 RandomVelocity();
 

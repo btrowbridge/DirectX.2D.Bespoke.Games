@@ -200,6 +200,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PlayScreen.h" />
@@ -208,6 +209,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayScreen.cpp" />
     <ClCompile Include="PongGame.cpp" />

@@ -9,8 +9,8 @@ namespace Pong {
 	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager) :
 		GameScreen(screenManager), mGameState(GameState::Play)
 	{
-			GameScreen::mTransitionOnTime = 300ms;
-			GameScreen::mTransitionOnTime = 300ms;
+			GameScreen::mTransitionOnTime = 1000ms;
+			GameScreen::mTransitionOffTime = 300ms;
 	}
 
 	void PlayScreen::Initialize()
@@ -38,6 +38,7 @@ namespace Pong {
 
 	void PlayScreen::OnExit()
 	{
+		mScreenManager->AddScreen(make_unique<MenuScreen>(mScreenManager), true);
 		GameScreen::OnExit();
 	}
 
@@ -49,6 +50,7 @@ namespace Pong {
 
 	void PlayScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
+		
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
@@ -64,6 +66,10 @@ namespace Pong {
 			{
 				Reset();
 			}
+		}
+		else if ( mGameState != GameState::Play && mKeyboard->WasKeyPressedThisFrame(Keys::Back) )
+		{
+			ExitScreen();
 		}
 
 		GameScreen::Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);

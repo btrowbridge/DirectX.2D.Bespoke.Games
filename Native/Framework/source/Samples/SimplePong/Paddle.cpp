@@ -26,7 +26,7 @@ namespace Pong {
 		ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(),
 			textureResource.ReleaseAndGetAddressOf(), mTexture.ReleaseAndGetAddressOf()),
 			"CreateWICTextureFromFile() Failed.");
-
+		
 		ComPtr<ID3D11Texture2D> texture;
 		ThrowIfFailed(textureResource.As(&texture), "Invalid ID3D11 texture resource");
 
@@ -34,7 +34,7 @@ namespace Pong {
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
-		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - (float)mBounds.Height/2);
+		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - ((float)mBounds.Height/2));
 
 		if (mPlayerOption & PlayerOptions::Player1)
 		{
@@ -83,14 +83,17 @@ namespace Pong {
 				if ((mBall->Position().X > mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player1)) ||
 					(mBall->Position().X <  mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player2))) {
 					distanceY = mDefaultPosition.Y - mBounds.Center().Y;
+					mVelocity.y = distanceY/mViewport.Height * mSpeed;
 				}
 				else {
+
 					distanceY = mBall->Position().Y - mBounds.Center().Y;
-					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1:-1;
+					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1 : -1;
+					mVelocity.y = mAISpeedMultiplier * distanceY/mViewport.Height * mSpeed;
 					
 				}
 				
-				mVelocity.y = mAISpeedMultiplier * distanceY/ mViewport.Height * mSpeed;
+				
 			}
 			else {
 				if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))

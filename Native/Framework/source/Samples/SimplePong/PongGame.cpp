@@ -29,8 +29,8 @@ namespace Pong
 		mComponents.push_back(mScreenManager);
 		mServices.AddService(ScreenManager::TypeIdClass(), mScreenManager.get());
 
-		mPlayScreen = make_shared<PlayScreen>(mScreenManager);
-		mScreenManager->AddScreen(mPlayScreen, false);
+		mMenuScreen = make_shared<MenuScreen>(mScreenManager);
+		mScreenManager->AddScreen(mMenuScreen, false);
 
 		SpriteManager::Initialize(*this);
 

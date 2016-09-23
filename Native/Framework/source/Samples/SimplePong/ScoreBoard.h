@@ -11,6 +11,8 @@ namespace DirectX
 }
 
 namespace Pong {
+	class PlayScreen;
+
 	class ScoreBoard :
 		public Library::DrawableGameComponent
 	{
@@ -26,8 +28,6 @@ namespace Pong {
 		void Player2Scores();
 
 		void ResetScores();
-
-		
 	
 	private:
 
@@ -50,12 +50,12 @@ namespace Pong {
 
 		static const DirectX::XMFLOAT2 mMargin;
 
-		static const int mScoreToWin;
+		const int mScoreToWin;
 
 		int mPlayer1Score;
 		int mPlayer2Score;
 
-		PlayScreen* mScreen;
+		PlayScreen * mScreen;
 	};
 }
 

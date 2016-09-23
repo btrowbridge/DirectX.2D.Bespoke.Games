@@ -11,6 +11,7 @@ using namespace DirectX;
 namespace Pong {
 	const int Ball::mMinSpeed = 100;
 	const int Ball::mMaxSpeed = 300;
+	const float Ball::mSpeedUp = 1.1f;
 
 	Pong::Ball::Ball(Library::Game & game, PlayScreen* screen) :
 		DrawableGameComponent(game), mBounds(Rectangle::Empty), mScreen(screen)
@@ -127,6 +128,7 @@ namespace Pong {
 				{
 					mVelocity.y = (mPlayer1->Velocity().y + mVelocity.y) / 2; //transfer some paddle momentum
 				}
+				mVelocity.x *= mSpeedUp;
 			}
 			else if (mBounds.Intersects(mPlayer2->Bounds()))
 			{
@@ -158,7 +160,9 @@ namespace Pong {
 				{
 					mVelocity.y = (mPlayer2->Velocity().y + mVelocity.y) / 2; //transfer some paddle momentum
 				}
+				mVelocity.x *= mSpeedUp;
 			}
+			
 		}
 		DrawableGameComponent::Update(gameTime);
 	}
