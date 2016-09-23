@@ -54,11 +54,11 @@ namespace Pong {
 		}
 		else if (currentGameState == GameState::Player2Win) 
 		{
-			centertext = L"Game Over, You Lose! Press space to try again. Backspace to return to Menu.";
+			centertext = L"Player 2 Wins! Press space to try again. Backspace to return to Menu.";
 		}
 		else if (currentGameState == GameState::Player1Win)
 		{
-			centertext = L"Congratulations, You Win! Press space to play again. Backspace to return to Menu.";
+			centertext = L"Player 1 Wins! Press space to play again. Backspace to return to Menu.";
 		}
 
 		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);

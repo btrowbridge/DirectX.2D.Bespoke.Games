@@ -28,7 +28,7 @@ namespace Pong {
 	public:
 
 
-		PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager);
+		PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, PlayerOptions player1Option, PlayerOptions player2Option);
 
 		virtual void Initialize() override;
 		virtual void OnExit() override;
@@ -51,6 +51,9 @@ namespace Pong {
 	private:
 		const Library::Point mPlayer1Pos;
 		const Library::Point mPlayer2Pos;
+
+		PlayerOptions mPlayer1Options;
+		PlayerOptions mPlayer2Options;
 
 		std::shared_ptr<Ball> mBall;
 		std::shared_ptr<Paddle> mPlayer1;

@@ -6,11 +6,13 @@ using namespace Library;
 
 namespace Pong {
 
-	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager) :
+	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, PlayerOptions player1Option, PlayerOptions player2Option) :
 		GameScreen(screenManager), mGameState(GameState::Play)
 	{
 			GameScreen::mTransitionOnTime = 1000ms;
 			GameScreen::mTransitionOffTime = 300ms;
+			mPlayer1Options = player1Option;
+			mPlayer2Options = player2Option;
 	}
 
 	void PlayScreen::Initialize()
@@ -20,10 +22,10 @@ namespace Pong {
 		mBall = make_shared<Ball>(*mGame,this);
 		mComponents.push_back(mBall);
 
-		mPlayer1 = make_shared<Paddle>(*mGame,this,PlayerOptions::Player1WithAI);
+		mPlayer1 = make_shared<Paddle>(*mGame,this,mPlayer1Options);
 		mComponents.push_back(mPlayer1);
 
-		mPlayer2 = make_shared<Paddle>(*mGame,this,PlayerOptions::Player2WithAI);
+		mPlayer2 = make_shared<Paddle>(*mGame,this,mPlayer2Options);
 		mComponents.push_back(mPlayer2);
 
 		mScoreBoard = make_shared<ScoreBoard>(*mGame,this);

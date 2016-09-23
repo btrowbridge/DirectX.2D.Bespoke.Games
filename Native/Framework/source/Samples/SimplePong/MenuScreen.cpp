@@ -34,7 +34,7 @@ namespace Pong {
 
 	void MenuScreen::OnExit()
 	{
-		mScreenManager->AddScreen(make_unique<PlayScreen>(mScreenManager), true);
+		mScreenManager->AddScreen(make_unique<PlayScreen>(mScreenManager,mPlayer1Choice,mPlayer2Choice), true);
 		GameScreen::OnExit();
 	}
 
@@ -55,14 +55,21 @@ namespace Pong {
 
 		mTitleFont->DrawString(mSpriteBatch.get(), titleText.c_str(), mTitlePosition);
 
-		wstring subText = L"Presss Enter to Play";
-
+		wstring subText = L"Presss 1 for 1 player";
 		messageSize = mTextFont->MeasureString(subText.c_str());
-
-
 		XMStoreFloat2(&mTextPosition, (viewportSize - messageSize) / 2);
 		mTextPosition.y += XMVectorGetY(messageSize) + mMargin.y;
 
+		mTextFont->DrawString(mSpriteBatch.get(), subText.c_str(), mTextPosition);
+
+		subText = L"Presss 2 for 2 player";
+		messageSize = mTextFont->MeasureString(subText.c_str());
+		mTextPosition.y += XMVectorGetY(messageSize);
+		mTextFont->DrawString(mSpriteBatch.get(), subText.c_str(), mTextPosition);
+
+		subText = L"Presss 3 for 2 computers";
+		messageSize = mTextFont->MeasureString(subText.c_str());
+		mTextPosition.y += XMVectorGetY(messageSize);
 		mTextFont->DrawString(mSpriteBatch.get(), subText.c_str(), mTextPosition);
 
 
@@ -74,7 +81,17 @@ namespace Pong {
 
 	void MenuScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Enter)) {
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::D1)) {
+			mPlayer1Choice = PlayerOptions::Player1;
+			mPlayer2Choice = PlayerOptions::Player2WithAI;
+			ExitScreen();
+		} else if (mKeyboard->WasKeyPressedThisFrame(Keys::D2)) {
+			mPlayer1Choice = PlayerOptions::Player1;
+			mPlayer2Choice = PlayerOptions::Player2;
+			ExitScreen();
+		} else if (mKeyboard->WasKeyPressedThisFrame(Keys::D3)) {
+			mPlayer1Choice = PlayerOptions::Player1WithAI;
+			mPlayer2Choice = PlayerOptions::Player2WithAI;
 			ExitScreen();
 		}
 

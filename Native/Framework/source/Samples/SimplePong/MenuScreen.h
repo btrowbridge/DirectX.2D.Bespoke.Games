@@ -36,6 +36,8 @@ namespace Pong {
 
 		static const DirectX::XMFLOAT2 mMargin;
 		
+		PlayerOptions mPlayer1Choice;
+		PlayerOptions mPlayer2Choice;
 
 		Library::KeyboardComponent * mKeyboard;
 	};
