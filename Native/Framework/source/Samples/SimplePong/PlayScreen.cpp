@@ -53,7 +53,7 @@ namespace Pong {
 	void PlayScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
 		
-
+		//Manipulate game states pause, play, win etc
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
 			if (mGameState == GameState::Play)
@@ -82,6 +82,7 @@ namespace Pong {
 		GameScreen::HandleInput(inputManager);
 	}
 
+	//Resets all game components
 	void PlayScreen::Reset()
 	{
 		mBall->ResetBall();

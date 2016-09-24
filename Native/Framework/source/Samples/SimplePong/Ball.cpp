@@ -33,6 +33,7 @@ namespace Pong {
 
 		mBounds = TextureHelper::GetTextureBounds(texture.Get());
 
+		//Set ball defaults and random velocity
 		ResetBall();
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
@@ -53,6 +54,7 @@ namespace Pong {
 
 		mSoundEffectScore = make_unique<SoundEffect>(mAudioEngine, L"Content\\Audio\\Score.wav");
 
+		//Grab scene objects
 		mPlayer1 = mScreen->getPlayer1();
 		mPlayer2 = mScreen->getPlayer2();
 		mScoreBoard = mScreen->getScoreBoard();
@@ -62,23 +64,27 @@ namespace Pong {
 
 	void Pong::Ball::Update(const Library::GameTime & gameTime)
 	{
+		//While in play mode...
 		if (mScreen->getGameState() == GameState::Play) {
+
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 			auto& mViewport = mGame->Viewport();
 
+			//Move ball according to velocity
 			XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 			mBounds.X += static_cast<int>(std::round(positionDelta.x));
 			mBounds.Y += static_cast<int>(std::round(positionDelta.y));
 
-			if (mBounds.X + mBounds.Width > mViewport.Width && mVelocity.x > 0.0f)
+			//Right Wall
+			if (mBounds.Right() > mViewport.Width && mVelocity.x > 0.0f)
 			{
 				mScoreBoard->Player1Scores();
 				mSoundEffectScore->Play();
 				ResetBall();
 				return;
-			}
-			else if (mBounds.X < 0 && mVelocity.x < 0.0f)
+			}//Left Wall
+			else if (mBounds.Left() < 0 && mVelocity.x < 0.0f)
 			{
 				mScoreBoard->Player2Scores();
 				mSoundEffectScore->Play();
@@ -86,25 +92,29 @@ namespace Pong {
 				return;
 			}
 
-			if (mBounds.Y + mBounds.Height > mViewport.Height && mVelocity.y > 0.0f)
+			//Bottom Wall
+			if (mBounds.Bottom() > mViewport.Height && mVelocity.y > 0.0f)
+			{
+				mVelocity.y *= -1;
+				mSoundEffectWall->Play();
+			}//Top Wall
+			else if (mBounds.Top() < 0 && mVelocity.y < 0.0f)
 			{
 				mVelocity.y *= -1;
 				mSoundEffectWall->Play();
 			}
-			else if (mBounds.Y < 0 && mVelocity.y < 0.0f)
-			{
-				mVelocity.y *= -1;
-				mSoundEffectWall->Play();
-			}
-
+					
+			//Intersecting Player 1...
 			if (mBounds.Intersects(mPlayer1->Bounds()))
 			{
 				mSoundEffectPing->Play();
-				if ((abs(mBounds.Left() - mPlayer1->Bounds().Right()) >	//Bounce off the bottom or top
+				//Bounce off the bottom or top
+				if ((abs(mBounds.Left() - mPlayer1->Bounds().Right()) >	
 					abs(mBounds.Bottom() - mPlayer1->Bounds().Top())) ||
 					(abs(mBounds.Left() - mPlayer1->Bounds().Right()) >
 						abs(mBounds.Top() - mPlayer1->Bounds().Bottom())))
 				{
+					//Avoid unnecessary collision
 					if (mBounds.Center().Y - mPlayer1->Bounds().Center().Y < 0) {
 						mVelocity.y = abs(mVelocity.y) * -1;
 						mBounds.Y = mPlayer1->Bounds().Top() - mBounds.Height; //put above
@@ -115,7 +125,10 @@ namespace Pong {
 					}
 				}
 				else {
+					//Bouncing left or right
 					mVelocity.x *= -1;
+
+					//Avoid unecessary colision
 					if (mBounds.Center().X > mPlayer1->Bounds().Center().X) {
 						mBounds.X = mPlayer1->Bounds().Right();
 					}
@@ -124,20 +137,24 @@ namespace Pong {
 					}
 				}
 
+				//Transfer paddle momentum if paddle is moving
 				if (mPlayer1->Velocity().y != 0)
 				{
 					mVelocity.y = (mPlayer1->Velocity().y + mVelocity.y) / 2; //transfer some paddle momentum
 				}
-				mVelocity.x *= mSpeedUp;
+
+				mVelocity.x *= mSpeedUp; //speed up ball a little to progress game
 			}
-			else if (mBounds.Intersects(mPlayer2->Bounds()))
+			else if (mBounds.Intersects(mPlayer2->Bounds())) //Intersecting Player 2
 			{
 				mSoundEffectPong->Play();
-				if ((abs(mBounds.Right() - mPlayer2->Bounds().Left()) >	//Bounce off the bottom or top>
+				//Bounce off the bottom or top>
+				if ((abs(mBounds.Right() - mPlayer2->Bounds().Left()) >
 					abs(mBounds.Bottom() - mPlayer2->Bounds().Top())) ||
 					(abs(mBounds.Right() - mPlayer2->Bounds().Left()) >
 						abs(mBounds.Top() - mPlayer2->Bounds().Bottom())))
 				{
+					//Avoid Unnecessary Collision
 					if (mBounds.Center().Y - mPlayer2->Bounds().Center().Y < 0) {
 						mVelocity.y = abs(mVelocity.y) * -1;
 						mBounds.Y = mPlayer2->Bounds().Top() - mBounds.Height; //put above
@@ -148,7 +165,9 @@ namespace Pong {
 					}
 				}
 				else {
+					//Bounce left or right
 					mVelocity.x *= -1;
+					//Avoid unnecessary colllision
 					if (mBounds.Center().X > mPlayer2->Bounds().Center().X) {
 						mBounds.X = mPlayer2->Bounds().Right();
 					}
@@ -156,10 +175,12 @@ namespace Pong {
 						mBounds.X = mPlayer2->Bounds().Left() - mBounds.Width;
 					}
 				}
+				//If paddle is moving, transfer momentum
 				if (mPlayer2->Velocity().y != 0)
 				{
 					mVelocity.y = (mPlayer2->Velocity().y + mVelocity.y) / 2; //transfer some paddle momentum
 				}
+				//periodically speed up the ball
 				mVelocity.x *= mSpeedUp;
 			}
 			
@@ -178,7 +199,7 @@ namespace Pong {
 
 		DrawableGameComponent::Draw(gameTime);
 	}
-
+	//Set default ball velocity and position
 	void Pong::Ball::ResetBall()
 	{
 		Point mTextureHalfSize;

@@ -24,6 +24,7 @@ namespace Pong {
 
 		mViewport = mGame->Viewport();
 
+		//Fonts
 		mTitleFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\CenturyGothic_72.spritefont");
 		mTextFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\TNR_14.spritefont");
 
@@ -41,7 +42,7 @@ namespace Pong {
 	void MenuScreen::Draw(const Library::GameTime & gameTime)
 	{		
 		mSpriteBatch->Begin();
-				
+		//Title		
 		wstring titleText = L"Pong";
 
 		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);
@@ -55,6 +56,7 @@ namespace Pong {
 
 		mTitleFont->DrawString(mSpriteBatch.get(), titleText.c_str(), mTitlePosition);
 
+		//Menu Options
 		wstring subText = L"Presss 1 for 1 player";
 		messageSize = mTextFont->MeasureString(subText.c_str());
 		XMStoreFloat2(&mTextPosition, (viewportSize - messageSize) / 2);
@@ -81,6 +83,7 @@ namespace Pong {
 
 	void MenuScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
+		//Menu Options to pass onto the Play screen
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::D1)) {
 			mPlayer1Choice = PlayerOptions::Player1;
 			mPlayer2Choice = PlayerOptions::Player2WithAI;

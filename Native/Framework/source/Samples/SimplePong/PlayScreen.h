@@ -36,8 +36,9 @@ namespace Pong {
 		virtual void Update(const Library::GameTime& gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) override;
 		virtual void HandleInput(Library::ScreenInputManager& inputManager) override;
 		
-		void Reset();
 
+		void Reset();
+		
 		void setGameState(GameState state);
 		GameState& getGameState();
 
@@ -63,6 +64,7 @@ namespace Pong {
 		Library::KeyboardComponent * mKeyboard;
 
 		GameState mGameState;
+
 	};
 
 }

@@ -36,6 +36,7 @@ namespace Pong {
 
 		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - ((float)mBounds.Height/2));
 
+		//Check for player 1 v player 2 position and controls
 		if (mPlayerOption & PlayerOptions::Player1)
 		{
 			mUpKey = Keys::W;
@@ -50,14 +51,17 @@ namespace Pong {
 			mDefaultPosition.X = static_cast<int>(mGame->Viewport().Width - 2 * mBounds.Width);
 		}
 
+		//check for AI
 		isAIEnabled = (mPlayerOption & PlayerOptions::AI) ? true : false;
 
+		//Set Default position
 		ResetPaddle();
 
 		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(Library::KeyboardComponent::TypeIdClass()));
 
 		assert(mKeyboard != nullptr);
 
+		//reference to ball (for AI)
 		mBall = mScreen->getBall();
 
 		DrawableGameComponent::Initialize();
@@ -66,40 +70,56 @@ namespace Pong {
 
 	void Pong::Paddle::Update(const Library::GameTime & gameTime)
 	{
+		//If in play mode
 		if (mScreen->getGameState() == GameState::Play) {
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 			auto& mViewport = mGame->Viewport();
-
+			
+			//Move Paddle
 			XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 			int dY = static_cast<int>(std::round(positionDelta.y));
 
+			if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
+			{
+				mBounds.Y += dY;
+			}
+
+
+			//AI Controls
 			if (isAIEnabled) {
-				if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
-				{
-					mBounds.Y += dY;
-				}
 
 				int distanceY;
+
+				//If ball is in opponents court, move to default/ready position
 				if ((mBall->Position().X > mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player1)) ||
 					(mBall->Position().X <  mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player2))) {
+
 					distanceY = mDefaultPosition.Y - mBounds.Center().Y;
+
+					//move proportionally distance over the size of the court
+						//this allows the ai to avoid moving past the target and jitter
 					mVelocity.y = distanceY/mViewport.Height * mSpeed;
+				
+
 				}
 				else {
-
+					//move toward ball
 					distanceY = mBall->Position().Y - mBounds.Center().Y;
-					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1 : -1;
+					//move past the ball to pass some momentum
+					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1 : -1; 
+					
+					
+					//Speeed multiplier for difficulty and offset 
 					mVelocity.y = mAISpeedMultiplier * distanceY/mViewport.Height * mSpeed;
+					
+
 					
 				}
 				
 				
 			}
 			else {
-				if ((mBounds.Y + mBounds.Height + dY < mViewport.Height) && (mBounds.Y + dY > 0))
-				{
-					mBounds.Y += dY;
-				}
+				//Player Controls
 				if (mKeyboard->IsKeyDown(mUpKey))
 				{
 					mVelocity.y = static_cast<float>(-mSpeed);
