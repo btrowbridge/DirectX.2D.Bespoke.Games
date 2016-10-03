@@ -1,7 +1,6 @@
 #pragma once
 #include "GameScreen.h"
 
-
 namespace DirectX
 {
 	class SpriteBatch;
@@ -9,7 +8,6 @@ namespace DirectX
 }
 
 namespace Pong {
-
 	class MenuScreen :
 		public Library::GameScreen
 	{
@@ -28,18 +26,16 @@ namespace Pong {
 		std::unique_ptr<DirectX::SpriteFont> mTitleFont;
 		std::unique_ptr<DirectX::SpriteFont> mTextFont;
 
-
 		DirectX::XMFLOAT2 mTitlePosition;
 		DirectX::XMFLOAT2 mTextPosition;
 
 		D3D11_VIEWPORT mViewport;
 
 		static const DirectX::XMFLOAT2 mMargin;
-		
+
 		PlayerOptions mPlayer1Choice;
 		PlayerOptions mPlayer2Choice;
 
 		Library::KeyboardComponent * mKeyboard;
 	};
-
 }

@@ -22,17 +22,17 @@ namespace Pong
 
 		virtual void ResetPaddle();
 
-		Library::Rectangle Bounds();
-		DirectX::XMFLOAT2 Velocity();
+		const Library::Rectangle Bounds() const;
+		const DirectX::XMFLOAT2 Velocity() const;
 
 	private:
 		Library::Keys mUpKey;
-	    Library::Keys mDownKey;
+		Library::Keys mDownKey;
 		PlayerOptions mPlayerOption;
 
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mTexture;
 		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
-		
+
 		Library::Point mTextureHalfSize;
 		Library::Point mDefaultPosition;
 		Library::Rectangle mBounds;
@@ -46,6 +46,5 @@ namespace Pong
 		Ball * mBall;
 
 		PlayScreen* mScreen;
-
 	};
 }

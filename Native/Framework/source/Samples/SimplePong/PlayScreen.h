@@ -2,7 +2,6 @@
 #include "GameScreen.h"
 
 namespace Pong {
-
 	class Ball;
 	class Paddle;
 	class ScoreBoard;
@@ -13,7 +12,7 @@ namespace Pong {
 		Player1Win,
 		Player2Win
 	};
-	
+
 	enum PlayerOptions {
 		Player1 = 1,
 		Player2 = 2,
@@ -27,7 +26,6 @@ namespace Pong {
 	{
 	public:
 
-
 		PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, PlayerOptions player1Option, PlayerOptions player2Option);
 
 		virtual void Initialize() override;
@@ -35,10 +33,9 @@ namespace Pong {
 		virtual void Draw(const Library::GameTime& gameTime) override;
 		virtual void Update(const Library::GameTime& gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen) override;
 		virtual void HandleInput(Library::ScreenInputManager& inputManager) override;
-		
 
 		void Reset();
-		
+
 		void setGameState(GameState state);
 		GameState& getGameState();
 
@@ -46,8 +43,6 @@ namespace Pong {
 		Paddle * getPlayer1();
 		Paddle * getPlayer2();
 		ScoreBoard * getScoreBoard();
-
-
 
 	private:
 		const Library::Point mPlayer1Pos;
@@ -60,11 +55,9 @@ namespace Pong {
 		std::shared_ptr<Paddle> mPlayer1;
 		std::shared_ptr<Paddle> mPlayer2;
 		std::shared_ptr<ScoreBoard> mScoreBoard;
-		
+
 		Library::KeyboardComponent * mKeyboard;
 
 		GameState mGameState;
-
 	};
-
 }

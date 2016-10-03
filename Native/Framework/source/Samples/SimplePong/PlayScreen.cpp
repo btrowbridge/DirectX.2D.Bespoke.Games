@@ -5,35 +5,32 @@ using namespace std;
 using namespace Library;
 
 namespace Pong {
-
 	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, PlayerOptions player1Option, PlayerOptions player2Option) :
 		GameScreen(screenManager), mGameState(GameState::Play)
 	{
-			GameScreen::mTransitionOnTime = 1000ms;
-			GameScreen::mTransitionOffTime = 300ms;
-			mPlayer1Options = player1Option;
-			mPlayer2Options = player2Option;
+		GameScreen::mTransitionOnTime = 1000ms;
+		GameScreen::mTransitionOffTime = 300ms;
+		mPlayer1Options = player1Option;
+		mPlayer2Options = player2Option;
 	}
 
 	void PlayScreen::Initialize()
 	{
 		Game * mGame = GetGame();
-		
-		mBall = make_shared<Ball>(*mGame,this);
+
+		mBall = make_shared<Ball>(*mGame, this);
 		mComponents.push_back(mBall);
 
-		mPlayer1 = make_shared<Paddle>(*mGame,this,mPlayer1Options);
+		mPlayer1 = make_shared<Paddle>(*mGame, this, mPlayer1Options);
 		mComponents.push_back(mPlayer1);
 
-		mPlayer2 = make_shared<Paddle>(*mGame,this,mPlayer2Options);
+		mPlayer2 = make_shared<Paddle>(*mGame, this, mPlayer2Options);
 		mComponents.push_back(mPlayer2);
 
-		mScoreBoard = make_shared<ScoreBoard>(*mGame,this);
+		mScoreBoard = make_shared<ScoreBoard>(*mGame, this);
 		mComponents.push_back(mScoreBoard);
-		
-		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
 
-		
+		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
 
 		GameScreen::Initialize();
 	}
@@ -52,7 +49,6 @@ namespace Pong {
 
 	void PlayScreen::Update(const Library::GameTime & gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
 	{
-		
 		//Manipulate game states pause, play, win etc
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
@@ -69,7 +65,7 @@ namespace Pong {
 				Reset();
 			}
 		}
-		else if ( mGameState != GameState::Play && mKeyboard->WasKeyPressedThisFrame(Keys::Back) )
+		else if (mGameState != GameState::Play && mKeyboard->WasKeyPressedThisFrame(Keys::Back))
 		{
 			ExitScreen();
 		}
@@ -121,5 +117,4 @@ namespace Pong {
 	{
 		return mScoreBoard.get();
 	}
-
 }

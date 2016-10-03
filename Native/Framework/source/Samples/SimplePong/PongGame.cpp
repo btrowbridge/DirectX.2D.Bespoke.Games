@@ -39,7 +39,6 @@ namespace Pong
 		SpriteManager::Initialize(*this);
 
 		Game::Initialize();
-
 	}
 
 	void PongGame::Update(const GameTime &gameTime)
@@ -48,7 +47,7 @@ namespace Pong
 		{
 			Exit();
 		}
-		
+
 		Game::Update(gameTime);
 	}
 

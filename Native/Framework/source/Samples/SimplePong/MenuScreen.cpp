@@ -8,19 +8,18 @@ using namespace DirectX;
 namespace Pong {
 	const XMFLOAT2 MenuScreen::mMargin(100, 30);
 
-
 	MenuScreen::MenuScreen(std::shared_ptr<Library::ScreenManager> screenManager) :
 		GameScreen(screenManager)
 	{
-			GameScreen::mTransitionOnTime = 1000ms;
-			GameScreen::mTransitionOffTime = 1000ms;
+		GameScreen::mTransitionOnTime = 1000ms;
+		GameScreen::mTransitionOffTime = 1000ms;
 	}
 
 	void MenuScreen::Initialize()
 	{
 		Game * mGame = GetGame();
-		
-	    mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
+
+		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
 		mViewport = mGame->Viewport();
 
@@ -35,21 +34,20 @@ namespace Pong {
 
 	void MenuScreen::OnExit()
 	{
-		mScreenManager->AddScreen(make_unique<PlayScreen>(mScreenManager,mPlayer1Choice,mPlayer2Choice), true);
+		mScreenManager->AddScreen(make_unique<PlayScreen>(mScreenManager, mPlayer1Choice, mPlayer2Choice), true);
 		GameScreen::OnExit();
 	}
 
 	void MenuScreen::Draw(const Library::GameTime & gameTime)
-	{		
+	{
 		mSpriteBatch->Begin();
-		//Title		
+		//Title
 		wstring titleText = L"Pong";
 
 		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);
-		XMVECTOR viewportSize= XMLoadFloat2(&tempViewportSize);
+		XMVECTOR viewportSize = XMLoadFloat2(&tempViewportSize);
 
 		XMVECTOR messageSize = mTitleFont->MeasureString(titleText.c_str());
-
 
 		XMStoreFloat2(&mTitlePosition, (viewportSize - messageSize) / 2);
 		mTitlePosition.y -= XMVectorGetY(messageSize);
@@ -74,7 +72,6 @@ namespace Pong {
 		mTextPosition.y += XMVectorGetY(messageSize);
 		mTextFont->DrawString(mSpriteBatch.get(), subText.c_str(), mTextPosition);
 
-
 		mSpriteBatch->End();
 
 		mScreenManager->FadeScreenToBlack(TransitionPosition());
@@ -88,11 +85,13 @@ namespace Pong {
 			mPlayer1Choice = PlayerOptions::Player1;
 			mPlayer2Choice = PlayerOptions::Player2WithAI;
 			ExitScreen();
-		} else if (mKeyboard->WasKeyPressedThisFrame(Keys::D2)) {
+		}
+		else if (mKeyboard->WasKeyPressedThisFrame(Keys::D2)) {
 			mPlayer1Choice = PlayerOptions::Player1;
 			mPlayer2Choice = PlayerOptions::Player2;
 			ExitScreen();
-		} else if (mKeyboard->WasKeyPressedThisFrame(Keys::D3)) {
+		}
+		else if (mKeyboard->WasKeyPressedThisFrame(Keys::D3)) {
 			mPlayer1Choice = PlayerOptions::Player1WithAI;
 			mPlayer2Choice = PlayerOptions::Player2WithAI;
 			ExitScreen();

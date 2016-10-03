@@ -18,7 +18,7 @@ namespace Library
 
 	public:
 		ScreenManager(Game& game);
-		ScreenManager(Game& game, const std::shared_ptr<Camera>& camera);		
+		ScreenManager(Game& game, const std::shared_ptr<Camera>& camera);
 
 		DirectX::XMFLOAT2 ScreenCenter() const;
 		const std::vector<std::shared_ptr<GameScreen>>& Screens() const;
@@ -39,6 +39,6 @@ namespace Library
 		std::vector<std::shared_ptr<GameScreen>> mScreens;
 		std::vector<std::shared_ptr<GameScreen>> mScreensToUpdate;
 		std::shared_ptr<ScreenInputManager> mScreenInputManager;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mBlankTexture;		
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mBlankTexture;
 	};
 }

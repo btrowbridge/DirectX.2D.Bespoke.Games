@@ -6,10 +6,9 @@ using namespace Library;
 using namespace DirectX;
 
 namespace Pong {
-
 	const XMFLOAT2 ScoreBoard::mMargin(100, 30);
 
-	ScoreBoard::ScoreBoard(Library::Game & game, PlayScreen* screen) : 
+	ScoreBoard::ScoreBoard(Library::Game & game, PlayScreen* screen) :
 		DrawableGameComponent(game), mPlayer1Score(0), mPlayer2Score(0), mScreen(screen), mScoreToWin(5)
 	{
 	}
@@ -20,8 +19,8 @@ namespace Pong {
 
 		mViewport = mGame->Viewport();
 
-		mPlayer1ScorePosition = XMFLOAT2(mViewport.Width * 1/4, mMargin.y);
-		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width * 3/4 ,mMargin.y);
+		mPlayer1ScorePosition = XMFLOAT2(mViewport.Width * 1 / 4, mMargin.y);
+		mPlayer2ScorePosition = XMFLOAT2(mViewport.Width * 3 / 4, mMargin.y);
 
 		mSpriteFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");
 		mPlayer1ScorePosition = XMFLOAT2(static_cast<float>(mMargin.x), static_cast<float>(mMargin.y));
@@ -37,14 +36,13 @@ namespace Pong {
 
 	void ScoreBoard::Draw(const Library::GameTime & gameTime)
 	{
-		
 		mSpriteBatch->Begin();
 
 		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer1Score).c_str(), mPlayer1ScorePosition);
 		mSpriteFont->DrawString(mSpriteBatch.get(), to_wstring(mPlayer2Score).c_str(), mPlayer2ScorePosition);
-		
+
 		GameState currentGameState = mScreen->getGameState();
-		
+
 		wstring centertext = L"";
 		if (currentGameState == GameState::Play) {
 			centertext = L"Press space to pause.";
@@ -52,7 +50,7 @@ namespace Pong {
 		else if (currentGameState == GameState::Paused) {
 			centertext = L"PAUSED Press space to continue. Backspace to return to Menu.";
 		}
-		else if (currentGameState == GameState::Player2Win) 
+		else if (currentGameState == GameState::Player2Win)
 		{
 			centertext = L"Player 2 Wins! Press space to try again. Backspace to return to Menu.";
 		}
@@ -62,20 +60,18 @@ namespace Pong {
 		}
 
 		XMFLOAT2 tempViewportSize(mViewport.Width, mViewport.Height);
-		XMVECTOR viewportSize= XMLoadFloat2(&tempViewportSize);
+		XMVECTOR viewportSize = XMLoadFloat2(&tempViewportSize);
 
 		XMVECTOR messageSize = mSpriteFont->MeasureString(centertext.c_str());
 
-
 		XMStoreFloat2(&mCenterTextPosition, (viewportSize - messageSize) / 2);
-		mCenterTextPosition.y += XMVectorGetY(messageSize) + (mViewport.Height/4);
+		mCenterTextPosition.y += XMVectorGetY(messageSize) + (mViewport.Height / 4);
 
 		mSpriteFont->DrawString(mSpriteBatch.get(), centertext.c_str(), mCenterTextPosition);
 
 		mSpriteBatch->End();
 
 		DrawableGameComponent::Draw(gameTime);
-
 	}
 	void ScoreBoard::UpdateScorePositions(ScorePosition positionToUpdate)
 	{
@@ -109,7 +105,6 @@ namespace Pong {
 		if (mPlayer2Score == mScoreToWin) {
 			mScreen->setGameState(GameState::Player2Win);
 		}
-
 	}
 	void ScoreBoard::ResetScores()
 	{

@@ -23,12 +23,11 @@ namespace Pong {
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
-		
 		void Player1Scores();
 		void Player2Scores();
 
 		void ResetScores();
-	
+
 	private:
 
 		enum ScorePosition
@@ -58,4 +57,3 @@ namespace Pong {
 		PlayScreen * mScreen;
 	};
 }
-

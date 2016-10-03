@@ -6,11 +6,11 @@
 #include <wrl.h>
 #include <Audio.h>
 
-namespace Library 
+namespace Library
 {
 	class AudioEngineComponent;
 }
-namespace Pong 
+namespace Pong
 {
 	class PlayScreen;
 	class Paddle;
@@ -19,21 +19,20 @@ namespace Pong
 	class Ball final : public Library::DrawableGameComponent
 	{
 	public:
-		
+
 		Ball(Library::Game& game, PlayScreen* screen);
-		
+
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 		void ResetBall();
 
-		Library::Point Position();
-		DirectX::XMFLOAT2 Velocity();
-
+		const Library::Point Position() const;
+		const DirectX::XMFLOAT2 Velocity()const;
 
 	private:
-		
+
 		static const int mMinSpeed;
 		static const int mMaxSpeed;
 		static const float mSpeedUp;
@@ -60,5 +59,3 @@ namespace Pong
 		PlayScreen* mScreen;
 	};
 }
-
-

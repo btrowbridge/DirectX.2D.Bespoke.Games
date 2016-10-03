@@ -8,11 +8,10 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 
 namespace Pong {
-
 	const int Paddle::mSpeed = 500;
 	const int Paddle::mAISpeedMultiplier = 4;
 
-	Pong::Paddle::Paddle(Library::Game& game, PlayScreen* screen, PlayerOptions playerOption) 
+	Pong::Paddle::Paddle(Library::Game& game, PlayScreen* screen, PlayerOptions playerOption)
 		: DrawableGameComponent(game), mBounds(Rectangle::Empty), mPlayerOption(playerOption), mScreen(screen)
 	{
 	}
@@ -26,7 +25,7 @@ namespace Pong {
 		ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(),
 			textureResource.ReleaseAndGetAddressOf(), mTexture.ReleaseAndGetAddressOf()),
 			"CreateWICTextureFromFile() Failed.");
-		
+
 		ComPtr<ID3D11Texture2D> texture;
 		ThrowIfFailed(textureResource.As(&texture), "Invalid ID3D11 texture resource");
 
@@ -34,7 +33,7 @@ namespace Pong {
 
 		mSpriteBatch = make_unique<SpriteBatch>(mGame->Direct3DDeviceContext());
 
-		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - ((float)mBounds.Height/2));
+		mDefaultPosition.Y = static_cast<int>((mGame->Viewport().Height / 2) - ((float)mBounds.Height / 2));
 
 		//Check for player 1 v player 2 position and controls
 		if (mPlayerOption & PlayerOptions::Player1)
@@ -44,7 +43,7 @@ namespace Pong {
 
 			mDefaultPosition.X = mBounds.Width;
 		}
-		else 
+		else
 		{
 			mUpKey = Keys::Up;
 			mDownKey = Keys::Down;
@@ -65,7 +64,6 @@ namespace Pong {
 		mBall = mScreen->getBall();
 
 		DrawableGameComponent::Initialize();
-
 	}
 
 	void Pong::Paddle::Update(const Library::GameTime & gameTime)
@@ -74,7 +72,7 @@ namespace Pong {
 		if (mScreen->getGameState() == GameState::Play) {
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 			auto& mViewport = mGame->Viewport();
-			
+
 			//Move Paddle
 			XMFLOAT2 positionDelta(mVelocity.x * elapsedTime, mVelocity.y * elapsedTime);
 			int dY = static_cast<int>(std::round(positionDelta.y));
@@ -84,39 +82,28 @@ namespace Pong {
 				mBounds.Y += dY;
 			}
 
-
 			//AI Controls
 			if (isAIEnabled) {
-
 				int distanceY;
 
 				//If ball is in opponents court, move to default/ready position
-				if ((mBall->Position().X > mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player1)) ||
-					(mBall->Position().X <  mViewport.Width/2 && (mPlayerOption & PlayerOptions::Player2))) {
-
+				if ((mBall->Position().X > mViewport.Width / 2 && (mPlayerOption & PlayerOptions::Player1)) ||
+					(mBall->Position().X < mViewport.Width / 2 && (mPlayerOption & PlayerOptions::Player2))) {
 					distanceY = mDefaultPosition.Y - mBounds.Center().Y;
 
 					//move proportionally distance over the size of the court
 						//this allows the ai to avoid moving past the target and jitter
-					mVelocity.y = distanceY/mViewport.Height * mSpeed;
-				
-
+					mVelocity.y = distanceY / mViewport.Height * mSpeed;
 				}
 				else {
 					//move toward ball
 					distanceY = mBall->Position().Y - mBounds.Center().Y;
 					//move past the ball to pass some momentum
-					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1 : -1; 
-					
-					
-					//Speeed multiplier for difficulty and offset 
-					mVelocity.y = mAISpeedMultiplier * distanceY/mViewport.Height * mSpeed;
-					
+					distanceY += 2 * mBounds.Height * (distanceY > 0) ? 1 : -1;
 
-					
+					//Speeed multiplier for difficulty and offset
+					mVelocity.y = mAISpeedMultiplier * distanceY / mViewport.Height * mSpeed;
 				}
-				
-				
 			}
 			else {
 				//Player Controls
@@ -139,14 +126,11 @@ namespace Pong {
 
 	void Pong::Paddle::Draw(const Library::GameTime & gameTime)
 	{
-	
-
 		XMFLOAT2 position((float)mBounds.X, (float)mBounds.Y);
 
 		mSpriteBatch->Begin();
 		mSpriteBatch->Draw(mTexture.Get(), position);
 		mSpriteBatch->End();
-
 
 		DrawableGameComponent::Draw(gameTime);
 	}
@@ -158,13 +142,12 @@ namespace Pong {
 		mBounds.Y = mDefaultPosition.Y;
 	}
 
-	Library::Rectangle Pong::Paddle::Bounds()
+	const Library::Rectangle Pong::Paddle::Bounds() const
 	{
 		return mBounds;
 	}
-	DirectX::XMFLOAT2 Paddle::Velocity()
+	const DirectX::XMFLOAT2 Paddle::Velocity() const
 	{
 		return mVelocity;
 	}
-
 }

@@ -66,7 +66,6 @@ namespace Pong {
 	{
 		//While in play mode...
 		if (mScreen->getGameState() == GameState::Play) {
-
 			float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 			auto& mViewport = mGame->Viewport();
@@ -103,13 +102,13 @@ namespace Pong {
 				mVelocity.y *= -1;
 				mSoundEffectWall->Play();
 			}
-					
+
 			//Intersecting Player 1...
 			if (mBounds.Intersects(mPlayer1->Bounds()))
 			{
 				mSoundEffectPing->Play();
 				//Bounce off the bottom or top
-				if ((abs(mBounds.Left() - mPlayer1->Bounds().Right()) >	
+				if ((abs(mBounds.Left() - mPlayer1->Bounds().Right()) >
 					abs(mBounds.Bottom() - mPlayer1->Bounds().Top())) ||
 					(abs(mBounds.Left() - mPlayer1->Bounds().Right()) >
 						abs(mBounds.Top() - mPlayer1->Bounds().Bottom())))
@@ -183,14 +182,12 @@ namespace Pong {
 				//periodically speed up the ball
 				mVelocity.x *= mSpeedUp;
 			}
-			
 		}
 		DrawableGameComponent::Update(gameTime);
 	}
 
 	void Pong::Ball::Draw(const Library::GameTime & gameTime)
 	{
-
 		XMFLOAT2 position(static_cast<float>(mBounds.X), static_cast<float>(mBounds.Y));
 
 		mSpriteBatch->Begin();
@@ -218,12 +215,12 @@ namespace Pong {
 		mVelocity = RandomVelocity();
 	}
 
-	Library::Point Pong::Ball::Position()
+	const Library::Point Pong::Ball::Position() const
 	{
 		return mBounds.Center();
 	}
 
-	DirectX::XMFLOAT2 Pong::Ball::Velocity()
+	const DirectX::XMFLOAT2 Pong::Ball::Velocity() const
 	{
 		return mVelocity;
 	}
