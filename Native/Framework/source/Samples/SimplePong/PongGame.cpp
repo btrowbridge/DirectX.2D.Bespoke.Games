@@ -17,9 +17,9 @@ namespace Pong
 
 	void PongGame::Initialize()
 	{
-		//B2D example
-		b2Vec2 gravity = b2Vec2(0.0, -10.0);
-		b2World world(gravity);
+		////B2D example
+		//b2Vec2 gravity = b2Vec2(0.0, -10.0);
+		//b2World world(gravity);
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
