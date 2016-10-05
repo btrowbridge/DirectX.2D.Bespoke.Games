@@ -2,48 +2,18 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Paddle.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreBoard.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScreen.h">
-      <Filter>Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuScreen.h">
-      <Filter>Screens</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleCollisionGame.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Paddle.cpp">
-      <Filter>Game Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>Game Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreBoard.cpp">
-      <Filter>Game Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScreen.cpp">
-      <Filter>Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuScreen.cpp">
-      <Filter>Screens</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleCollisionGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Content\Fonts\Arial_36_Regular.spritefont">
       <Filter>Content\Fonts</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Content">

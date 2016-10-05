@@ -5,7 +5,8 @@ using namespace std;
 using namespace Library;
 
 namespace Pong {
-	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, PlayerOptions player1Option, PlayerOptions player2Option) :
+	PlayScreen::PlayScreen(std::shared_ptr<Library::ScreenManager> screenManager, 
+		PlayerOptions player1Option, PlayerOptions player2Option) :
 		GameScreen(screenManager), mGameState(GameState::Play)
 	{
 		GameScreen::mTransitionOnTime = 1000ms;
@@ -37,13 +38,14 @@ namespace Pong {
 
 	void PlayScreen::OnExit()
 	{
-		mScreenManager->AddScreen(make_unique<MenuScreen>(mScreenManager), true);
+		
+		ScreenManager().lock()->AddScreen(make_unique<MenuScreen>(mScreenManager.lock()), true);
 		GameScreen::OnExit();
 	}
 
 	void PlayScreen::Draw(const Library::GameTime & gameTime)
 	{
-		mScreenManager->FadeScreenToBlack(TransitionPosition());
+		ScreenManager().lock()->FadeScreenToBlack(TransitionPosition());
 		GameScreen::Draw(gameTime);
 	}
 

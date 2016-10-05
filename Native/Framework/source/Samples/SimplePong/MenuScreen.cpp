@@ -34,7 +34,7 @@ namespace Pong {
 
 	void MenuScreen::OnExit()
 	{
-		mScreenManager->AddScreen(make_unique<PlayScreen>(mScreenManager, mPlayer1Choice, mPlayer2Choice), true);
+		ScreenManager().lock()->AddScreen(make_unique<PlayScreen>(mScreenManager.lock(), mPlayer1Choice, mPlayer2Choice), true);
 		GameScreen::OnExit();
 	}
 
@@ -74,7 +74,7 @@ namespace Pong {
 
 		mSpriteBatch->End();
 
-		mScreenManager->FadeScreenToBlack(TransitionPosition());
+		ScreenManager().lock()->FadeScreenToBlack(TransitionPosition());
 		GameScreen::Draw(gameTime);
 	}
 

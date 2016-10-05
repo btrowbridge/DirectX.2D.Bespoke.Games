@@ -17,9 +17,6 @@ namespace SimpleCollision
 
 	void SimpleCollisionGame::Initialize()
 	{
-		//B2D example
-		b2Vec2 gravity = b2Vec2(0.0, -10.0);
-		b2World world(gravity);
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
@@ -29,13 +26,7 @@ namespace SimpleCollision
 		mComponents.push_back(mAudio);
 		mServices.AddService(AudioEngineComponent::TypeIdClass(), mAudio.get());
 
-		mScreenManager = make_shared<ScreenManager>(*this);
-		mComponents.push_back(mScreenManager);
-		mServices.AddService(ScreenManager::TypeIdClass(), mScreenManager.get());
-
-		mMenuScreen = make_shared<MenuScreen>(mScreenManager);
-		mScreenManager->AddScreen(mMenuScreen, false);
-
+		
 		SpriteManager::Initialize(*this);
 
 		Game::Initialize();

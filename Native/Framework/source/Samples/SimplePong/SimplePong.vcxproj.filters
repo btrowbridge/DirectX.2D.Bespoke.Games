@@ -40,10 +40,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Content\Fonts\Arial_36_Regular.spritefont">
       <Filter>Content\Fonts</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Content">

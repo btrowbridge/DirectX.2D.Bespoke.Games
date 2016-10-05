@@ -94,8 +94,4 @@
 
 // Local
 #include "SimpleCollisionGame.h"
-#include "Ball.h"
-#include "Paddle.h"
-#include "ScoreBoard.h"
-#include "PlayScreen.h"
-#include "MenuScreen.h"
+

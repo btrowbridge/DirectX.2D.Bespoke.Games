@@ -28,13 +28,13 @@ namespace Pong
 		mAudio = make_shared<AudioEngineComponent>(*this);
 		mComponents.push_back(mAudio);
 		mServices.AddService(AudioEngineComponent::TypeIdClass(), mAudio.get());
-
+		
 		mScreenManager = make_shared<ScreenManager>(*this);
-		mComponents.push_back(mScreenManager);
-		mServices.AddService(ScreenManager::TypeIdClass(), mScreenManager.get());
+		mComponents.push_back(mScreenManager.lock());
+		mServices.AddService(ScreenManager::TypeIdClass(), mScreenManager.lock().get());
 
-		mMenuScreen = make_shared<MenuScreen>(mScreenManager);
-		mScreenManager->AddScreen(mMenuScreen, false);
+		mMenuScreen = make_shared<MenuScreen>(mScreenManager.lock());
+		mScreenManager.lock()->AddScreen(mMenuScreen, false);
 
 		SpriteManager::Initialize(*this);
 
