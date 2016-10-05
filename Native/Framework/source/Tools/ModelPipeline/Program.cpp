@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	{
 		if (argc < 2)
 		{
-			throw exception("Usage: ...TODO");
+			throw exception("Usage: ModelPipeline pathToInputFile");
 		}
 
 		string inputFile = argv[1];

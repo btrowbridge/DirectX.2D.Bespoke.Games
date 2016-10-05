@@ -39,6 +39,6 @@ namespace Library
 		std::vector<std::shared_ptr<GameScreen>> mScreens;
 		std::vector<std::shared_ptr<GameScreen>> mScreensToUpdate;
 		std::shared_ptr<ScreenInputManager> mScreenInputManager;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mBlankTexture;
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mBlankTexture;		
 	};
 }

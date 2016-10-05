@@ -43,6 +43,9 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
+// Box2D
+#include <Box2D\Box2D.h>
+
 // Local
 #include "RTTI.h"
 #include "GameException.h"
@@ -92,7 +95,10 @@
 #include "ContentManager.h"
 #include "MathHelper.h"
 #include "EventArgs.h"
-
+#include "Box2DComponent.h"
+#include "Material.h"
+#include "FirstPersonController.h"
+	
 namespace Library
 {
 	typedef unsigned char byte;

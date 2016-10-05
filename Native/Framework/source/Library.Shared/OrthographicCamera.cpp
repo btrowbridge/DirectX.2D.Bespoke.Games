@@ -9,12 +9,6 @@ namespace Library
 	const float OrthographicCamera::DefaultViewWidth = 100.0f;
 	const float OrthographicCamera::DefaultViewHeight = 100.0f;
 
-    OrthographicCamera::OrthographicCamera(Game& game) :
-		Camera(game),
-		mViewWidth(DefaultViewWidth), mViewHeight(DefaultViewHeight)
-    {
-    }
-
 	OrthographicCamera::OrthographicCamera(Game& game, float viewWidth, float viewHeight, float nearPlaneDistance, float farPlaneDistance) :
 		Camera(game, nearPlaneDistance, farPlaneDistance),
 		mViewWidth(viewWidth), mViewHeight(viewHeight)

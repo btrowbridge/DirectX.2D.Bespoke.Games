@@ -67,7 +67,7 @@ namespace Library
 
         virtual void Initialize();
 		virtual void Run();
-		virtual void Shutdown();        
+		virtual void Shutdown();
 
 		void UpdateRenderTargetSize();
 		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);

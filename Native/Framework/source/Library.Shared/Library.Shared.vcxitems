@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)AudioEngineComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BlendStates.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Box2DComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColorHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp" />
@@ -23,6 +24,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EventArgs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonController.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FpsComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameClock.cpp" />
@@ -34,6 +36,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Grid.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KeyboardComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Light.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Material.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MathHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MatrixHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Mesh.cpp" />
@@ -67,6 +70,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)AudioEngineComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BlendStates.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Box2DComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ColorHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h" />
@@ -75,6 +79,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DrawableGameComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EventArgs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonCamera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonController.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FpsComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameClock.h" />
@@ -87,6 +92,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)IServiceProvider.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KeyboardComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Light.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Material.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MathHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MatrixHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Mesh.h" />

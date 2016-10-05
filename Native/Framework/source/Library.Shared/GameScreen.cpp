@@ -55,10 +55,11 @@ namespace Library
 
 	Game* GameScreen::GetGame() const
 	{
-		return (mScreenManager != nullptr ? mScreenManager->GetGame() : nullptr);
+		auto screenManager = mScreenManager.lock();
+		return (screenManager != nullptr ? screenManager->GetGame() : nullptr);
 	}
 
-	shared_ptr<Library::ScreenManager> GameScreen::ScreenManager()
+	weak_ptr<Library::ScreenManager> GameScreen::ScreenManager()
 	{
 		return mScreenManager;
 	}
@@ -101,9 +102,10 @@ namespace Library
 			{
 				OnExit();
 				mIsExiting = false;
-				if (mScreenManager != nullptr)
+				auto screenManager = mScreenManager.lock();
+				if (screenManager != nullptr)
 				{
-					mScreenManager->RemoveScreen(*this);
+					screenManager->RemoveScreen(*this);
 				}
 			}
 		}
@@ -158,9 +160,10 @@ namespace Library
 	{
 		if (mTransitionOffTime == milliseconds::zero())
 		{
-			if (mScreenManager != nullptr)
+			auto screenManager = mScreenManager.lock();
+			if (screenManager != nullptr)
 			{
-				mScreenManager->RemoveScreen(*this);
+				screenManager->RemoveScreen(*this);
 			}			
 		}
 		else

@@ -33,7 +33,7 @@ namespace Library
 		bool IsExiting() const;
 		bool IsActive() const;
 		Game* GetGame() const;
-		std::shared_ptr<Library::ScreenManager> ScreenManager();
+		std::weak_ptr<Library::ScreenManager> ScreenManager();
 		const std::vector<std::shared_ptr<GameComponent>>& Components() const;
 
 		virtual void Initialize();
@@ -51,7 +51,7 @@ namespace Library
 		bool mIsExiting;
 		bool mOtherScreenHasFocus;
 		float mTransitionPosition;
-		std::shared_ptr<Library::ScreenManager> mScreenManager;
+		std::weak_ptr<Library::ScreenManager> mScreenManager;
 		std::vector<std::shared_ptr<GameComponent>> mComponents;
 
 	private:

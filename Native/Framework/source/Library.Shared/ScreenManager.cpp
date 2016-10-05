@@ -8,7 +8,7 @@ namespace Library
 {
 	RTTI_DEFINITIONS(ScreenManager)
 
-		ScreenManager::ScreenManager(Game& game) :
+	ScreenManager::ScreenManager(Game& game) :
 		ScreenManager(game, nullptr)
 	{
 	}
@@ -110,7 +110,7 @@ namespace Library
 			if (ContainsScreen(screen) == false)
 			{
 				AddScreen(screen, shouldInitializeScreens);
-			}
+			}		
 		}
 	}
 
@@ -143,7 +143,7 @@ namespace Library
 
 	void ScreenManager::FadeScreenToBlack(float alpha)
 	{
-		XMVECTORF32 color = { 0, 0, 0, alpha };
-		SpriteManager::DrawTexture2D(mBlankTexture.Get(), Rectangle(0, 0, static_cast<int>(mGame->Viewport().Width), static_cast<int>(mGame->Viewport().Height)), color);
+		XMVECTORF32 color = { 0, 0, 0, alpha};
+		SpriteManager::DrawTexture2D(mBlankTexture.Get(), Rectangle(0, 0, static_cast<int>(mGame->Viewport().Width), static_cast<int>(mGame->Viewport().Height)), color);		
 	}
 }

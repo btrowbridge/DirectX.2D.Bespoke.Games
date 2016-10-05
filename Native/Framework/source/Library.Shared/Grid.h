@@ -14,10 +14,12 @@ namespace Library
 	public:
 		Grid(Game& game, const std::shared_ptr<Camera>& camera);
 		Grid(Game& game, const std::shared_ptr<Camera>& camera, UINT size, UINT scale, const DirectX::XMFLOAT4& color);
-
 		Grid() = delete;
 		Grid(const Grid&) = delete;
+		Grid(Grid&&) = default;
 		Grid& operator=(const Grid&) = delete;
+		Grid& operator=(Grid&&) = default;
+		~Grid() = default;
 
 		const DirectX::XMFLOAT3& Position() const;
 		const DirectX::XMFLOAT4 Color() const;
