@@ -26,6 +26,9 @@ namespace SimpleCollision
 		mComponents.push_back(mAudio);
 		mServices.AddService(AudioEngineComponent::TypeIdClass(), mAudio.get());
 
+		auto physicsEngine = make_shared<Library::Box2DComponent>(*this);
+		mComponents.push_back(physicsEngine);
+		mServices.AddService(Box2DComponent::TypeIdClass(), physicsEngine.get());
 		
 		SpriteManager::Initialize(*this);
 

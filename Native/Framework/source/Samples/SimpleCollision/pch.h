@@ -85,6 +85,7 @@
 #include "TextureHelper.h"
 #include "ScreenManager.h"
 #include "SpriteManager.h"
+#include "Box2DComponent.h"
 
 // Library.Desktop
 #include "UtilityWin32.h"
