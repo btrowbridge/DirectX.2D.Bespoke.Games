@@ -199,10 +199,14 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Box.h" />
+    <ClInclude Include="Ground.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SimpleCollisionGame.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="SimpleCollisionGame.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp">

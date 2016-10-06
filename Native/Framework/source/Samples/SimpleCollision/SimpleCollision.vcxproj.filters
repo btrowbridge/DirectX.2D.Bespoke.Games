@@ -3,11 +3,23 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="SimpleCollisionGame.h" />
+    <ClInclude Include="Ground.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Game Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SimpleCollisionGame.cpp" />
+    <ClCompile Include="Ground.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Game Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_36_Regular.spritefont">
