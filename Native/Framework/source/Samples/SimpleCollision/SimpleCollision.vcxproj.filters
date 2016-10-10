@@ -3,23 +3,13 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="SimpleCollisionGame.h" />
-    <ClInclude Include="Ground.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>Game Components</Filter>
-    </ClInclude>
+    <ClInclude Include="DebugDraw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SimpleCollisionGame.cpp" />
-    <ClCompile Include="Ground.cpp">
-      <Filter>Game Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>Game Components</Filter>
-    </ClCompile>
+    <ClCompile Include="DebugDraw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_36_Regular.spritefont">
@@ -46,6 +36,12 @@
     <Filter Include="Screens">
       <UniqueIdentifier>{4f1aebc9-9584-441f-bb06-5969b708b7b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helper">
+      <UniqueIdentifier>{3f0f5be7-12a2-4ccb-a205-fec6e87c7511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\Shaders">
+      <UniqueIdentifier>{b776fa71-45a8-4bb9-b23d-1c6ad5c96787}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Content\Audio\Beep.wav">
@@ -65,5 +61,13 @@
     <Image Include="Content\Textures\Paddle.png">
       <Filter>Content\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Content\Shaders\BasicPS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\BasicVS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

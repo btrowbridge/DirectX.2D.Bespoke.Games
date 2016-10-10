@@ -95,5 +95,4 @@
 
 // Local
 #include "SimpleCollisionGame.h"
-#include "Box.h"
-#include "Ground.h"
+#include "DebugDraw.h"

@@ -6,21 +6,15 @@
 namespace Library
 {
 	class KeyboardComponent;
-	class AudioEngineComponent;
-	class ScreenManager;
-	class SpriteManager;
+	class Box2DComponent;
 }
 
-namespace DirectX
-{
-	class SpriteBatch;
-}
 
 namespace SimpleCollision
 {
 	class MenuScreen;
 
-	class SimpleCollisionGame : public Library::Game
+	class SimpleCollisionGame : public Library::Game 
 	{
 	public:
 
@@ -31,16 +25,16 @@ namespace SimpleCollision
 		virtual void Draw(const Library::GameTime& gameTime) override;
 		virtual void Shutdown() override;
 
+		void AddBox(float x, float y);
+		void AddPlatform(float x, float y);
+		void AddWall(float x, float y);
+
 		void Exit();
 
 	private:
 		static const DirectX::XMVECTORF32 BackgroundColor;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
-		std::shared_ptr<Library::AudioEngineComponent> mAudio;
-
-		std::shared_ptr<SimpleCollision::MenuScreen> mMenuScreen;
-		std::shared_ptr<Library::ScreenManager> mScreenManager;
-		std::shared_ptr<Library::SpriteManager> mSpriteManager;
+		std::shared_ptr<Library::Box2DComponent> mPhysicsEngine;
 	};
 }
