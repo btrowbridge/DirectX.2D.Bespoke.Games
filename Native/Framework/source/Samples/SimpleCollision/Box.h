@@ -15,7 +15,7 @@ namespace SimpleCollision {
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		b2World* mWorld;
+		Library::Box2DComponent* mPhysics;
 
 	};
 

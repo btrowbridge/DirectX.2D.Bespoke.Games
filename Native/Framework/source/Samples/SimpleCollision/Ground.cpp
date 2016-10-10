@@ -14,6 +14,9 @@ namespace SimpleCollision{
 	}
 	void Ground::Initialize()
 	{
+		mPhysics = reinterpret_cast<Box2DComponent*>(mGame->As<SimpleCollisionGame>()->Services().GetService(Box2DComponent::TypeIdClass()));
+
+		
 		DrawableGameComponent::Initialize();
 	}
 	void Ground::Update(const Library::GameTime & gameTime)
