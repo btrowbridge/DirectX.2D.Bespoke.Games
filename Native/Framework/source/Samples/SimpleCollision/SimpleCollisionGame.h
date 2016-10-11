@@ -12,7 +12,7 @@ namespace Library
 
 namespace SimpleCollision
 {
-	class MenuScreen;
+	class DebugDraw;
 
 	class SimpleCollisionGame : public Library::Game 
 	{
@@ -36,5 +36,6 @@ namespace SimpleCollision
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::Box2DComponent> mPhysicsEngine;
+		std::shared_ptr<DebugDraw> mDebugDraw;
 	};
 }

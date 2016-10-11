@@ -30,15 +30,6 @@
     <Filter Include="Content\Fonts">
       <UniqueIdentifier>{ae83f002-1b0e-4708-a9b1-898c09df5880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Components">
-      <UniqueIdentifier>{77127d84-a7b9-47f2-82a4-fb73730259ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Screens">
-      <UniqueIdentifier>{4f1aebc9-9584-441f-bb06-5969b708b7b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helper">
-      <UniqueIdentifier>{3f0f5be7-12a2-4ccb-a205-fec6e87c7511}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Content\Shaders">
       <UniqueIdentifier>{b776fa71-45a8-4bb9-b23d-1c6ad5c96787}</UniqueIdentifier>
     </Filter>

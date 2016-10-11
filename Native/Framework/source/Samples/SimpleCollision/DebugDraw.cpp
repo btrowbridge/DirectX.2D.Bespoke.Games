@@ -18,7 +18,8 @@ namespace SimpleCollision {
 	void DebugDraw::DrawPolygon(const b2Vec2 * vertices, int32 vertexCount, const b2Color & color)
 	{
 		std::vector<VertexPositionColor> vpc;
-		
+		vpc.reserve(sizeof(vertices));
+
 		XMFLOAT4 vertexColor(color.r, color.g, color.b, color.a);
 
 		for (int32 i = 0; i < vertexCount; i++) {
@@ -29,28 +30,21 @@ namespace SimpleCollision {
 		vpc.push_back(VertexPositionColor(XMFLOAT4(vertices[0].x, vertices[0].y, 0.0f, 0.0f), vertexColor));
 		vertexCount++;
 
-		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
-		vertexBufferDesc.ByteWidth = sizeof(VertexPositionColor) * static_cast<UINT>(vpc.size());
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
-		vertexSubResourceData.pSysMem = &vpc;
-
-		ComPtr<ID3D11Buffer> vertexBuffer;
-
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(
-			&vertexBufferDesc, &vertexSubResourceData, vertexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
-
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		
+		D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+		direct3DDeviceContext->Map(mVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource);
+		memcpy(mappedSubResource.pData, &vpc[0], sizeof(VertexPositionColor) * vertexCount);
+		direct3DDeviceContext->Unmap(mVertexBuffer.Get(), 0);
+		
+		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
 		UINT stride = sizeof(VertexPositionColor);
 		UINT offset = 0;
 
-		direct3DDeviceContext->IASetVertexBuffers(0, vertexCount, vertexBuffer.ReleaseAndGetAddressOf(), &stride, &offset);
+		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
@@ -68,7 +62,8 @@ namespace SimpleCollision {
 	void DebugDraw::DrawSolidPolygon(const b2Vec2 * vertices, int32 vertexCount, const b2Color & color)
 	{
 		std::vector<VertexPositionColor> vpc;
-		
+		vpc.resize(sizeof(vertices));
+
 		XMFLOAT4 vertexColor(color.r, color.g, color.b, color.a);
 
 		for (int32 i = 0; i < vertexCount; i++) {
@@ -79,28 +74,21 @@ namespace SimpleCollision {
 		vpc.push_back(VertexPositionColor(XMFLOAT4(vertices[0].x, vertices[0].y, 0.0f, 0.0f), vertexColor));
 		vertexCount++;
 
-		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
-		vertexBufferDesc.ByteWidth = sizeof(VertexPositionColor) * static_cast<UINT>(vpc.size());
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
-		vertexSubResourceData.pSysMem = &vpc;
-
-		Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(
-			&vertexBufferDesc, &vertexSubResourceData, vertexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
-
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+		D3D11_MAPPED_SUBRESOURCE mappedSubResource;
+		direct3DDeviceContext->Map(mVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, NULL, &mappedSubResource);
+		memcpy(mappedSubResource.pData, &vpc[0], sizeof(VertexPositionColor) * vertexCount);
+		direct3DDeviceContext->Unmap(mVertexBuffer.Get(), 0);
+		
+		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
 		UINT stride = sizeof(VertexPositionColor);
 		UINT offset = 0;
 
-		direct3DDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer.ReleaseAndGetAddressOf(), &stride, &offset);
+		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
@@ -174,6 +162,14 @@ namespace SimpleCollision {
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
+		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
+		vertexBufferDesc.ByteWidth = sizeof(VertexPositionColor) * static_cast<UINT>(9);
+		vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(
+			&vertexBufferDesc, nullptr, mVertexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 	}
 
 	void DebugDraw::Update(const Library::GameTime & gameTime)

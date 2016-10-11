@@ -31,17 +31,19 @@ namespace SimpleCollision
 
 		auto mCamera = make_shared<OrthographicCamera>(*this);
 		mComponents.push_back(mCamera);
-		mCamera->SetPosition(0.0f, 0.0f, -10.0f);
+		/*mCamera->SetPosition(0.0f, 0.0f, 50.0f);*/
 
-		auto debugDraw = make_shared<DebugDraw>(*this, mCamera);
-		mComponents.push_back(debugDraw);
-		debugDraw->SetFlags(b2Draw::e_shapeBit);
+		mDebugDraw = make_shared<DebugDraw>(*this, mCamera);
+		mComponents.push_back(mDebugDraw);
+		mDebugDraw->AppendFlags(b2Draw::e_shapeBit);
 		
-		mPhysicsEngine->World().SetDebugDraw(debugDraw.get());
+		mPhysicsEngine->World().SetDebugDraw(mDebugDraw.get());
 		
 		SpriteManager::Initialize(*this);
 
 		Game::Initialize();
+		
+
 		AddPlatform(0.0f, -10.0f);
 	}
 
@@ -49,7 +51,7 @@ namespace SimpleCollision
 	{
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space)) 
 		{
-			AddBox(0.0f, 4.0f);
+			AddBox(0.0f, 10.0f);
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape))
@@ -127,7 +129,7 @@ namespace SimpleCollision
 		b2PolygonShape groundBox;
 
 		// The extents are the half-widths of the box.
-		groundBox.SetAsBox(50.0f, 10.0f);
+		groundBox.SetAsBox(10.0f, 5.0f);
 
 		// Add the ground fixture to the ground body.
 		groundBody->CreateFixture(&groundBox, 0.0f);
@@ -138,7 +140,7 @@ namespace SimpleCollision
 		// Define the ground body.
 		b2BodyDef wallBodyDef;
 		wallBodyDef.position.Set(x, y);
-
+	
 		// Call the body factory which allocates memory for the ground body
 		// from a pool and creates the ground box shape (also from a pool).
 		// The body is also added to the world.
