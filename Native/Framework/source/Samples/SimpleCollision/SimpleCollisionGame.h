@@ -72,7 +72,7 @@ namespace SimpleCollision
 		ContactListener mOnFloorCollide;
 
 		std::vector<b2Body*> RecyclingBin;
-		void EmptyBin(std::vector<b2Body*> bin);
+		void EmptyBin();
 
 		static const DirectX::XMVECTORF32 BackgroundColor;
 

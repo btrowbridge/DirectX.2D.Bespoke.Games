@@ -63,7 +63,7 @@ namespace SimpleCollision
 
 		Game::Update(gameTime);
 
-		EmptyBin(RecyclingBin);
+		EmptyBin();
 	}
 
 	void SimpleCollisionGame::Draw(const GameTime &gameTime)
@@ -195,31 +195,28 @@ namespace SimpleCollision
 		PostQuitMessage(0);
 	}
 
-	void SimpleCollisionGame::EmptyBin(std::vector<b2Body*> bin)
+	void SimpleCollisionGame::EmptyBin()
 	{
-		auto destroyIt =bin.begin();
-		while(destroyIt != bin.end() && !bin.empty())
+		auto destroyIt =RecyclingBin.begin();
+		while(destroyIt != RecyclingBin.end() && !RecyclingBin.empty())
 		{
 			auto dyingBox = *destroyIt;
-			////delete box... physics body is destroyed here
-			//if (dyingBox != nullptr && dyingBox->GetWorld()->GetBodyCount()>0)
-			//	dyingBox->GetWorld()->DestroyBody(dyingBox);
-			
-			dyingBox->DestroyFixture(dyingBox->GetFixtureList()); //FAKE
-			
+			//delete box... physics body is destroyed here
+			if (dyingBox != nullptr && dyingBox->GetWorld()->GetBodyCount()>0)
+				dyingBox->GetWorld()->DestroyBody(dyingBox);
+						
 			dyingBox = nullptr;
 			
-
 			//... and remove it from main list of boxes
-			destroyIt = bin.erase(destroyIt);
+			destroyIt = RecyclingBin.erase(destroyIt);
 		}
 		//clear this list for next time
-		bin.clear();	
+		RecyclingBin.clear();	
 	}
 	void SimpleCollisionGame::SetScene()
 	{
 		AddPlatform(0.0f, -20.0f);
-		AddWall(30.0f, -20.0f, b2Vec2(-10.0f, 40.0f));
+		AddWall(40.0f, -30.0f, b2Vec2(-25.0f, 40.0f));
 		AddWall(-20.0f, -20.0f, b2Vec2(0.0f, 40.0f));
 		AddFloor(0.0f, -40.0f);
 	}
