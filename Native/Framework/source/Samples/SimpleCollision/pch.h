@@ -96,3 +96,4 @@
 // Local
 #include "SimpleCollisionGame.h"
 #include "DebugDraw.h"
+#include "UIComponent.h"

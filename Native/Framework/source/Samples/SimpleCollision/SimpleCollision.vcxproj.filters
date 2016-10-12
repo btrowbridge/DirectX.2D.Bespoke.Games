@@ -3,13 +3,23 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="SimpleCollisionGame.h" />
-    <ClInclude Include="DebugDraw.h" />
+    <ClInclude Include="DebugDraw.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SimpleCollisionGame.cpp" />
-    <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="UIComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_36_Regular.spritefont">
@@ -32,6 +42,9 @@
     </Filter>
     <Filter Include="Content\Shaders">
       <UniqueIdentifier>{b776fa71-45a8-4bb9-b23d-1c6ad5c96787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{201649ae-416a-4d77-af84-f544ca42f3cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

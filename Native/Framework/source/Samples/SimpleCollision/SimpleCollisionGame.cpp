@@ -11,13 +11,12 @@ namespace SimpleCollision
 	const XMVECTORF32 SimpleCollisionGame::BackgroundColor = Colors::Black;
 
 	SimpleCollisionGame::SimpleCollisionGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
-		Game(getWindowCallback, getRenderTargetSizeCallback)
+		Game(getWindowCallback, getRenderTargetSizeCallback), mOnFloorCollide(), RecyclingBin()
 	{
 	}
 
 	void SimpleCollisionGame::Initialize()
 	{
-
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
@@ -26,30 +25,33 @@ namespace SimpleCollision
 		mComponents.push_back(mPhysicsEngine);
 		mServices.AddService(Box2DComponent::TypeIdClass(), mPhysicsEngine.get());
 
-		auto fpsCom = make_shared<FpsComponent>(*this);
+		auto fpsCom = make_shared<UIComponent>(*this);
 		mComponents.push_back(fpsCom);
 
 		auto mCamera = make_shared<OrthographicCamera>(*this);
 		mComponents.push_back(mCamera);
-		/*mCamera->SetPosition(0.0f, 0.0f, 50.0f);*/
 
 		mDebugDraw = make_shared<DebugDraw>(*this, mCamera);
 		mComponents.push_back(mDebugDraw);
-		mDebugDraw->AppendFlags(b2Draw::e_shapeBit);
-		
+
 		mPhysicsEngine->World().SetDebugDraw(mDebugDraw.get());
-		
+
 		SpriteManager::Initialize(*this);
 
 		Game::Initialize();
-		
 
-		AddPlatform(0.0f, -10.0f);
+		mDebugDraw->AppendFlags(b2Draw::e_shapeBit);
+		//mDebugDraw->AppendFlags(b2Draw::e_aabbBit);
+
+		mCamera->SetPosition(0.0f, 0.0f, 5.0f);
+
+		SetScene();
+		SetListeners();
 	}
 
 	void SimpleCollisionGame::Update(const GameTime &gameTime)
 	{
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space)) 
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space) || mKeyboard->IsKeyDown(Keys::RightControl))
 		{
 			AddBox(0.0f, 10.0f);
 		}
@@ -60,6 +62,8 @@ namespace SimpleCollision
 		}
 
 		Game::Update(gameTime);
+
+		EmptyBin(RecyclingBin);
 	}
 
 	void SimpleCollisionGame::Draw(const GameTime &gameTime)
@@ -129,18 +133,18 @@ namespace SimpleCollision
 		b2PolygonShape groundBox;
 
 		// The extents are the half-widths of the box.
-		groundBox.SetAsBox(10.0f, 5.0f);
+		groundBox.SetAsBox(20.0f, 2.5f);
 
 		// Add the ground fixture to the ground body.
 		groundBody->CreateFixture(&groundBox, 0.0f);
 	}
 
-	void SimpleCollisionGame::AddWall(float x, float y)
+	void SimpleCollisionGame::AddWall(float x, float y, b2Vec2 direction)
 	{
 		// Define the ground body.
 		b2BodyDef wallBodyDef;
 		wallBodyDef.position.Set(x, y);
-	
+
 		// Call the body factory which allocates memory for the ground body
 		// from a pool and creates the ground box shape (also from a pool).
 		// The body is also added to the world.
@@ -150,14 +154,82 @@ namespace SimpleCollision
 		b2EdgeShape wallEdge;
 
 		// The extents are the half-widths of the box.
-		//Set
+		b2Vec2 v0(0.0f, 0.0f);
+		b2Vec2 v1 = direction;
+
+		wallEdge.Set(v0, v1);
 
 		// Add the ground fixture to the ground body.
 		wallBody->CreateFixture(&wallEdge, 0.0f);
 	}
 
+	void SimpleCollisionGame::AddFloor(float x, float y)
+	{
+		// Define the ground body.
+		b2BodyDef floorBodyDef;
+		floorBodyDef.position.Set(x, y);
+
+		// Call the body factory which allocates memory for the ground body
+		// from a pool and creates the ground box shape (also from a pool).
+		// The body is also added to the world.
+		b2Body* floorBody = mPhysicsEngine->World().CreateBody(&floorBodyDef);
+
+		// Define the ground box shape.
+		b2EdgeShape floorEdge;
+
+		// The extents are the half-widths of the box.
+		b2Vec2 v0(-50.0f, 0.0f);
+		b2Vec2 v1(50.0f, 0.0f);
+		floorEdge.Set(v0, v1);
+
+		b2FixtureDef floorFixtureDef;
+		floorFixtureDef.isSensor = true;
+		floorFixtureDef.shape = &floorEdge;
+
+		// Add the ground fixture to the ground body.
+		floorBody->CreateFixture(&floorFixtureDef);
+	}
+
 	void SimpleCollisionGame::Exit()
 	{
 		PostQuitMessage(0);
+	}
+
+	void SimpleCollisionGame::EmptyBin(std::vector<b2Body*> bin)
+	{
+		auto destroyIt =bin.begin();
+		while(destroyIt != bin.end() && !bin.empty())
+		{
+			auto dyingBox = *destroyIt;
+			////delete box... physics body is destroyed here
+			//if (dyingBox != nullptr && dyingBox->GetWorld()->GetBodyCount()>0)
+			//	dyingBox->GetWorld()->DestroyBody(dyingBox);
+			
+			dyingBox->DestroyFixture(dyingBox->GetFixtureList()); //FAKE
+			
+			dyingBox = nullptr;
+			
+
+			//... and remove it from main list of boxes
+			destroyIt = bin.erase(destroyIt);
+		}
+		//clear this list for next time
+		bin.clear();	
+	}
+	void SimpleCollisionGame::SetScene()
+	{
+		AddPlatform(0.0f, -20.0f);
+		AddWall(30.0f, -20.0f, b2Vec2(-10.0f, 40.0f));
+		AddWall(-20.0f, -20.0f, b2Vec2(0.0f, 40.0f));
+		AddFloor(0.0f, -40.0f);
+	}
+	void SimpleCollisionGame::SetListeners()
+	{
+		auto ThrowAway = [&](b2Body* b) {
+			RecyclingBin.push_back(b);
+		};
+
+		mOnFloorCollide.SetCallback(ThrowAway);
+		mPhysicsEngine->World().SetContactListener(&mOnFloorCollide);
 	}
 }
