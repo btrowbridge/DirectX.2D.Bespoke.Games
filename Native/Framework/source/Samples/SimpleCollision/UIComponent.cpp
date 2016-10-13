@@ -49,7 +49,14 @@ namespace SimpleCollision
 
 		wostringstream fpsLabel;
 		fpsLabel << setprecision(4) << L"Frame Rate: " << mFrameRate << "    Total Elapsed Time: " << gameTime.TotalGameTimeSeconds().count() << endl;
-		fpsLabel << L"Press Space to add a Box";
+		fpsLabel << L"Q = Box" << endl;
+		fpsLabel << L"W = Circle" << endl;
+		fpsLabel << L"E = Triangle" << endl;
+		fpsLabel << L"R = Spam" << endl;
+		fpsLabel << L"Arrows + Shape = Throw(Linnear Impulse)" << endl;
+		fpsLabel << L"Backspace = clear shapes" << endl;
+		fpsLabel << L"Shapes: " << mGame->As<SimpleCollisionGame>()->ShapeCount() << endl;
+
 		mSpriteFont->DrawString(mSpriteBatch.get(), fpsLabel.str().c_str(), mTextPosition);
 
 		mSpriteBatch->End();

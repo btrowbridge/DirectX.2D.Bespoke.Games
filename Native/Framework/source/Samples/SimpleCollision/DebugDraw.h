@@ -55,7 +55,9 @@ namespace SimpleCollision {
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mPolygonVertexBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mCircleVertexBuffer;
+
 
 		DirectX::XMFLOAT4X4 mWorldMatrix;
 		CBufferPerObject mCBufferPerObject;

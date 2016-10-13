@@ -28,10 +28,18 @@ namespace SimpleCollision
 
 		void SetListeners();
 
+		int ShapeCount()const;
+		void ClearShapes();
+		void EmptyBin();
+
 		void AddBox(float x, float y);
+		void AddCircle(float x, float y);
+		void AddTriangle(float x, float y);
 		void AddPlatform(float x, float y);
 		void AddWall(float x, float y, b2Vec2 direction);
 		void AddFloor(float x, float y);
+
+		void ApplyControlledForce(b2Body* body);
 
 		void Exit();
 
@@ -69,15 +77,21 @@ namespace SimpleCollision
 			std::function<void(b2Body*)> mCallback;
 		};
 
+		struct MyShapeData {
+			bool isDying = false;
+		};
+
 		ContactListener mOnFloorCollide;
 
 		std::vector<b2Body*> RecyclingBin;
-		void EmptyBin();
+		
 
 		static const DirectX::XMVECTORF32 BackgroundColor;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::Box2DComponent> mPhysicsEngine;
 		std::shared_ptr<DebugDraw> mDebugDraw;
+
+		int mShapeCount;
 	};
 }

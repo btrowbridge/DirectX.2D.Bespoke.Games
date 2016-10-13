@@ -11,7 +11,7 @@ namespace SimpleCollision
 	const XMVECTORF32 SimpleCollisionGame::BackgroundColor = Colors::Black;
 
 	SimpleCollisionGame::SimpleCollisionGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
-		Game(getWindowCallback, getRenderTargetSizeCallback), mOnFloorCollide(), RecyclingBin()
+		Game(getWindowCallback, getRenderTargetSizeCallback), mOnFloorCollide(), RecyclingBin(), mShapeCount(0)
 	{
 	}
 
@@ -51,9 +51,26 @@ namespace SimpleCollision
 
 	void SimpleCollisionGame::Update(const GameTime &gameTime)
 	{
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space) || mKeyboard->IsKeyDown(Keys::RightControl))
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Q) || mKeyboard->IsKeyDown(Keys::R))
 		{
 			AddBox(0.0f, 10.0f);
+			mShapeCount++;
+		}
+		
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::W) || mKeyboard->IsKeyDown(Keys::R)) 
+		{
+			AddCircle(0.0f, 10.0f);
+			mShapeCount++;
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::E) || mKeyboard->IsKeyDown(Keys::R))
+		{
+			AddTriangle(0.0, 10.0f);
+			mShapeCount++;
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Back)) {
+			ClearShapes();
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape))
@@ -98,6 +115,9 @@ namespace SimpleCollision
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
 		bodyDef.position.Set(x, y);
+		bodyDef.userData = new MyShapeData();
+
+
 		b2Body* body = mPhysicsEngine->World().CreateBody(&bodyDef);
 
 		// Define another box shape for our dynamic body.
@@ -116,6 +136,78 @@ namespace SimpleCollision
 
 		// Add the shape to the body.
 		body->CreateFixture(&fixtureDef);
+
+		ApplyControlledForce(body);
+
+	}
+
+	void SimpleCollisionGame::AddCircle(float x, float y)
+	{
+		// Define the dynamic body. We set its position and call the body factory.
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(x, y);
+		bodyDef.userData = new MyShapeData();
+
+
+		b2Body* body = mPhysicsEngine->World().CreateBody(&bodyDef);
+
+		// Define another box shape for our dynamic body.
+		b2CircleShape dynamicCircle;
+		dynamicCircle.m_radius = 1.0f;
+
+		// Define the dynamic body fixture.
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &dynamicCircle;
+
+		// Set the box density to be non-zero, so it will be dynamic.
+		fixtureDef.density = 1.0f;
+
+		// Override the default friction.
+		fixtureDef.friction = 0.3f;
+
+		// Add the shape to the body.
+		body->CreateFixture(&fixtureDef);
+		
+		ApplyControlledForce(body);
+	}
+
+	void SimpleCollisionGame::AddTriangle(float x, float y)
+	{
+		// Define the dynamic body. We set its position and call the body factory.
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(x, y);
+		bodyDef.userData = new MyShapeData();
+
+
+		b2Body* body = mPhysicsEngine->World().CreateBody(&bodyDef);
+
+		// Define another box shape for our dynamic body.
+		b2PolygonShape dynamicTriangle;
+		b2Vec2 vertices[3];
+		vertices[0].Set(0.0f, 1.0f);
+		vertices[1].Set(-1.0f, -1.0f);
+		vertices[2].Set(1.0f, -1.0f);
+		int count = 3;
+
+		dynamicTriangle.Set(vertices, count);
+
+		// Define the dynamic body fixture.
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &dynamicTriangle;
+
+		// Set the box density to be non-zero, so it will be dynamic.
+		fixtureDef.density = 1.0f;
+
+		// Override the default friction.
+		fixtureDef.friction = 0.3f;
+
+		// Add the shape to the body.
+		body->CreateFixture(&fixtureDef);
+
+		ApplyControlledForce(body);
+
 	}
 
 	void SimpleCollisionGame::AddPlatform(float x, float y)
@@ -190,6 +282,34 @@ namespace SimpleCollision
 		floorBody->CreateFixture(&floorFixtureDef);
 	}
 
+	void SimpleCollisionGame::ApplyControlledForce(b2Body* body)
+	{
+		float magnitude = 500.0f;
+		float xDir = 0;
+		float yDir = 0;
+
+		if(mKeyboard->IsKeyDown(Keys::Up))
+		{
+			yDir = 1.0f;
+		}
+		else if (mKeyboard->IsKeyDown(Keys::Down))
+		{
+			yDir = -1.0f;
+		}
+
+		if (mKeyboard->IsKeyDown(Keys::Left) )
+		{
+			xDir = -1.0f;
+		}
+		else if (mKeyboard->IsKeyDown(Keys::Right))
+		{
+			xDir = 1.0f;
+		}
+		b2Vec2 myForce(xDir* magnitude, yDir* magnitude);
+		body->ApplyLinearImpulseToCenter(myForce , true);
+
+	}
+
 	void SimpleCollisionGame::Exit()
 	{
 		PostQuitMessage(0);
@@ -197,16 +317,19 @@ namespace SimpleCollision
 
 	void SimpleCollisionGame::EmptyBin()
 	{
+		if (mShapeCount <= 0)
+			return;
+
 		auto destroyIt =RecyclingBin.begin();
 		while(destroyIt != RecyclingBin.end() && !RecyclingBin.empty())
 		{
 			auto dyingBox = *destroyIt;
 			//delete box... physics body is destroyed here
-			if (dyingBox != nullptr && dyingBox->GetWorld()->GetBodyCount()>0)
+			if (dyingBox != nullptr)
 				dyingBox->GetWorld()->DestroyBody(dyingBox);
-						
+				
 			dyingBox = nullptr;
-			
+			mShapeCount--;
 			//... and remove it from main list of boxes
 			destroyIt = RecyclingBin.erase(destroyIt);
 		}
@@ -223,10 +346,40 @@ namespace SimpleCollision
 	void SimpleCollisionGame::SetListeners()
 	{
 		auto ThrowAway = [&](b2Body* b) {
-			RecyclingBin.push_back(b);
+			auto bData = reinterpret_cast<MyShapeData*>(b->GetUserData());
+			if (!bData->isDying) {
+				bData->isDying = true;
+				RecyclingBin.push_back(b);
+			}
 		};
 
 		mOnFloorCollide.SetCallback(ThrowAway);
 		mPhysicsEngine->World().SetContactListener(&mOnFloorCollide);
+	}
+
+	int SimpleCollisionGame::ShapeCount() const
+	{
+		return mShapeCount;
+	}
+
+	void SimpleCollisionGame::ClearShapes()
+	{
+		b2Body * body = mPhysicsEngine->World().GetBodyList();
+		int numBodies = mPhysicsEngine->World().GetBodyCount();
+		for (int iBody = 0; iBody < numBodies; iBody++) {
+
+			if (body == nullptr)
+				return;
+
+			auto bData = reinterpret_cast<MyShapeData*>(body->GetUserData());
+
+			if (body->GetType() == b2_dynamicBody && !bData->isDying) {
+				auto temp = body->GetNext();
+				bData->isDying = true;
+				RecyclingBin.push_back(body);
+				body = temp;
+			}
+			
+		}
 	}
 }
