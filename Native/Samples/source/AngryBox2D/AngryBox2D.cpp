@@ -1,21 +1,20 @@
 #include "pch.h"
-#include "Box2DDemoGame.h"
-#include "PhysicsDemo.h"
+#include "AngryBox2D.h"
 
 using namespace std;
 using namespace DirectX;
 using namespace Library;
 
-namespace Box2DDemo
+namespace AngryBox2DGame
 {
-	const XMVECTORF32 Box2DDemoGame::BackgroundColor = Colors::Black;
+	const XMVECTORF32 AngryBox2D::BackgroundColor = Colors::Black;
 
-	Box2DDemoGame::Box2DDemoGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
+	AngryBox2D::AngryBox2D(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback), mRenderStateHelper(*this)
 	{
 	}
 
-	void Box2DDemoGame::Initialize()
+	void AngryBox2D::Initialize()
 	{
 		RasterizerStates::Initialize(mDirect3DDevice.Get());
 		SpriteManager::Initialize(*this);
@@ -52,14 +51,11 @@ namespace Box2DDemo
 		mFpsComponent = make_shared<FpsComponent>(*this);
 		mFpsComponent->Initialize();
 
-		auto demo = make_shared<PhysicsDemo>(*this, camera);
-		mComponents.push_back(demo);
-
 		Game::Initialize();
 		camera->SetPosition(0.0f, 0.0f, 1.0f);
 	}
 
-	void Box2DDemoGame::Update(const GameTime &gameTime)
+	void AngryBox2D::Update(const GameTime &gameTime)
 	{
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape) || mGamePad->WasButtonPressedThisFrame(GamePadButtons::Back))
 		{
@@ -71,7 +67,7 @@ namespace Box2DDemo
 		Game::Update(gameTime);
 	}
 
-	void Box2DDemoGame::Draw(const GameTime &gameTime)
+	void AngryBox2D::Draw(const GameTime &gameTime)
 	{
 		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -95,7 +91,7 @@ namespace Box2DDemo
 		}
 	}
 
-	void Box2DDemoGame::Shutdown()
+	void AngryBox2D::Shutdown()
 	{
 		SpriteManager::Shutdown();
 		RasterizerStates::Shutdown();
@@ -103,7 +99,7 @@ namespace Box2DDemo
 		Game::Shutdown();
 	}
 
-	void Box2DDemoGame::Exit()
+	void AngryBox2D::Exit()
 	{
 		PostQuitMessage(0);
 	}

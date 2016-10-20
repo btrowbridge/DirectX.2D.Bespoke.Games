@@ -1,8 +1,8 @@
 ﻿#include "pch.h"
-#include "Box2DDemoGame.h"
+#include "AngryBox2D.h"
 
 using namespace Library;
-using namespace Box2DDemo;
+using namespace AngryBox2DGame;
 using namespace std;
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previousInstance, LPSTR commandLine, int showCommand)
@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previousInstance, LPSTR command
 
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
-	const wstring windowClassName = L"Box2DDemoClass";
+	const wstring windowClassName = L"AngryBox2DClass";
 	const wstring windowTitle = L"Box2D Demo";
 	const SIZE RenderTargetSize = { 1024, 768 };
 
@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previousInstance, LPSTR command
 		return reinterpret_cast<void*>(windowHandle);
 	};
 
-	Box2DDemoGame game(getWindow, getRenderTargetSize);
+	AngryBox2D game(getWindow, getRenderTargetSize);
 	game.UpdateRenderTargetSize();
 	game.Initialize();
 

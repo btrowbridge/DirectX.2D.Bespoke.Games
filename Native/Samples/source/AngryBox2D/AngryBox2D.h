@@ -12,14 +12,14 @@ namespace Library
 	class FpsComponent;
 }
 
-namespace Box2DDemo
+namespace AngryBox2DGame
 {
 	class GameplayScreen;
 
-	class Box2DDemoGame final : public Library::Game
+	class AngryBox2D final : public Library::Game
 	{
 	public:
-		Box2DDemoGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback);
+		AngryBox2D(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback);
 
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;

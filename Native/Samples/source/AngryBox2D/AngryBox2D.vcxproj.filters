@@ -7,17 +7,24 @@
     <Filter Include="Content\Fonts">
       <UniqueIdentifier>{47931696-f5bf-47c3-b68e-05995a0983de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameComponents">
+      <UniqueIdentifier>{c6ce2cbd-acb9-43af-87b5-96f2cf82729a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Box2DDemoGame.cpp" />
-    <ClCompile Include="PhysicsDemo.cpp" />
+    <ClCompile Include="AngryBox2D.cpp" />
+    <ClCompile Include="Box2DObject.cpp">
+      <Filter>GameComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Box2DDemoGame.h" />
-    <ClInclude Include="PhysicsDemo.h" />
+    <ClInclude Include="AngryBox2D.h" />
+    <ClInclude Include="Box2DObject.h">
+      <Filter>GameComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
