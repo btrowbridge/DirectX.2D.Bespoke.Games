@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Material.h"
 
 using namespace std;
 using namespace DirectX;
@@ -7,17 +8,25 @@ namespace Library
 {
 	RTTI_DEFINITIONS(Material)
 
-	Material::Material(Game& game, const wstring& vertexShaderPath, const wstring& pixelShaderPath) :
-		mGame(&game)
+	Material::Material(Game& game, const shared_ptr<VertexShader>& vertexShader, const shared_ptr<PixelShader>& pixelShader, D3D_PRIMITIVE_TOPOLOGY topology) :
+		mGame(&game), mVertexShader(vertexShader), mPixelShader(pixelShader), mTopology(topology)
 	{
-		// Load a compiled vertex shader
-		Utility::LoadBinaryFile(vertexShaderPath, mCompiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&mCompiledVertexShader[0], mCompiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
+	}
 
-		// Load a compiled pixel shader
-		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(pixelShaderPath, compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
+	void Material::Initialize()
+	{
+	}
+
+	void Material::Draw()
+	{
+		BeginDraw();
+
+		if (mDrawCallback != nullptr)
+		{
+			mDrawCallback();
+		}
+
+		EndDraw();
 	}
 
 	void Material::Draw(ID3D11Buffer* vertexBuffer, uint32_t vertexCount, uint32_t startVertexLocation, uint32_t offset)
@@ -26,7 +35,7 @@ namespace Library
 
 		BeginDraw();
 
-		UINT stride = VertexSize();
+		const uint32_t stride = VertexSize();
 		ID3D11Buffer* const vertexBuffers[] = { vertexBuffer };
 		direct3DDeviceContext->IASetVertexBuffers(0, ARRAYSIZE(vertexBuffers), vertexBuffers, &stride, &offset);
 
@@ -41,7 +50,8 @@ namespace Library
 
 		BeginDraw();
 
-		UINT stride = VertexSize();
+		const uint32_t stride = VertexSize();
+		const uint32_t offset = 0;
 		ID3D11Buffer* const vertexBuffers[] = { vertexBuffer };
 		direct3DDeviceContext->IASetVertexBuffers(0, ARRAYSIZE(vertexBuffers), vertexBuffers, &stride, &vertexOffset);
 		direct3DDeviceContext->IASetIndexBuffer(indexBuffer, format, indexOffset);
@@ -51,9 +61,68 @@ namespace Library
 		EndDraw();
 	}
 
+	D3D_PRIMITIVE_TOPOLOGY Material::Topology() const
+	{
+		return mTopology;
+	}
+
+	void Material::SetTopology(D3D_PRIMITIVE_TOPOLOGY topology)
+	{
+		mTopology = topology;
+	}
+
+	shared_ptr<VertexShader> Material::GetVertexShader() const
+	{
+		return mVertexShader;
+	}
+
+	void Material::SetVertexShader(const shared_ptr<VertexShader>& vertexShader)
+	{
+		mVertexShader = vertexShader;
+	}
+
+	shared_ptr<PixelShader> Material::GetPixelShader() const
+	{
+		return mPixelShader;
+	}
+
+	void Material::SetPixelShader(const shared_ptr<PixelShader>& pixelShader)
+	{
+		mPixelShader = pixelShader;
+	}
+
+	function<void()> Material::DrawCallback() const
+	{
+		return mDrawCallback;
+	}
+
+	void Material::SetDrawCallback(function<void()> callback)
+	{
+		mDrawCallback = callback;
+	}
+
+	function<void()> Material::UpdateMaterialCallback() const
+	{
+		return mUpdateMaterialCallback;
+	}
+
+	void Material::SetUpdateMaterialCallback(function<void()> callback)
+	{
+		mUpdateMaterialCallback = callback;
+	}
+
 	void Material::BeginDraw()
 	{
-		mGame->Direct3DDeviceContext()->IASetInputLayout(mInputLayout.Get());
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->IASetPrimitiveTopology(mTopology);
+		direct3DDeviceContext->IASetInputLayout(mVertexShader->InputLayout().Get());
+		direct3DDeviceContext->VSSetShader(mVertexShader->Shader().Get(), nullptr, 0);
+		direct3DDeviceContext->PSSetShader(mPixelShader->Shader().Get(), nullptr, 0);
+
+		if (mUpdateMaterialCallback != nullptr)
+		{
+			mUpdateMaterialCallback();
+		}
 	}
 
 	void Material::EndDraw()

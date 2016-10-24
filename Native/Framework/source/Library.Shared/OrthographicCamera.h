@@ -11,11 +11,12 @@ namespace Library
         RTTI_DECLARATIONS(OrthographicCamera, Camera)
 
     public:
-		OrthographicCamera(Game& game, float viewWidth = DefaultViewWidth, float viewHeight = DefaultViewHeight, float nearPlaneDistance = DefaultNearPlaneDistance, float farPlaneDistance = DefaultFarPlaneDistance);
-		virtual ~OrthographicCamera() = default;
-
+		OrthographicCamera(Game& game, float viewWidth = DefaultViewWidth, float viewHeight = DefaultViewHeight, float nearPlaneDistance = DefaultNearPlaneDistance, float farPlaneDistance = DefaultFarPlaneDistance);		
 		OrthographicCamera(const OrthographicCamera&) = delete;
+		OrthographicCamera(OrthographicCamera&&) = delete;
 		OrthographicCamera& operator=(const OrthographicCamera&) = delete;
+		OrthographicCamera& operator=(OrthographicCamera&&) = default;
+		virtual ~OrthographicCamera() = default;
 
 		float ViewWidth() const;
 		void SetViewWidth(float viewWidth);

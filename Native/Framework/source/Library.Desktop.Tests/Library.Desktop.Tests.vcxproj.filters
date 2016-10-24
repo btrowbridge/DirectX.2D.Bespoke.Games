@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="QuaternionTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5a83d069-60a9-4752-ae70-62e2594ad820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Support Classes">
+      <UniqueIdentifier>{1f81d7b4-e40f-430b-9ccb-d70016930bbc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

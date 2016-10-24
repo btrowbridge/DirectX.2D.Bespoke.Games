@@ -1,7 +1,7 @@
 #pragma once
 #include "DrawableGameComponent.h"
 
-namespace AngryBox2D {
+namespace AngryBox2DGame {
 	
 	class Box2DObject :
 		public Library::DrawableGameComponent

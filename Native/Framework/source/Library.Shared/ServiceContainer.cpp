@@ -1,10 +1,13 @@
 #include "pch.h"
+#include "ServiceContainer.h"
+
+using namespace std;
 
 namespace Library
 {
-	void ServiceContainer::AddService(uint64_t typeID, void* service)
+	bool ServiceContainer::AddService(uint64_t typeID, void* service)
 	{
-		mServices.insert(std::pair<uint64_t, void*>(typeID, service));
+		return mServices.emplace(typeID, service).second;
 	}
 
 	void ServiceContainer::RemoveService(uint64_t typeID)
@@ -14,8 +17,8 @@ namespace Library
 
 	void* ServiceContainer::GetService(uint64_t typeID) const
 	{
-		std::map<uint64_t, void*>::const_iterator it = mServices.find(typeID);
+		map<uint64_t, void*>::const_iterator it = mServices.find(typeID);
 
-		return (it != mServices.end() ? it->second : nullptr);
+		return (it != mServices.cend() ? it->second : nullptr);
 	}
 }

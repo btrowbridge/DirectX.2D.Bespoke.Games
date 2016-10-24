@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Rectangle.h"
 
+using namespace std;
+
 namespace Library
 {
 	const Rectangle Rectangle::Empty = { 0, 0, 0, 0 };
@@ -10,7 +12,7 @@ namespace Library
 	{
 	}
 
-	Rectangle::Rectangle(int x, int y, int width, int height) :
+	Rectangle::Rectangle(int32_t x, int32_t y, int32_t width, int32_t height) :
 		X(x), Y(y), Width(width), Height(height)
 	{
 	}

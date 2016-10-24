@@ -11,8 +11,10 @@ namespace Library
 		ServiceContainer() = default;
 		ServiceContainer(const ServiceContainer&) = delete;
 		ServiceContainer& operator=(const ServiceContainer&) = delete;
+		ServiceContainer(ServiceContainer&&) = delete;
+		ServiceContainer& operator=(ServiceContainer&&) = delete;
 
-		void AddService(std::uint64_t typeID, void* service);
+		bool AddService(std::uint64_t typeID, void* service);
 		void RemoveService(std::uint64_t typeID);
 		virtual void* GetService(std::uint64_t typeID) const override;;
 

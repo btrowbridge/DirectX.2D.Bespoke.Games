@@ -1,10 +1,11 @@
 #pragma once
 
+#include <Windows.h>
 #include <string>
 
 namespace Library
 {
-	class UtilityWin32
+	class UtilityWin32 final
 	{
 	public:
 		static void InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const std::wstring& className, const std::wstring windowTitle, const SIZE& renderTargetSize, int showCommand);

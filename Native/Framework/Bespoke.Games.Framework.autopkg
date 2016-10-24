@@ -1,0 +1,131 @@
+nuget
+{
+	nuspec
+	{
+		id = Bespoke.Games.Framework;
+		version: 1.2;
+		title: Bespoke Games Framework;
+		authors: { Paul Varcholik };
+		owners: { Paul Varcholik };
+		licenseUrl: "http://www.opensource.org/licenses/ms-pl.html";
+		projectUrl: "https://bitbucket.org/pvarcholik/bespoke.games.framework";
+		requireLicenseAcceptance: false;
+		description: @"The Bespoke Games Framework is a collection of helper classes for writing games using C++ and Direct3D 11. The framework was modeled after Microsoft's XNA Framework.";
+		releaseNotes: "Initial release of the Bespoke Games Framework.";
+		copyright: Copyright 2016;
+		tags: { C++, DirectX, Direct3D, XNA, Game };
+	}
+
+	dependencies {
+        packages : {
+            directxtk_desktop_2015/2016.10.6.1,
+			Box2D/2.3.0,
+        };
+    }
+
+	files
+	{
+		#defines
+		{
+			titleDesktop = Library.Desktop,
+			libDesktop = ${titleDesktop}.lib,
+			pdbDesktop = ${titleDesktop}.pdb,
+			libRoot = lib,
+		};
+
+		code +=
+		{
+			#output: 
+			{
+				package = default;
+			};
+
+			#destination: ${d_src};
+		};
+
+		samples +=
+		{
+			#output: 
+			{
+				package = default;
+			};
+
+			#destination: \Samples;
+		};
+
+		pdb +=
+		{
+			#output: 
+			{
+				package = default;
+			};
+
+			#add-each-file: ::nuget.targets.[${condition}].CopyToOutput;
+			#destination: ${d_lib};
+		};
+
+		tools =
+		{
+			#output: 
+			{
+				package = default;
+			};
+
+			#destination: ${d_tools};
+		};		
+
+		include:
+		{
+			"include\${titleDesktop}\*"
+		};
+
+		[x86,debug,desktop]
+		{
+			lib:
+			{
+				${libRoot}\${titleDesktop}\Win32\Debug\${libDesktop},
+			};
+			pdb:
+			{
+				${libRoot}\${titleDesktop}\Win32\Debug\${pdbDesktop}
+			}
+		};
+
+		[x64,debug,desktop]
+		{
+			lib:
+			{
+				${libRoot}\${titleDesktop}\x64\Debug\${libDesktop}
+			};
+			pdb:
+			{
+				${libRoot}\${titleDesktop}\x64\Debug\${pdbDesktop}
+			}
+		};
+
+		[x86,release,desktop]
+		{
+			lib: ${libRoot}\${titleDesktop}\Win32\Release\${libDesktop};
+		};
+
+		[x64,release,desktop]
+		{
+			lib: ${libRoot}\${titleDesktop}\x64\Release\${libDesktop};
+		};
+		
+		code:
+		{
+			"source\**\*"
+		};
+
+		samples:
+		{
+			"..\Samples\**\*"
+		};
+
+		tools:
+		{
+			"\tools\**\*"
+		};
+	}
+}

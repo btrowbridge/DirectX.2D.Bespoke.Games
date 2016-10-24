@@ -2,6 +2,8 @@
 
 #include "GameComponent.h"
 #include <memory>
+#include <vector>
+#include <functional>
 #include <Box2D\Box2D.h>
 
 namespace Library
@@ -23,9 +25,18 @@ namespace Library
 		void SetPositionIterations(std::int32_t positionIterations);
 		void Clear();
 
+		const std::vector<b2Joint*>& JointsScheduledForDestruction() const;
+		void ScheduleJointForDestruction(b2Joint& joint);
+
+		const std::vector<b2Body*>& Cemetery() const;
+		void BuryBody(b2Body& body);
+		void SetBodyDestroyedCallback(std::function<void(b2Body*)> callback);
+
 		virtual void Update(const GameTime& gameTime) override;
 
 	private:
+		void OnBodyDestroyed(b2Body* body);
+
 		static const b2Vec2 DefaultGravity;
 		static const float DefaultTimeStep;
 		static const std::int32_t DefaultVelocityIterations;
@@ -36,5 +47,8 @@ namespace Library
 		float mTimeStep;
 		std::int32_t mVelocityIterations;
 		std::int32_t mPositionIterations;
+		std::vector<b2Joint*> mJointsScheduledForDestruction;
+		std::vector<b2Body*> mCemetery;
+		std::function<void(b2Body*)> mBodyDestroyedCallback;
 	};
 }

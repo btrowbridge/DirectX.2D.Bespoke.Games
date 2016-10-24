@@ -31,11 +31,26 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{d2f4b0cd-776b-4693-9549-0bc054cdad75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{e9f28471-8fb6-48a9-875d-ea43ac170a0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Materials">
+      <UniqueIdentifier>{d13f76dc-f19f-4503-815b-feafcbdbd2b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{42ef9234-6a23-48fe-a1b9-faafcea38779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{507a486a-7210-46ea-98b3-c116dc53ae53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content">
+      <UniqueIdentifier>{eda74c03-8608-42f0-9b11-4843913a208c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content\ContentReaders">
+      <UniqueIdentifier>{8e233672-58aa-4dea-81fd-c814572eeefe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BlendStates.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp">
       <Filter>Cameras</Filter>
     </ClCompile>
@@ -43,32 +58,14 @@
       <Filter>Lights</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp">
       <Filter>Cameras</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FpsComponent.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameClock.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameComponent.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameException.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GamePadComponent.cpp">
       <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameTime.cpp">
-      <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Grid.cpp">
       <Filter>Misc</Filter>
@@ -100,22 +97,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SpotLight.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProxyModel.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)RasterizerStates.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)RenderTarget.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SamplerStates.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ServiceContainer.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Skybox.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility.cpp">
@@ -141,9 +123,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameScreen.cpp">
       <Filter>Screens</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp">
-      <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ColorHelper.cpp">
       <Filter>Helpers</Filter>
@@ -175,17 +154,125 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Box2DComponent.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Material.cpp">
-      <Filter>Misc</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonController.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Box2DDebugDraw.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp">
+      <Filter>Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderableFrustum.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Ray.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Frustum.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Material.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameTime.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameClock.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameComponent.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameException.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BlendStates.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Skybox.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RasterizerStates.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderTarget.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProxyModel.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SamplerStates.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AnimatedSprite.cpp">
+      <Filter>Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameObject.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transform.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Texture2D.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ContentTypeReader.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ContentTypeReaderManager.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Texture2DReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)VertexShaderReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StringHelper.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)VertexShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)VertexDeclarations.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PixelShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PixelShaderReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SpriteMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Box2DSprite.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Transform2D.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BlendStates.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
       <Filter>Cameras</Filter>
     </ClInclude>
@@ -193,32 +280,14 @@
       <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)DrawableGameComponent.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonCamera.h">
       <Filter>Cameras</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FpsComponent.h">
       <Filter>Misc</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Game.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameClock.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameException.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GamePadComponent.h">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameTime.h">
-      <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Grid.h">
       <Filter>Misc</Filter>
@@ -250,28 +319,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SpotLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)VertexDeclarations.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProxyModel.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RasterizerStates.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)RenderTarget.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)RTTI.h">
       <Filter>Misc</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SamplerStates.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ServiceContainer.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Skybox.h">
       <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility.h">
@@ -297,9 +348,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameScreen.h">
       <Filter>Screens</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h">
-      <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)ColorHelper.h">
       <Filter>Helpers</Filter>
@@ -337,11 +385,122 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Box2DComponent.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Material.h">
-      <Filter>Misc</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonController.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Box2DDebugDraw.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h">
+      <Filter>Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderableFrustum.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Ray.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Frustum.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Material.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameTime.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameClock.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameException.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DrawableGameComponent.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BlendStates.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Skybox.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RasterizerStates.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderTarget.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProxyModel.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SamplerStates.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AnimatedSprite.h">
+      <Filter>Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameObject.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transform.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Texture2D.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ContentTypeReader.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ContentTypeReaderManager.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Texture2DReader.h">
+      <Filter>Content\ContentReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VertexShaderReader.h">
+      <Filter>Content\ContentReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StringHelper.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Shader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VertexShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)VertexDeclarations.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PixelShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PixelShaderReader.h">
+      <Filter>Content\ContentReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SpriteMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Box2DSprite.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Transform2D.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +510,24 @@
     </None>
     <None Include="$(MSBuildThisFileDirectory)Point.inl">
       <Filter>Misc</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Transform.inl">
+      <Filter>Math</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)GameObject.inl">
+      <Filter>Game</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)ContentManager.inl">
+      <Filter>Content</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)ContentTypeReader.inl">
+      <Filter>Content</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Texture.inl">
+      <Filter>Graphics</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Transform2D.inl">
+      <Filter>Math</Filter>
     </None>
   </ItemGroup>
 </Project>

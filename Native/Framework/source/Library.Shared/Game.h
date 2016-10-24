@@ -18,6 +18,7 @@
 #include "GameTime.h"
 #include "ServiceContainer.h"
 #include "RenderTarget.h"
+#include "ContentManager.h"
 
 namespace Library
 {
@@ -61,6 +62,7 @@ namespace Library
 		UINT MultiSamplingQualityLevels() const;
 		bool IsActive() const;
 		bool& IsMouseVisible();
+		bool IsShuttingDown() const;
 
 		const std::vector<std::shared_ptr<GameComponent>>& Components() const;
 		const ServiceContainer& Services() const;			
@@ -73,6 +75,8 @@ namespace Library
 		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
 		virtual void UnbindPixelShaderResources(UINT startSlot, UINT count);
 		std::function<void*()> GetWindowCallback() const;
+
+		ContentManager& Content();
 
     protected:
 		virtual void Update(const GameTime& gameTime);
@@ -115,5 +119,7 @@ namespace Library
 		std::vector<std::shared_ptr<GameComponent>> mComponents;
 		ServiceContainer mServices;
 		bool mIsMouseVisible;
+		ContentManager mContentManager;
+		bool mIsShuttingDown;
     };
 }

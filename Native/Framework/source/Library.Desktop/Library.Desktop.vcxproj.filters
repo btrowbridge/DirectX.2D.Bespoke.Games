@@ -33,6 +33,18 @@
     <FxCompile Include="Content\Shaders\SkyboxVS.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Content\Shaders\Box2DDebugDrawPS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\Box2DDebugDrawVS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\SpritePS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\SpriteVS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">

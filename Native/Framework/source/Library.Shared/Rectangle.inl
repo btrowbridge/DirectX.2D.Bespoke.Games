@@ -2,22 +2,22 @@
 
 namespace Library
 {	
-	inline int Rectangle::Left() const
+	inline std::int32_t Rectangle::Left() const
 	{
 		return X;
 	}
 
-	inline int Rectangle::Right() const
+	inline std::int32_t Rectangle::Right() const
 	{
 		return X + Width;
 	}
 
-	inline int Rectangle::Top() const
+	inline std::int32_t Rectangle::Top() const
 	{
 		return Y;
 	}
 
-	inline int Rectangle::Bottom() const
+	inline std::int32_t Rectangle::Bottom() const
 	{
 		return Y + Height;
 	}

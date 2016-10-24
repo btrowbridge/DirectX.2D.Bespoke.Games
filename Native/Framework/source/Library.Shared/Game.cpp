@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Game.h"
 
 using namespace std;
 using namespace Library;
@@ -17,7 +18,8 @@ namespace Library
 		RenderTarget(),
 		mFeatureLevel(D3D_FEATURE_LEVEL_9_1), mFrameRate(DefaultFrameRate), mIsFullScreen(false),
 		mMultiSamplingCount(DefaultMultiSamplingCount), mMultiSamplingQualityLevels(0),
-		mGetWindow(getWindowCallback), mGetRenderTargetSize(getRenderTargetSizeCallback)
+		mGetWindow(getWindowCallback), mGetRenderTargetSize(getRenderTargetSizeCallback),
+		mContentManager(*this), mIsShuttingDown(false)
 	{
 		assert(getWindowCallback != nullptr);
 		assert(mGetRenderTargetSize != nullptr);
@@ -98,6 +100,11 @@ namespace Library
 		return mIsMouseVisible;
 	}
 
+	bool Game::IsShuttingDown() const
+	{
+		return mIsShuttingDown;
+	}
+
 	const vector<shared_ptr<GameComponent>>& Game::Components() const
 	{
 		return mComponents;
@@ -110,6 +117,7 @@ namespace Library
 
 	void Game::Initialize()
 	{
+		ContentTypeReaderManager::Initialize(*this);
 		mGameClock.Reset();
 
 		for (auto& component : mComponents)
@@ -127,6 +135,8 @@ namespace Library
 
 	void Game::Shutdown()
 	{
+		mIsShuttingDown = true;
+
 		// Free up all D3D resources.
 		mDirect3DDeviceContext->ClearState();
 		mDirect3DDeviceContext->Flush();
@@ -139,6 +149,8 @@ namespace Library
 		mSwapChain = nullptr;
 		mDirect3DDeviceContext = nullptr;
 		mDirect3DDevice = nullptr;
+
+		ContentTypeReaderManager::Shutdown();
 	}
 
 	void Game::Update(const GameTime& gameTime)
@@ -185,6 +197,11 @@ namespace Library
 	std::function<void*()> Game::GetWindowCallback() const
 	{
 		return mGetWindow;
+	}
+
+	ContentManager& Game::Content()
+	{
+		return mContentManager;
 	}
 
 	void Game::Begin()

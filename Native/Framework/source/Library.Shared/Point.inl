@@ -1,5 +1,3 @@
-#include "Point.h"
-
 namespace Library
 {
 	inline bool Point::operator<(const Point& rhs) const
