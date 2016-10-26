@@ -121,7 +121,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Grid.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)IServiceProvider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)json.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KeyboardComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Light.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Material.h" />

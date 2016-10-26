@@ -2,7 +2,7 @@
 #include <boost\preprocessor.hpp>
 #include <boost\bind.hpp>
 #include <boost\mpl\bind.hpp>
-
+#include <boost/type_traits.hpp>
 
 //Reflection helper for native C++
 namespace Reflection{

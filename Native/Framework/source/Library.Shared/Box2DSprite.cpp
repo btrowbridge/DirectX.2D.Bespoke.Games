@@ -6,24 +6,49 @@ using namespace DirectX;
 
 namespace Library
 {
-	RTTI_DEFINITIONS(Box2DSprite)
+#pragma region Box2DSpriteDef
 
-	Box2DSprite::Box2DSprite(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const XMFLOAT2& position) :
-		Sprite(game, camera, texture)
+	const float Box2DSpriteDef::DefaultFriction = 0.3f;
+	const float Box2DSpriteDef::DefaultRestitution = 0.0f;
+	const float Box2DSpriteDef::DefaultDensity = 1.0f;
+	
+	Box2DSpriteDef::Box2DSpriteDef(const b2BodyDef& bodyDef, const float friction, const float restitution, const float density, const bool isSensor) :
+		BodyDef(bodyDef), Friction(friction), Restitution(restitution), Density(density), IsSensor(isSensor)
 	{
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.userData = this;
-		bodyDef.position.Set(position.x, position.y);
-
-		CreateBody(bodyDef);
 	}
 
-	Box2DSprite::Box2DSprite(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const b2BodyDef& bodyDef) :
+	Box2DSpriteCircleDef::Box2DSpriteCircleDef(const b2BodyDef& bodyDef, const b2CircleShape& shape, const float friction, const float restitution, const float density, const bool isSensor) :
+		Box2DSpriteDef(bodyDef, friction, restitution, density, isSensor),
+		mShape(shape)
+	{
+	}
+
+	const b2CircleShape& Box2DSpriteCircleDef::Shape() const
+	{
+		return mShape;
+	}
+
+	Box2DSpritePolygonDef::Box2DSpritePolygonDef(const b2BodyDef& bodyDef, const b2PolygonShape& shape, const float friction, const float restitution, const float density, const bool isSensor) :
+		Box2DSpriteDef(bodyDef, friction, restitution, density, isSensor),
+		mShape(shape)
+	{
+	}
+
+	const b2PolygonShape& Box2DSpritePolygonDef::Shape() const
+	{
+		return mShape;
+	}
+
+#pragma endregion
+
+	RTTI_DEFINITIONS(Box2DSprite)
+
+	Box2DSprite::Box2DSprite(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const Box2DSpriteDef& spriteDef, const XMFLOAT2& scale) :
 		Sprite(game, camera, texture)
 	{
-		CreateBody(bodyDef);
+		CreateBody(spriteDef);
 		mBody->SetUserData(this);
+		mTransform.SetScale(scale);
 	}
 
 	Box2DSprite::~Box2DSprite()
@@ -50,27 +75,85 @@ namespace Library
 	void Box2DSprite::Update(const GameTime& gameTime)
 	{
 		UNREFERENCED_PARAMETER(gameTime);
-		UpdateTransformFromBody();
+
+		if (mBody->GetType() != b2_staticBody && mBody->IsAwake())
+		{
+			UpdateTransformFromBody();
+		}
 	}
 
-	void Box2DSprite::CreateBody(const b2BodyDef& bodyDef)
+	shared_ptr<Box2DSprite> Box2DSprite::CreateBox(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, FXMVECTOR position, const XMFLOAT2& scale)
 	{
-		// Retrieve physics engine
+		return CreateBox(game, camera, texture, XMFLOAT2(XMVectorGetX(position), XMVectorGetY(position)), scale);
+	}
+
+	shared_ptr<Box2DSprite> Box2DSprite::CreateBox(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const XMFLOAT2& position, const XMFLOAT2& scale)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(position.x, position.y);
+
+		b2PolygonShape shape;
+		shape.SetAsBox(scale.x, scale.y);
+
+		return make_shared<Box2DSprite>(game, camera, texture, Box2DSpritePolygonDef(bodyDef, shape), scale);
+	}
+
+	shared_ptr<Box2DSprite> Box2DSprite::CreateCircle(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, FXMVECTOR position, const float radius)
+	{
+		return CreateCircle(game, camera, texture, XMFLOAT2(XMVectorGetX(position), XMVectorGetY(position)), radius);
+	}
+	
+	shared_ptr<Box2DSprite> Box2DSprite::CreateCircle(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const XMFLOAT2& position, const float radius)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(position.x, position.y);
+
+		b2CircleShape shape;
+		shape.m_radius = radius;
+
+		return make_shared<Box2DSprite>(game, camera, texture, Box2DSpriteCircleDef(bodyDef, shape), XMFLOAT2(radius, radius));
+	}
+
+	shared_ptr<Box2DSprite> Box2DSprite::CreateTriangle(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, FXMVECTOR position, const XMFLOAT2& scale)
+	{
+		return CreateTriangle(game, camera, texture, XMFLOAT2(XMVectorGetX(position), XMVectorGetY(position)), scale);
+	}
+
+	shared_ptr<Box2DSprite> Box2DSprite::CreateTriangle(Game& game, const shared_ptr<Camera>& camera, const shared_ptr<Texture2D>& texture, const XMFLOAT2& position, const XMFLOAT2& scale)
+	{
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(position.x, position.y);
+
+		const b2Vec2 vertices[] =
+		{
+			{ scale.x, -scale.y },
+			{ 0.0f, scale.y },
+			{ -scale.x, -scale.y },
+		};
+
+		b2PolygonShape shape;
+		shape.Set(vertices, ARRAYSIZE(vertices));		
+
+		return make_shared<Box2DSprite>(game, camera, texture, Box2DSpritePolygonDef(bodyDef, shape), scale);
+	}
+
+	void Box2DSprite::CreateBody(const Box2DSpriteDef& spriteDef)
+	{
 		auto physicsEngine = reinterpret_cast<Box2DComponent*>(mGame->Services().GetService(Box2DComponent::TypeIdClass()));
 		assert(physicsEngine != nullptr);
 
 		b2World& world = physicsEngine->World();
-		mBody = world.CreateBody(&bodyDef);
+		mBody = world.CreateBody(&spriteDef.BodyDef);
 
-		b2PolygonShape shape;
-		const auto& scale = mTransform.Scale();
-		shape.SetAsBox(scale.x, scale.y);
-
-		// TODO: density, friction...
 		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
+		fixtureDef.shape = &(spriteDef.Shape());
+		fixtureDef.friction = spriteDef.Friction;
+		fixtureDef.restitution = spriteDef.Restitution;
+		fixtureDef.density = spriteDef.Density;
+		fixtureDef.filter = spriteDef.Filter;
 		mBody->CreateFixture(&fixtureDef);
 	}
 

@@ -6,12 +6,17 @@ namespace Library
 {
 	class Texture2D;
 
-	class SpriteMaterial final : public Material
+	class SpriteMaterial : public Material
 	{
 		RTTI_DECLARATIONS(SpriteMaterial, Material)
 
 	public:
 		SpriteMaterial(Game& game, const std::shared_ptr<Texture2D>& texture);
+		SpriteMaterial(const SpriteMaterial&) = default;
+		SpriteMaterial& operator=(const SpriteMaterial&) = default;
+		SpriteMaterial(SpriteMaterial&&) = default;
+		SpriteMaterial& operator=(SpriteMaterial&&) = default;
+		virtual ~SpriteMaterial() = default;
 		
 		virtual std::uint32_t VertexSize() const override;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;

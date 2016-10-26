@@ -62,6 +62,8 @@ namespace Library
 	void Box2DComponent::Clear()
 	{
 		mWorld = make_unique<b2World>(mGravity);
+		mJointsScheduledForDestruction.clear();
+		mCemetery.clear();
 	}
 
 	const vector<b2Joint*>& Box2DComponent::JointsScheduledForDestruction() const

@@ -28,9 +28,6 @@
     <Filter Include="Helpers">
       <UniqueIdentifier>{47fbe524-f6f5-4c1e-9508-24827e3da04b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{d2f4b0cd-776b-4693-9549-0bc054cdad75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Math">
       <UniqueIdentifier>{e9f28471-8fb6-48a9-875d-ea43ac170a0c}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="Content\ContentReaders">
       <UniqueIdentifier>{8e233672-58aa-4dea-81fd-c814572eeefe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Box2D">
+      <UniqueIdentifier>{d2f4b0cd-776b-4693-9549-0bc054cdad75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,13 +152,13 @@
       <Filter>Misc</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Box2DComponent.cpp">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonController.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Box2DDebugDraw.cpp">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp">
       <Filter>Sprites</Filter>
@@ -266,7 +266,7 @@
       <Filter>Materials</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Box2DSprite.cpp">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Transform2D.cpp">
       <Filter>Math</Filter>
@@ -383,13 +383,13 @@
       <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Box2DComponent.h">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonController.h">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Box2DDebugDraw.h">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h">
       <Filter>Sprites</Filter>
@@ -497,12 +497,11 @@
       <Filter>Materials</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Box2DSprite.h">
-      <Filter>Physics</Filter>
+      <Filter>Box2D</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Transform2D.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)packages.config" />
