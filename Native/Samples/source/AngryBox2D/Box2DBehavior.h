@@ -38,17 +38,17 @@ namespace AngryBox2DGame {
 		class ContactListener : b2ContactListener
 		{
 		public:
-			ContactListener(Box2DBehavior* myObject) : b2ContactListener(), mThisObject(myObject){}
+			ContactListener(Box2DBehavior* myObject) : b2ContactListener() {} 
 
 			virtual void BeginContact(b2Contact* contact) 
 			{
 				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
 				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
 
-				if (behaviorA == mThisObject) {
+				if (behaviorA != nullptr) {
 					behaviorA->OnContactBegin(behaviorB->Body(), contact);
 				} 
-				if (behaviorB = mThisObject) {
+				if (behaviorB != nullptr) {
 					behaviorB->OnContactBegin(behaviorA->Body(), contact);
 				}
 
@@ -59,10 +59,10 @@ namespace AngryBox2DGame {
 				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
 				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
 
-				if (behaviorA == mThisObject) {
+				if (behaviorA != nullptr) {
 					behaviorA->OnContactEnd(behaviorB->Body(), contact);
 				} 
-				if (behaviorB = mThisObject) {
+				if (behaviorB != nullptr) {
 					behaviorA->OnContactEnd(behaviorA->Body(), contact);
 				}
 			}
@@ -72,10 +72,10 @@ namespace AngryBox2DGame {
 				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
 				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
 			
-				if (behaviorA == mThisObject) {
+				if (behaviorA != nullptr) {
 					behaviorA->OnContactPreSolve(behaviorB->Body(), contact, oldManifold);
 				} 
-				if (behaviorB = mThisObject) {
+				if (behaviorB != nullptr) {
 					behaviorB->OnContactPreSolve(behaviorA->Body(), contact,  oldManifold);
 				}
 			}
@@ -85,16 +85,14 @@ namespace AngryBox2DGame {
 				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
 				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
 
-				if (behaviorA == mThisObject) {
+				if (behaviorA != nullptr) {
 					behaviorA->OnContactPostSolve(behaviorB->Body(), contact, impulse);
 				} 
-				if (behaviorB = mThisObject) {
-					behaviorB->OnContactPostSolve(behaviorB->Body(), contact, impulse);
+				if (behaviorB != nullptr) {
+					behaviorB->OnContactPostSolve(behaviorA->Body(), contact, impulse);
 				}
 			}
 
-		private:
-			Box2DBehavior* mThisObject;
 		};
 
 	private:

@@ -225,6 +225,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Box2DDemo\PhysicsDemo.cpp" />
     <ClCompile Include="Box2DBehavior.cpp" />
     <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="pch.cpp">
@@ -237,6 +238,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     <ClCompile Include="AngryBox2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Box2DDemo\PhysicsDemo.h" />
     <ClInclude Include="Box2DBehavior.h" />
     <ClInclude Include="JsonLoader.h" />
     <ClInclude Include="pch.h" />

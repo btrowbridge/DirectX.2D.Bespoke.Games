@@ -21,7 +21,10 @@
     <ClCompile Include="JsonLoader.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Box2DBehavior.cpp" />
+    <ClCompile Include="Box2DBehavior.cpp">
+      <Filter>Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Box2DDemo\PhysicsDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -29,7 +32,10 @@
     <ClInclude Include="JsonLoader.h">
       <Filter>Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Box2DBehavior.h" />
+    <ClInclude Include="Box2DBehavior.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Box2DDemo\PhysicsDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -3,6 +3,7 @@
 #include "DrawableGameComponent.h"
 #include <string>
 #include <map>
+#include <vector>
 #include <functional>
 #include <Box2D\Box2D.h>
 
@@ -12,6 +13,11 @@ namespace Library
 	class Box2DDebugDraw;
 	class KeyboardComponent;
 	class MouseComponent;
+	class VertexShader;
+	class PixelShader;
+	class Sprite;
+	class Box2DSprite;
+	class Texture2D;
 }
 
 namespace DirectX
@@ -19,7 +25,7 @@ namespace DirectX
 	class SpriteFont;
 }
 
-namespace Box2DDemo
+namespace AngryBox2DGame
 {
 	class PhysicsDemo final : public Library::DrawableGameComponent
 	{
@@ -37,13 +43,15 @@ namespace Box2DDemo
 			ContactListener(Library::Box2DComponent* physicsEngine);
 
 			const b2Fixture* FloorFixture() const;
-			void SetFloorFixture(b2Fixture* fixture);			
+			void SetFloorFixture(b2Fixture* fixture);
+			void SetSpriteDestroyedCallback(std::function<void(Library::Box2DSprite*)> callback);
 
-			virtual void EndContact(b2Contact* contact) override;
+			virtual void EndContact(b2Contact* contact) override;			
 
 		private:
-			Library::Box2DComponent* mPhysicsEngine;			
+			Library::Box2DComponent* mPhysicsEngine;
 			b2Fixture* mFloorFixture;
+			std::function<void(Library::Box2DSprite*)> mSpriteDestroyedCallback;
 		};
 
 		class QueryCallback final : public b2QueryCallback
@@ -79,6 +87,7 @@ namespace Box2DDemo
 			Circle,
 			Triangle,
 			Bolas,
+			Stick,
 			End
 		};
 
@@ -95,7 +104,8 @@ namespace Box2DDemo
 		void SpawnCircle(DirectX::FXMVECTOR position);
 		void SpawnTriangle(DirectX::FXMVECTOR position);
 		void SpawnBolas(DirectX::FXMVECTOR position);
-		void ResetWorld();		
+		void SpawnStick(DirectX::FXMVECTOR position);
+		void ResetWorld();
 		void SpawnObjectWithMouse();
 		void IncrementMouseSpawnObject();
 		void CreateMouseJoint();
@@ -107,13 +117,22 @@ namespace Box2DDemo
 		std::unique_ptr<ContactListener> mContactListener;
 		Library::KeyboardComponent* mKeyboard;
 		Library::MouseComponent* mMouse;
-		std::shared_ptr<DirectX::SpriteFont> mHelpFont;
+		std::shared_ptr<DirectX::SpriteFont> mHelpFont;		
 		std::uint32_t mShapeCount;
-		b2Body* mGroundBody;		
+		b2Body* mGroundBody;
 		ObjectTypes mMouseSpawnObject;
-		std::map<ObjectTypes, std::function<void(DirectX::FXMVECTOR position)>> mSpawnMethods;		
+		std::map<ObjectTypes, std::function<void(DirectX::FXMVECTOR position)>> mSpawnMethods;
 		std::map<Library::Keys, std::function<void()>> mKeyMappings;
 		b2MouseJoint* mMouseJoint;
 		DestructionListener mDestructionListener;
+
+		std::vector<std::shared_ptr<Library::Sprite>> mSprites;
+		std::shared_ptr<Library::Texture2D> mBoxTexture;
+		std::shared_ptr<Library::Texture2D> mCatYellowTexture;
+		std::shared_ptr<Library::Texture2D> mDogTexture;
+		std::shared_ptr<Library::Texture2D> mStickTexture;
+		std::shared_ptr<Library::Texture2D> mTriangleTexture;
+		std::shared_ptr<Library::Texture2D> mGroundTexture;
+		std::shared_ptr<Library::Texture2D> mFloorTexture;
 	};
 }

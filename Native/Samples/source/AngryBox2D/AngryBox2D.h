@@ -29,8 +29,6 @@ namespace AngryBox2DGame
 
 		void Exit();
 
-		
-		IXmlReader* XMLReader();
 	private:		
 		static const DirectX::XMVECTORF32 BackgroundColor;		
 
@@ -39,8 +37,5 @@ namespace AngryBox2DGame
 		std::shared_ptr<Library::MouseComponent> mMouse;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
-
-		Microsoft::WRL::ComPtr<IXmlReader> mXMLReader;
-		HRESULT WriteReaderAttributes(IXmlReader* reader);
 	};
 }
