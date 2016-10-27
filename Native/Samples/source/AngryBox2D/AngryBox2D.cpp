@@ -21,6 +21,7 @@ namespace AngryBox2DGame
 		BlendStates::Initialize(mDirect3DDevice.Get());
 		RasterizerStates::Initialize(mDirect3DDevice.Get());
 		SpriteManager::Initialize(*this);
+		JsonLoader::Initialize();
 
 		const float viewWidth = 50.0f;
 		const float viewHeight = 50.0f;
@@ -104,6 +105,7 @@ namespace AngryBox2DGame
 		RasterizerStates::Shutdown();
 		BlendStates::Shutdown();
 		SamplerStates::Shutdown();
+		JsonLoader::Shutdown();
 
 		Game::Shutdown();
 	}

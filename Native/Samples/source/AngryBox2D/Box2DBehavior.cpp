@@ -4,12 +4,12 @@
 namespace AngryBox2DGame {
 
 	Box2DBehavior::Box2DBehavior(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, Library::Box2DSprite* sprite) :
-		DrawableGameComponent(game,camera), mContactListener(this), mSprite(sprite), mTag("No Tag Set")
+		DrawableGameComponent(game,camera), mSprite(sprite), mTag("None")
 	{
 	}
-	b2Body * Box2DBehavior::Body()
+	Library::Box2DSprite * Box2DBehavior::Sprite() const
 	{
-		return mSprite->Body();
+		return mSprite.get();
 	}
 	std::string Box2DBehavior::Tag()
 	{
@@ -18,7 +18,6 @@ namespace AngryBox2DGame {
 	void Box2DBehavior::Initialize()
 	{
 		DrawableGameComponent::Initialize();
-
 		mSprite->Initialize();
 	}
 	void Box2DBehavior::Update(const Library::GameTime & gameTime)

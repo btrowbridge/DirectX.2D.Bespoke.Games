@@ -125,3 +125,6 @@
 #include "UtilityWin32.h"
 //local
 #include "AngryBox2D.h"
+#include "Box2DBehavior.h"
+#include "PhysicsDemo.h"
+#include "JsonLoader.h"

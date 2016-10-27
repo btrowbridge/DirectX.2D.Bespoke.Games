@@ -5,24 +5,25 @@ using namespace std;
 using namespace Library;
 using namespace DirectX;
 
-namespace Box2DDemo
+namespace AngryBox2DGame
 {
 	const XMFLOAT2 PhysicsDemo::TextPosition = { 0.0f, 42.0f };
-	const wstring PhysicsDemo::HelpText = L"Reset (R)\nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Bolas (Insert)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
+	const std::wstring PhysicsDemo::HelpText = L"Reset (R)\nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
 	const XMVECTORF32 PhysicsDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
-	const map<PhysicsDemo::ObjectTypes, wstring> PhysicsDemo::SpawnObjectNames =
+	const map<PhysicsDemo::ObjectTypes, std::wstring> PhysicsDemo::SpawnObjectNames =
 	{
 		{ ObjectTypes::Box, L"Box" },
 		{ ObjectTypes::Circle, L"Circle" },
 		{ ObjectTypes::Triangle, L"Triangle" },
 		{ ObjectTypes::Bolas, L"Bolas" },
+		{ ObjectTypes::Stick, L"Stick" },
 		{ ObjectTypes::End, L"" },
 	};
 
 	PhysicsDemo::PhysicsDemo(Game& game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera),
 		mPhysicsEngine(nullptr), mPhysicsDebugDraw(nullptr), mKeyboard(nullptr),
-		mShapeCount(0U), mGroundBody(nullptr), mMouseSpawnObject(ObjectTypes::Circle),
+		mShapeCount(0U), mGroundBody(nullptr), mMouseSpawnObject(ObjectTypes::Box),
 		mMouseJoint(nullptr)
 	{
 	}
@@ -38,13 +39,13 @@ namespace Box2DDemo
 		});
 
 		// Retrieve the physics debug drawing system
-		mPhysicsDebugDraw = reinterpret_cast<Box2DDebugDraw*>(mGame->Services().GetService(Box2DDebugDraw::TypeIdClass()));		
+		mPhysicsDebugDraw = reinterpret_cast<Box2DDebugDraw*>(mGame->Services().GetService(Box2DDebugDraw::TypeIdClass()));
 		assert(mPhysicsDebugDraw != nullptr);
 		mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints);
 
-		mContactListener = make_unique<ContactListener>(mPhysicsEngine);		
-		mDestructionListener.SetMouseJointDestroyedCallback([&] { mMouseJoint = nullptr; });
-		ResetWorld();
+		mContactListener = make_unique<ContactListener>();
+
+		mDestructionListener.SetMouseJointDestroyedCallback([&] { mMouseJoint = nullptr; });		
 
 		// Retrieve the keyboard service
 		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
@@ -55,7 +56,7 @@ namespace Box2DDemo
 		assert(mMouse != nullptr);
 
 		mHelpFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");		
-	
+
 		using namespace std::placeholders;
 		mSpawnMethods =
 		{
@@ -63,25 +64,43 @@ namespace Box2DDemo
 			{ ObjectTypes::Circle, bind(&PhysicsDemo::SpawnCircle, this, _1) },
 			{ ObjectTypes::Triangle, bind(&PhysicsDemo::SpawnTriangle, this, _1) },
 			{ ObjectTypes::Bolas, bind(&PhysicsDemo::SpawnBolas, this, _1) },
+			{ ObjectTypes::Stick, bind(&PhysicsDemo::SpawnStick, this, _1) },
 		};
 
 		mKeyMappings =
 		{
+			{ Keys::V,		[&]() { mPhysicsDebugDraw->SetVisible(!mPhysicsDebugDraw->Visible()); } },
 			{ Keys::R,		bind(&PhysicsDemo::ResetWorld, this) },
 			{ Keys::Space,	[&]() { SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
 			{ Keys::Enter,	[&]() { SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
 			{ Keys::Back,	[&]() { SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
 			{ Keys::Insert,	[&]() { SpawnObject(ObjectTypes::Bolas, BodySpawnPosition); } },
+			{ Keys::K,		[&]() { SpawnObject(ObjectTypes::Stick, BodySpawnPosition); } },
 			{ Keys::B,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsAABBs); } },
 			{ Keys::C,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsCenterOfMass); } },
 			{ Keys::J,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints); } },
 			{ Keys::Add,	bind(&PhysicsDemo::IncrementMouseSpawnObject, this) },
 		};
+
+		mBoxTexture = mGame->Content().Load<Texture2D>(L"Textures\\BlockWood_beige_size64.png");
+		mCatYellowTexture = mGame->Content().Load<Texture2D>(L"Textures\\CatYellow.png");
+		mDogTexture = mGame->Content().Load<Texture2D>(L"Textures\\DogBig.png");
+		mStickTexture = mGame->Content().Load<Texture2D>(L"Textures\\elementWood019.png");
+		mTriangleTexture = mGame->Content().Load<Texture2D>(L"Textures\\Triangle.png");
+		mGroundTexture = mGame->Content().Load<Texture2D>(L"Textures\\grass.png");
+		mFloorTexture = mGame->Content().Load<Texture2D>(L"Textures\\Ground_dirtMud1.png");
+
+		ResetWorld();
 	}
 
 	void PhysicsDemo::Update(const GameTime& gameTime)
 	{
 		UNREFERENCED_PARAMETER(gameTime);
+
+		for (auto& sprite : mSprites)
+		{
+			sprite->Update(gameTime);
+		}
 
 		for (const auto& keyMapping : mKeyMappings)
 		{
@@ -89,33 +108,39 @@ namespace Box2DDemo
 			{
 				keyMapping.second();
 			}
-		}
 
-		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
-		{
-			SpawnObjectWithMouse();
-		}
 
-		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Right))
-		{
-			CreateMouseJoint();
-		}
-
-		if (mMouse->IsButtonHeldDown(MouseButtons::Right))
-		{
-			if (mMouseJoint != nullptr)
+			if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
 			{
-				ApplyForceWithMouse();
+				SpawnObjectWithMouse();
 			}
-		}
 
-		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
-		{
-			if (mMouseJoint != nullptr)
+			if (mMouse->WasButtonPressedThisFrame(MouseButtons::Right))
 			{
-				mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
-				mMouseJoint = nullptr;
-				mDestructionListener.SetMouseJoint(nullptr);
+				CreateMouseJoint();
+			}
+
+			if (mMouse->IsButtonHeldDown(MouseButtons::Right))
+			{
+				if (mMouseJoint != nullptr)
+				{
+					ApplyForceWithMouse();
+				}
+			}
+
+			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
+			{
+				if (mMouseJoint != nullptr)
+				{
+					mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
+					mMouseJoint = nullptr;
+					mDestructionListener.SetMouseJoint(nullptr);
+				}
+			}
+
+			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Middle))
+			{
+				IncrementMouseSpawnObject();
 			}
 		}
 	}
@@ -123,6 +148,12 @@ namespace Box2DDemo
 	void PhysicsDemo::Draw(const GameTime& gameTime)
 	{
 		UNREFERENCED_PARAMETER(gameTime);
+		assert(mCamera != nullptr);
+
+		for (auto& sprite : mSprites)
+		{
+			sprite->Draw(gameTime);
+		}
 
 		wostringstream helpText;
 		helpText << HelpText << L"\nRigid Body Count: " << mPhysicsEngine->World().GetBodyCount();
@@ -133,29 +164,39 @@ namespace Box2DDemo
 
 	void PhysicsDemo::AddGround()
 	{
-		b2World& world = mPhysicsEngine->World();
+		const XMFLOAT2 position(0.0f, -10.0f);
+		const XMFLOAT2 size(10.0f, 1.0f);
 
-		// Create the ground body, shape, and fixture
-		b2BodyDef groundBodyDef;
-		groundBodyDef.position.Set(0.0f, -10.0f);
-		mGroundBody = world.CreateBody(&groundBodyDef);
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_staticBody;
+		bodyDef.position.Set(position.x, position.y);
 
-		b2PolygonShape groundBox;
-		groundBox.SetAsBox(10.0f, 1.0f);
-		mGroundBody->CreateFixture(&groundBox, 0.0f);
-		mShapeCount++;
-		
+		b2PolygonShape shape;
+		shape.SetAsBox(size.x, size.y);
+
+		auto sprite = make_shared<Box2DSprite>(*mGame, mCamera, mGroundTexture, Box2DSpritePolygonDef(bodyDef, shape), size);
+		sprite->Initialize();
+		mSprites.push_back(sprite);
+		mGroundBody = sprite->Body();
+		mShapeCount++;		
+
 		// Create a pass-through floor (e.g. water/lava pool)
-		b2Vec2 v1(-1000.0f, -10.0f);
-		b2Vec2 v2(1000.0f, -10.0f);
+		const b2Vec2 floorOffsets(1000.0f, -10.0f);
+		const b2Vec2 v1(-floorOffsets.x, floorOffsets.y);
+		const b2Vec2 v2(floorOffsets.x, floorOffsets.y);
 		b2EdgeShape floorShape;
 		floorShape.Set(v1, v2);
 
 		b2FixtureDef floorFixtureDef;
 		floorFixtureDef.shape = &floorShape;
 		floorFixtureDef.isSensor = true;
-		b2Fixture* floorFixture = mGroundBody->CreateFixture(&floorFixtureDef);
-		mContactListener->SetFloorFixture(floorFixture);
+
+		auto floorSprite = make_shared<Sprite>(*mGame, mCamera, mFloorTexture);
+		Transform2D transform(XMFLOAT2(0.0f, floorOffsets.y + position.y), 0.0f, XMFLOAT2(25, 1.0f));
+		floorSprite->SetTransform(transform);
+		floorSprite->Initialize();
+		mSprites.push_back(floorSprite);
+
 		mShapeCount++;
 	}
 
@@ -178,7 +219,7 @@ namespace Box2DDemo
 			{ 0.0f, 12.0f },
 			{ 2.5f, 10.0f },
 		};
-		
+
 		b2ChainShape chain;
 		chain.CreateChain(vertices, ARRAYSIZE(vertices));
 		mGroundBody->CreateFixture(&chain, 0.0f);
@@ -193,114 +234,77 @@ namespace Box2DDemo
 
 	void PhysicsDemo::SpawnBox(FXMVECTOR position)
 	{
-		b2World& world = mPhysicsEngine->World();
-
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(XMVectorGetX(position), XMVectorGetY(position));
-		b2Body* body = world.CreateBody(&bodyDef);
-
-		b2PolygonShape shape;
-		shape.SetAsBox(1.0f, 1.0f);
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-		body->CreateFixture(&fixtureDef);
+		const XMFLOAT2 size = Vector2Helper::One;
+		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mBoxTexture, position, size);
+		sprite->Initialize();
+		mSprites.push_back(sprite);
 		mShapeCount++;
 	}
 
 	void PhysicsDemo::SpawnCircle(FXMVECTOR position)
 	{
-		b2World& world = mPhysicsEngine->World();
-
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(XMVectorGetX(position), XMVectorGetY(position));
-		b2Body* body = world.CreateBody(&bodyDef);
-
-		b2CircleShape shape;
-		shape.m_radius = 1.0f;
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-		body->CreateFixture(&fixtureDef);
+		const float radius = 1.0f;
+		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
+		sprite->Initialize();
+		mSprites.push_back(sprite);
+		
 		mShapeCount++;
 	}
 
 	void PhysicsDemo::SpawnTriangle(FXMVECTOR position)
-	{
-		b2World& world = mPhysicsEngine->World();
+	{	
+		const XMFLOAT2 size = Vector2Helper::One;
+		auto sprite = Box2DSprite::CreateTriangle(*mGame, mCamera, mTriangleTexture, position, size);
+		sprite->Initialize();
+		mSprites.push_back(sprite);
 
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(XMVectorGetX(position), XMVectorGetY(position));
-		b2Body* body = world.CreateBody(&bodyDef);
-
-		b2Vec2 vertices[] =
-		{	
-			{ +1.0f, -1.0f },
-			{ +0.0f, +1.0f },			
-			{ -1.0f, -1.0f },
-		};
-
-		b2PolygonShape shape;
-		shape.Set(vertices, ARRAYSIZE(vertices));
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-		body->CreateFixture(&fixtureDef);
 		mShapeCount++;
 	}
 
 	void PhysicsDemo::SpawnBolas(FXMVECTOR position)
 	{
-		b2World& world = mPhysicsEngine->World();
-
-		b2CircleShape ballShape;
-		ballShape.m_radius = 0.75f;
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &ballShape;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-				
-		// Create left-side ball
+		const float radius = 0.75f;
 		static const float horizontalOffset = 2.0f;
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(XMVectorGetX(position) - horizontalOffset, XMVectorGetY(position));
-		b2Body* leftBody = world.CreateBody(&bodyDef);		
-		leftBody->CreateFixture(&fixtureDef);
+		
+		// Create left-side ball
+		const XMFLOAT2 leftSidePosition = XMFLOAT2(XMVectorGetX(position) - horizontalOffset, XMVectorGetY(position));
+		auto leftSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, leftSidePosition, radius);
+		leftSprite->Initialize();
+		mSprites.push_back(leftSprite);
 		mShapeCount++;
 
 		// Create right-side ball
-		bodyDef.position.Set(XMVectorGetX(position) + horizontalOffset, XMVectorGetY(position));
-		b2Body* rightBody = world.CreateBody(&bodyDef);
-		rightBody->CreateFixture(&fixtureDef);
+		const XMFLOAT2 rightSidePosition = XMFLOAT2(XMVectorGetX(position) + horizontalOffset, XMVectorGetY(position));
+		auto rightSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, rightSidePosition, radius);
+		rightSprite->Initialize();
+		mSprites.push_back(rightSprite);
 		mShapeCount++;
 
 		// Create tether
 		b2RopeJointDef jointDef;
-		jointDef.bodyA = leftBody;
-		jointDef.bodyB = rightBody;
-		jointDef.maxLength = b2Distance(leftBody->GetPosition(), rightBody->GetPosition());
+		jointDef.bodyA = leftSprite->Body();
+		jointDef.bodyB = rightSprite->Body();
+		jointDef.maxLength = b2Distance(leftSprite->Body()->GetPosition(), rightSprite->Body()->GetPosition());
 		jointDef.localAnchorA.SetZero();
 		jointDef.localAnchorB.SetZero();
 		jointDef.collideConnected = true;
-		world.CreateJoint(&jointDef);
+		mPhysicsEngine->World().CreateJoint(&jointDef);
+	}
+
+	void PhysicsDemo::SpawnStick(FXMVECTOR position)
+	{
+		const XMFLOAT2 size(0.5f, 2.0f);
+		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, position, size);
+		sprite->Initialize();
+		mSprites.push_back(sprite);
+		mShapeCount++;
 	}
 
 	void PhysicsDemo::ResetWorld()
 	{
 		mShapeCount = 0U;
+		mSprites.clear();
 		mPhysicsEngine->Clear();
-		mContactListener->SetFloorFixture(nullptr);
 		AddGround();
 		AddEdge();
 		AddChain();
@@ -310,7 +314,7 @@ namespace Box2DDemo
 	}
 
 	void PhysicsDemo::SpawnObjectWithMouse()
-	{		
+	{
 		SpawnObject(mMouseSpawnObject, GetMouseWorldPosition());
 	}
 
@@ -374,36 +378,6 @@ namespace Box2DDemo
 		return XMVector3Unproject(mouseScreenPosition, viewport.TopLeftX, viewport.TopLeftY, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth, mCamera->ProjectionMatrix(), mCamera->ViewMatrix(), XMMatrixIdentity());
 	}
 
-#pragma region ContactListener
-
-	PhysicsDemo::ContactListener::ContactListener(Box2DComponent* physicsEngine) :
-		mPhysicsEngine(physicsEngine), mFloorFixture(nullptr)
-	{
-		assert(mPhysicsEngine != nullptr);
-	}
-
-	const b2Fixture* PhysicsDemo::ContactListener::FloorFixture() const
-	{
-		return mFloorFixture;
-	}
-
-	void PhysicsDemo::ContactListener::SetFloorFixture(b2Fixture* fixture)
-	{
-		mFloorFixture = fixture;
-	}
-
-	void PhysicsDemo::ContactListener::EndContact(b2Contact* contact)
-	{
-		b2Fixture* fallingFixture = (contact->GetFixtureA() == mFloorFixture ? contact->GetFixtureB() : (contact->GetFixtureB() == mFloorFixture ? contact->GetFixtureA() : nullptr));
-		if (fallingFixture != nullptr)
-		{
-			b2Body* fallingBody = fallingFixture->GetBody();
-			mPhysicsEngine->BuryBody(*fallingBody);
-		}
-	}
-
-#pragma endregion
-
 #pragma region QueryCallback
 
 	PhysicsDemo::QueryCallback::QueryCallback(const b2Vec2& point) :
@@ -433,7 +407,7 @@ namespace Box2DDemo
 #pragma endregion
 
 #pragma region DestructionListener
-	
+
 	PhysicsDemo::DestructionListener::DestructionListener() :
 		mMouseJoint(nullptr)
 	{

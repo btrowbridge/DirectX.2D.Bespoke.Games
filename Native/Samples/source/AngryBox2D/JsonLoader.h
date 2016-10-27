@@ -11,18 +11,27 @@ namespace Library {
 	class Box2DSpriteDef;
 }
 
-static class JsonLoader
-{
-public:
-	
-	static Library::Box2DSpriteDef& LoadSpriteDefFromFile(wstring filename);
+namespace AngryBox2DGame {
+	class JsonLoader
+	{
+	public:
 
-	static void WriteSpriteDefToFile(Library::Box2DSpriteDef* spriteDef, wstring filename);
+		static void Initialize();
 
-private:
-	json LoadJsonFileContent(wstring filename);
+		static void Shutdown();
 
-	Library::Box2DSpriteDef& JSONtoSpriteDef(json jdoc);
+		static void LoadSpriteDefFromFile(Library::Box2DSpriteDef* spriteDef, wstring filename);
 
-	json SpriteDefToJson(Library::Box2DSpriteDef& spriteDef);
-};
+		static void WriteSpriteDefToFile(Library::Box2DSpriteDef* spriteDef, wstring filename);
+
+	private:
+		json LoadJsonFileContent(wstring filename);
+		void WriteJsonToFile(json jdoc, wstring filename);
+
+		void JsonLoader::LoadJsonToSpriteDef(json jdoc, Library::Box2DSpriteDef* spriteDef);
+
+		json SpriteDefToJson(Library::Box2DSpriteDef* spriteDef);
+
+		static unique_ptr<JsonLoader> sInstance;
+	};
+}
