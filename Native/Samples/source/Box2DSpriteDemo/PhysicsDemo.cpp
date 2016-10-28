@@ -5,12 +5,12 @@ using namespace std;
 using namespace Library;
 using namespace DirectX;
 
-namespace AngryBox2DGame
+namespace AngryBirds
 {
 	const XMFLOAT2 PhysicsDemo::TextPosition = { 0.0f, 42.0f };
-	const std::wstring PhysicsDemo::HelpText = L"Reset (R)\nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
+	const wstring PhysicsDemo::HelpText = L"Reset (R)\nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
 	const XMVECTORF32 PhysicsDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
-	const map<PhysicsDemo::ObjectTypes, std::wstring> PhysicsDemo::SpawnObjectNames =
+	const map<PhysicsDemo::ObjectTypes, wstring> PhysicsDemo::SpawnObjectNames =
 	{
 		{ ObjectTypes::Box, L"Box" },
 		{ ObjectTypes::Circle, L"Circle" },
@@ -43,7 +43,19 @@ namespace AngryBox2DGame
 		assert(mPhysicsDebugDraw != nullptr);
 		mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints);
 
-		mContactListener = make_unique<ContactListener>();
+		mContactListener = make_unique<ContactListener>(mPhysicsEngine);
+		mContactListener->SetSpriteDestroyedCallback([&](Box2DSprite* sprite)
+		{
+			auto it = find_if(begin(mSprites), end(mSprites), [sprite](const shared_ptr<Sprite>& s)
+			{
+				return s.get() == sprite;
+			});
+
+			if (it != mSprites.end())
+			{
+				mSprites.erase(it);
+			}
+		});
 
 		mDestructionListener.SetMouseJointDestroyedCallback([&] { mMouseJoint = nullptr; });		
 
@@ -108,40 +120,39 @@ namespace AngryBox2DGame
 			{
 				keyMapping.second();
 			}
+		}
 
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		{
+			SpawnObjectWithMouse();
+		}
 
-			if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Right))
+		{
+			CreateMouseJoint();
+		}
+
+		if (mMouse->IsButtonHeldDown(MouseButtons::Right))
+		{
+			if (mMouseJoint != nullptr)
 			{
-				SpawnObjectWithMouse();
+				ApplyForceWithMouse();
 			}
+		}
 
-			if (mMouse->WasButtonPressedThisFrame(MouseButtons::Right))
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
+		{
+			if (mMouseJoint != nullptr)
 			{
-				CreateMouseJoint();
+				mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
+				mMouseJoint = nullptr;
+				mDestructionListener.SetMouseJoint(nullptr);
 			}
+		}
 
-			if (mMouse->IsButtonHeldDown(MouseButtons::Right))
-			{
-				if (mMouseJoint != nullptr)
-				{
-					ApplyForceWithMouse();
-				}
-			}
-
-			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
-			{
-				if (mMouseJoint != nullptr)
-				{
-					mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
-					mMouseJoint = nullptr;
-					mDestructionListener.SetMouseJoint(nullptr);
-				}
-			}
-
-			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Middle))
-			{
-				IncrementMouseSpawnObject();
-			}
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Middle))
+		{
+			IncrementMouseSpawnObject();
 		}
 	}
 
@@ -174,7 +185,7 @@ namespace AngryBox2DGame
 		b2PolygonShape shape;
 		shape.SetAsBox(size.x, size.y);
 
-		auto sprite = make_shared<Box2DSprite>(*mGame, mCamera, mGroundTexture, Box2DSpritePolygonDef(bodyDef, shape), size);
+		auto sprite = make_shared<Library::Box2DSprite>(*mGame, mCamera, mGroundTexture, Library::Box2DSpritePolygonDef(bodyDef, shape), size);
 		sprite->Initialize();
 		mSprites.push_back(sprite);
 		mGroundBody = sprite->Body();
@@ -190,6 +201,8 @@ namespace AngryBox2DGame
 		b2FixtureDef floorFixtureDef;
 		floorFixtureDef.shape = &floorShape;
 		floorFixtureDef.isSensor = true;
+		b2Fixture* floorFixture = mGroundBody->CreateFixture(&floorFixtureDef);
+		mContactListener->SetFloorFixture(floorFixture);
 
 		auto floorSprite = make_shared<Sprite>(*mGame, mCamera, mFloorTexture);
 		Transform2D transform(XMFLOAT2(0.0f, floorOffsets.y + position.y), 0.0f, XMFLOAT2(25, 1.0f));
@@ -305,6 +318,7 @@ namespace AngryBox2DGame
 		mShapeCount = 0U;
 		mSprites.clear();
 		mPhysicsEngine->Clear();
+		mContactListener->SetFloorFixture(nullptr);
 		AddGround();
 		AddEdge();
 		AddChain();
@@ -377,6 +391,45 @@ namespace AngryBox2DGame
 		const auto& viewport = mGame->Viewport();
 		return XMVector3Unproject(mouseScreenPosition, viewport.TopLeftX, viewport.TopLeftY, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth, mCamera->ProjectionMatrix(), mCamera->ViewMatrix(), XMMatrixIdentity());
 	}
+
+#pragma region ContactListener
+
+	PhysicsDemo::ContactListener::ContactListener(Box2DComponent* physicsEngine) :
+		mPhysicsEngine(physicsEngine), mFloorFixture(nullptr)
+	{
+		assert(mPhysicsEngine != nullptr);
+	}
+
+	const b2Fixture* PhysicsDemo::ContactListener::FloorFixture() const
+	{
+		return mFloorFixture;
+	}
+
+	void PhysicsDemo::ContactListener::SetFloorFixture(b2Fixture* fixture)
+	{
+		mFloorFixture = fixture;
+	}
+
+	void PhysicsDemo::ContactListener::SetSpriteDestroyedCallback(std::function<void(Box2DSprite*)> callback)
+	{
+		mSpriteDestroyedCallback = callback;
+	}
+
+	void PhysicsDemo::ContactListener::EndContact(b2Contact* contact)
+	{
+		b2Fixture* fallingFixture = (contact->GetFixtureA() == mFloorFixture ? contact->GetFixtureB() : (contact->GetFixtureB() == mFloorFixture ? contact->GetFixtureA() : nullptr));
+		if (fallingFixture != nullptr)
+		{
+			b2Body* fallingBody = fallingFixture->GetBody();
+			Box2DSprite* sprite = reinterpret_cast<Box2DSprite*>(fallingBody->GetUserData());
+			if (mSpriteDestroyedCallback!= nullptr)
+			{
+				mSpriteDestroyedCallback(sprite);
+			}
+		}
+	}
+
+#pragma endregion
 
 #pragma region QueryCallback
 

@@ -13,6 +13,9 @@
     <Filter Include="Helper">
       <UniqueIdentifier>{783934f4-dcaa-48fa-8436-5c53abd4d4a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyFramework">
+      <UniqueIdentifier>{bf19b907-8c95-4109-bd85-1129c1f1e6df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
@@ -21,10 +24,13 @@
     <ClCompile Include="JsonLoader.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
-    <ClCompile Include="Box2DBehavior.cpp">
-      <Filter>Helper</Filter>
+    <ClCompile Include="BreakableBox.cpp">
+      <Filter>GameComponents</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsDemo.cpp" />
+    <ClCompile Include="Box2DBehavior.cpp">
+      <Filter>MyFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="AngryBoxDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -32,10 +38,13 @@
     <ClInclude Include="JsonLoader.h">
       <Filter>Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Box2DBehavior.h">
-      <Filter>Helper</Filter>
+    <ClInclude Include="BreakableBox.h">
+      <Filter>GameComponents</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsDemo.h" />
+    <ClInclude Include="Box2DBehavior.h">
+      <Filter>MyFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="AngryBoxDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

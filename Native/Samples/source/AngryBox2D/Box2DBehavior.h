@@ -12,7 +12,7 @@ namespace AngryBox2DGame {
 	class Box2DBehavior abstract : Library::DrawableGameComponent
 	{
 	public:
-		Box2DBehavior(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, Library::Box2DSprite* sprite);
+		Box2DBehavior(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, Library::Box2DSprite* sprite, std::string tag);
 
 		Library::Box2DSprite* Sprite() const;
 
@@ -22,10 +22,12 @@ namespace AngryBox2DGame {
 		virtual void Update(const Library::GameTime& gameTime);
 		virtual void Draw(const Library::GameTime& gameTime);
 		
-		virtual void OnContactBegin(b2Body* other, b2Contact* contact) = 0;
-		virtual void OnContactEnd(b2Body* other, b2Contact* contact) = 0;
-		virtual void OnContactPreSolve(b2Body* other, b2Contact* contact, const b2Manifold* oldManifold) = 0;
-		virtual void OnContactPostSolve(b2Body* other, b2Contact* contact, const b2ContactImpulse* impulse) = 0;
+		virtual void Destroy();
+
+		virtual void OnContactBegin(Box2DBehavior* other, b2Contact* contact);
+		virtual void OnContactEnd(Box2DBehavior* other, b2Contact* contact);
+		virtual void OnContactPreSolve(Box2DBehavior* other, b2Contact* contact, const b2Manifold* oldManifold);
+		virtual void OnContactPostSolve(Box2DBehavior* other, b2Contact* contact, const b2ContactImpulse* impulse);
 
 	protected:
 

@@ -24,11 +24,12 @@ namespace AngryBox2DGame {
 
 		static void WriteSpriteDefToFile(Library::Box2DSpriteDef* spriteDef, wstring filename);
 
+		static std::vector<Library::Box2DSpriteDef*> LoadLevelObjectsFromFile(wstring filename);
 	private:
 		json LoadJsonFileContent(wstring filename);
 		void WriteJsonToFile(json jdoc, wstring filename);
 
-		void JsonLoader::LoadJsonToSpriteDef(json jdoc, Library::Box2DSpriteDef* spriteDef);
+		void LoadJsonToSpriteDef(json jdoc, Library::Box2DSpriteDef* spriteDef);
 
 		json SpriteDefToJson(Library::Box2DSpriteDef* spriteDef);
 

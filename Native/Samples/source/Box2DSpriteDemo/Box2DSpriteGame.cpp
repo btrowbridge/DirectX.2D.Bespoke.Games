@@ -1,27 +1,26 @@
 #include "pch.h"
-#include "AngryBox2D.h"
-#include <xmllite.h>
+#include "Box2DSpriteGame.h"
+#include "PhysicsDemo.h"
 
 using namespace std;
 using namespace DirectX;
 using namespace Library;
 
-namespace AngryBox2DGame
+namespace AngryBirds
 {
-	const XMVECTORF32 AngryBox2D::BackgroundColor = Colors::Black;
+	const XMVECTORF32 Box2DSpriteGame::BackgroundColor = Colors::Black;
 
-	AngryBox2D::AngryBox2D(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
+	Box2DSpriteGame::Box2DSpriteGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback), mRenderStateHelper(*this)
 	{
 	}
 
-	void AngryBox2D::Initialize()
+	void Box2DSpriteGame::Initialize()
 	{
 		SamplerStates::Initialize(mDirect3DDevice.Get());
 		BlendStates::Initialize(mDirect3DDevice.Get());
 		RasterizerStates::Initialize(mDirect3DDevice.Get());
 		SpriteManager::Initialize(*this);
-		JsonLoader::Initialize();
 
 		const float viewWidth = 50.0f;
 		const float viewHeight = 50.0f;
@@ -49,7 +48,7 @@ namespace AngryBox2DGame
 		mComponents.push_back(physicsEngine);
 		mServices.AddService(Box2DComponent::TypeIdClass(), physicsEngine.get());
 		
-		auto demo = make_shared<AngryBoxDemo>(*this, camera);
+		auto demo = make_shared<PhysicsDemo>(*this, camera);
 		mComponents.push_back(demo);
 
 		auto physicDebugDraw = make_shared<Box2DDebugDraw>(*this, camera);
@@ -63,7 +62,7 @@ namespace AngryBox2DGame
 		camera->SetPosition(0.0f, 0.0f, 10.0f);
 	}
 
-	void AngryBox2D::Update(const GameTime &gameTime)
+	void Box2DSpriteGame::Update(const GameTime &gameTime)
 	{
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape) || mGamePad->WasButtonPressedThisFrame(GamePadButtons::Back))
 		{
@@ -75,7 +74,7 @@ namespace AngryBox2DGame
 		Game::Update(gameTime);
 	}
 
-	void AngryBox2D::Draw(const GameTime &gameTime)
+	void Box2DSpriteGame::Draw(const GameTime &gameTime)
 	{
 		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -99,18 +98,17 @@ namespace AngryBox2DGame
 		}
 	}
 
-	void AngryBox2D::Shutdown()
+	void Box2DSpriteGame::Shutdown()
 	{
 		SpriteManager::Shutdown();
 		RasterizerStates::Shutdown();
 		BlendStates::Shutdown();
 		SamplerStates::Shutdown();
-		JsonLoader::Shutdown();
 
 		Game::Shutdown();
 	}
 
-	void AngryBox2D::Exit()
+	void Box2DSpriteGame::Exit()
 	{
 		PostQuitMessage(0);
 	}

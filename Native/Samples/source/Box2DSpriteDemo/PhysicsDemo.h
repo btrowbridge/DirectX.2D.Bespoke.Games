@@ -6,7 +6,6 @@
 #include <vector>
 #include <functional>
 #include <Box2D\Box2D.h>
-#include "Box2DBehavior.h"
 
 namespace Library
 {
@@ -26,10 +25,8 @@ namespace DirectX
 	class SpriteFont;
 }
 
-namespace AngryBox2DGame
+namespace AngryBirds
 {
-	class Box2DBehavior;
-
 	class PhysicsDemo final : public Library::DrawableGameComponent
 	{
 	public:
@@ -40,65 +37,21 @@ namespace AngryBox2DGame
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-
-		class ContactListener : public b2ContactListener
+		class ContactListener final : public b2ContactListener
 		{
 		public:
-			ContactListener() : b2ContactListener() {}
+			ContactListener(Library::Box2DComponent* physicsEngine);
 
-			virtual void BeginContact(b2Contact* contact) override
-			{
-				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
+			const b2Fixture* FloorFixture() const;
+			void SetFloorFixture(b2Fixture* fixture);
+			void SetSpriteDestroyedCallback(std::function<void(Library::Box2DSprite*)> callback);
 
-				if (behaviorA != nullptr) {
-					behaviorA->OnContactBegin(behaviorB->Sprite()->Body(), contact);
-				}
-				if (behaviorB != nullptr) {
-					behaviorB->OnContactBegin(behaviorA->Sprite()->Body(), contact);
-				}
+			virtual void EndContact(b2Contact* contact) override;			
 
-			}
-
-			virtual void EndContact(b2Contact* contact) override
-			{
-				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
-
-				if (behaviorA != nullptr) {
-					behaviorA->OnContactEnd(behaviorB->Sprite()->Body(), contact);
-				}
-				if (behaviorB != nullptr) {
-					behaviorA->OnContactEnd(behaviorA->Sprite()->Body(), contact);
-				}
-			}
-
-			virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold) override
-			{
-				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
-
-				if (behaviorA != nullptr) {
-					behaviorA->OnContactPreSolve(behaviorB->Sprite()->Body(), contact, oldManifold);
-				}
-				if (behaviorB != nullptr) {
-					behaviorB->OnContactPreSolve(behaviorA->Sprite()->Body(), contact, oldManifold);
-				}
-			}
-
-			virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override
-			{
-				Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-				Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
-
-				if (behaviorA != nullptr) {
-					behaviorA->OnContactPostSolve(behaviorB->Sprite()->Body(), contact, impulse);
-				}
-				if (behaviorB != nullptr) {
-					behaviorB->OnContactPostSolve(behaviorA->Sprite()->Body(), contact, impulse);
-				}
-			}
-
+		private:
+			Library::Box2DComponent* mPhysicsEngine;
+			b2Fixture* mFloorFixture;
+			std::function<void(Library::Box2DSprite*)> mSpriteDestroyedCallback;
 		};
 
 		class QueryCallback final : public b2QueryCallback

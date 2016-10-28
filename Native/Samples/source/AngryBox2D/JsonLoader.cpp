@@ -30,6 +30,21 @@ namespace AngryBox2DGame {
 		sInstance->WriteJsonToFile(jdoc, filename);
 	}
 
+	std::vector<Library::Box2DSpriteDef*> JsonLoader::LoadLevelObjectsFromFile(wstring filename)
+	{
+		std::vector<Library::Box2DSpriteDef*> levelDefinitions;
+		
+		json jdoc = sInstance->LoadJsonFileContent(filename);
+		for (auto jsonSpriteDef : jdoc["Box2DSpriteDef"]) {
+			
+			Box2DSpriteDef* spriteDef = { 0 };
+			sInstance->LoadJsonToSpriteDef(jsonSpriteDef, spriteDef);
+			levelDefinitions.push_back(spriteDef);
+
+		}
+		return levelDefinitions;
+	}
+
 	json JsonLoader::LoadJsonFileContent(wstring filename)
 	{
 		std::ifstream ifs(filename);
@@ -49,6 +64,7 @@ namespace AngryBox2DGame {
 
 	void JsonLoader::LoadJsonToSpriteDef(json jdoc, Box2DSpriteDef* spriteDef)
 	{
+		
 		spriteDef->BodyDef.active = jdoc["Box2DSpriteDef"]["BodyDef"]["active"].get<bool>();
 		spriteDef->BodyDef.allowSleep = jdoc["Box2DSpriteDef"]["BodyDef"]["allowSleep"].get<bool>();
 		spriteDef->BodyDef.angle = jdoc["Box2DSpriteDef"]["BodyDef"]["angle"].get<float32>();
@@ -57,7 +73,7 @@ namespace AngryBox2DGame {
 		spriteDef->BodyDef.awake = jdoc["Box2DSpriteDef"]["BodyDef"]["awake"].get<bool>();
 		spriteDef->BodyDef.bullet = jdoc["Box2DSpriteDef"]["BodyDef"]["bullet"].get<bool>();
 		spriteDef->BodyDef.fixedRotation = jdoc["Box2DSpriteDef"]["BodyDef"]["fixedRotation"].get<bool>();
-		spriteDef->BodyDef.gravityScale =  jdoc["Box2DSpriteDef"]["BodyDef"]["gravityScale"].get<float32>();
+		spriteDef->BodyDef.gravityScale = jdoc["Box2DSpriteDef"]["BodyDef"]["gravityScale"].get<float32>();
 		spriteDef->BodyDef.linearDamping = jdoc["Box2DSpriteDef"]["BodyDef"]["linearDamping"].get<float32>();
 		spriteDef->BodyDef.linearVelocity.x = jdoc["Box2DSpriteDef"]["BodyDef"]["linearVelocity"]["x"].get<float32>();
 		spriteDef->BodyDef.linearVelocity.y = jdoc["Box2DSpriteDef"]["BodyDef"]["linearVelocity"]["y"].get<float32>();
@@ -65,7 +81,7 @@ namespace AngryBox2DGame {
 		spriteDef->BodyDef.position.y = jdoc["Box2DSpriteDef"]["BodyDef"]["position"]["y"].get<float32>();
 		spriteDef->BodyDef.type = static_cast<b2BodyType>(jdoc["Box2DSpriteDef"]["BodyDef"]["bullet"].get<int>());
 		spriteDef->BodyDef.userData = make_shared<string>(jdoc["Box2DSpriteDef"]["BodyDef"]["userData"].get<string>()).get();
-
+		
 		spriteDef->Friction = jdoc["Box2DSpriteDef"]["Friction"].get<float>();
 		spriteDef->Restitution = jdoc["Box2DSpriteDef"]["Restitution"].get<float>();
 		spriteDef->Density = jdoc["Box2DSpriteDef"]["Density"].get<float>();
