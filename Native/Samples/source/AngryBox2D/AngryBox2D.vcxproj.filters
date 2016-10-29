@@ -7,9 +7,6 @@
     <Filter Include="Content\Fonts">
       <UniqueIdentifier>{47931696-f5bf-47c3-b68e-05995a0983de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helper">
-      <UniqueIdentifier>{783934f4-dcaa-48fa-8436-5c53abd4d4a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Behaviors">
       <UniqueIdentifier>{c6ce2cbd-acb9-43af-87b5-96f2cf82729a}</UniqueIdentifier>
     </Filter>
@@ -18,9 +15,6 @@
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="AngryBox2D.cpp" />
-    <ClCompile Include="JsonLoader.cpp">
-      <Filter>Helper</Filter>
-    </ClCompile>
     <ClCompile Include="AngryBoxDemo.cpp" />
     <ClCompile Include="Breakable.cpp">
       <Filter>Behaviors</Filter>
@@ -38,9 +32,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="AngryBox2D.h" />
-    <ClInclude Include="JsonLoader.h">
-      <Filter>Helper</Filter>
-    </ClInclude>
     <ClInclude Include="AngryBoxDemo.h" />
     <ClInclude Include="Breakable.h">
       <Filter>Behaviors</Filter>

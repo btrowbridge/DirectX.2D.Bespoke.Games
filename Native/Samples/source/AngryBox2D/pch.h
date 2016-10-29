@@ -128,8 +128,6 @@
 #include "Box2DBehavior.h"
 #include "AngryBoxDemo.h"
 
-#include "JsonLoader.h"
-
 #include "Ammunition.h"
 #include "Breakable.h"
 #include "Barrier.h"

@@ -462,12 +462,13 @@ namespace AngryBox2DGame
 			static const float forceMultiplier = 1000.0f;
 			b2Body* body = callback.Fixture->GetBody();
 
-			if (!mDevEnvironmentActive && body != mAmmo->Sprite()->Body())
-				return;
+			if (!mDevEnvironmentActive) {
+				if (body != mAmmo->Sprite()->Body())
+					return;
 
-			if (body == mAmmo->Sprite()->Body() && !mAmmo->Ready())
-				return;
-
+				if (body == mAmmo->Sprite()->Body() && !mAmmo->Ready())
+					return;
+			}
 			b2MouseJointDef mouseJointDef;
 			mouseJointDef.bodyA = mGroundBody;
 			mouseJointDef.bodyB = body;

@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2DDemo", "..\source\Box2DDemo\Box2DDemo.vcxproj", "{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{9F5AD6AA-E1FD-489E-93AE-61232C434AA4}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2DSpriteDemo", "..\source\Box2DSpriteDemo\Box2DSpriteDemo.vcxproj", "{51CC3348-833B-4093-BFCB-781AA0C8D9D6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngryBox2D", "..\source\AngryBox2D\AngryBox2D.vcxproj", "{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}"
 EndProject
@@ -19,22 +15,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Debug|x64.ActiveCfg = Debug|x64
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Debug|x64.Build.0 = Debug|x64
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Debug|x86.ActiveCfg = Debug|Win32
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Debug|x86.Build.0 = Debug|Win32
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Release|x64.ActiveCfg = Release|x64
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Release|x64.Build.0 = Release|x64
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Release|x86.ActiveCfg = Release|Win32
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B}.Release|x86.Build.0 = Release|Win32
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Debug|x64.ActiveCfg = Debug|x64
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Debug|x64.Build.0 = Debug|x64
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Debug|x86.ActiveCfg = Debug|Win32
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Debug|x86.Build.0 = Debug|Win32
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Release|x64.ActiveCfg = Release|x64
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Release|x64.Build.0 = Release|x64
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Release|x86.ActiveCfg = Release|Win32
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6}.Release|x86.Build.0 = Release|Win32
 		{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}.Debug|x64.ActiveCfg = Debug|x64
 		{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}.Debug|x64.Build.0 = Debug|x64
 		{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}.Debug|x86.ActiveCfg = Debug|Win32
@@ -48,8 +28,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{551CC3E3-D7AA-4214-A90B-AACA96B91C8B} = {9F5AD6AA-E1FD-489E-93AE-61232C434AA4}
-		{51CC3348-833B-4093-BFCB-781AA0C8D9D6} = {9F5AD6AA-E1FD-489E-93AE-61232C434AA4}
 		{40A8618C-659E-45A0-9B03-FB21CA0DE7B1} = {9F5AD6AA-E1FD-489E-93AE-61232C434AA4}
 	EndGlobalSection
 EndGlobal
