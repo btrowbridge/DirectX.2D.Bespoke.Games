@@ -8,7 +8,8 @@ using namespace DirectX;
 namespace AngryBox2DGame
 {
 	const XMFLOAT2 AngryBoxDemo::TextPosition = { 0.0f, 42.0f };
-	const std::wstring AngryBoxDemo::HelpText = L"Reset (R)\nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
+	const std::wstring AngryBoxDemo::HelpText = L"Toggle Dev Environment (Tab) \nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
+	const std::wstring AngryBoxDemo::GameText = L"Toggle Dev Environment (Tab) \nGrab Ammo Bird (Right Mouse Button)";
 	const XMVECTORF32 AngryBoxDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
 	const map<AngryBoxDemo::ObjectTypes, std::wstring> AngryBoxDemo::SpawnObjectNames =
 	{
@@ -25,7 +26,7 @@ namespace AngryBox2DGame
 		DrawableGameComponent(game, camera),
 		mPhysicsEngine(nullptr), mPhysicsDebugDraw(nullptr), mKeyboard(nullptr),
 		mShapeCount(0U), mGroundBody(nullptr), mMouseSpawnObject(ObjectTypes::Box),
-		mMouseJoint(nullptr)
+		mMouseJoint(nullptr), mScore(0),mDevEnvironmentActive(false)
 	{
 	}
 
@@ -70,17 +71,45 @@ namespace AngryBox2DGame
 
 		mKeyMappings =
 		{
-			{ Keys::V,		[&]() { mPhysicsDebugDraw->SetVisible(!mPhysicsDebugDraw->Visible()); } },
-			{ Keys::R,		bind(&AngryBoxDemo::ResetWorld, this) },
-			{ Keys::Space,	[&]() { SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
-			{ Keys::Enter,	[&]() { SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
-			{ Keys::Back,	[&]() { SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
-			{ Keys::Insert,	[&]() { SpawnObject(ObjectTypes::Bolas, BodySpawnPosition); } },
-			{ Keys::K,		[&]() { SpawnObject(ObjectTypes::Stick, BodySpawnPosition); } },
-			{ Keys::B,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsAABBs); } },
-			{ Keys::C,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsCenterOfMass); } },
-			{ Keys::J,		[&]() { mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints); } },
+			{ Keys::V,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->SetVisible(!mPhysicsDebugDraw->Visible()); } },
+			/*{ Keys::R,		bind(&AngryBoxDemo::ResetWorld, this) }, *///will break
+			{ Keys::Space,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
+			{ Keys::Enter,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
+			{ Keys::Back,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
+			{ Keys::Insert,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Bolas, BodySpawnPosition); } },
+			{ Keys::K,		[&]() { if(mDevEnvironmentActive)SpawnObject(ObjectTypes::Stick, BodySpawnPosition); } },
+			{ Keys::B,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsAABBs); } },
+			{ Keys::C,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsCenterOfMass); } },
+			{ Keys::J,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints); } },
 			{ Keys::Add,	bind(&AngryBoxDemo::IncrementMouseSpawnObject, this) },
+			{ Keys::Tab,    bind(&AngryBoxDemo::ToggleDevEnvironment, this)},
+		};
+
+		mLevelObjectsDescription = {
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {2.0f,1.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {4.0f,1.0f- 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {6.0f,1.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {8.0f,1.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {10.0f,1.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {12.0f,1.0f - 20.0f, 0.0f,1.0f}),
+
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {2.0f,3.0f - 20.0f, 0.0f,1.0f}),
+			//std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {5.0f,3.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {7.0f,3.0f - 20.0f, 0.0f,1.0f}),
+			//std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {9.0f,3.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {12.0f,3.0f - 20.0f, 0.0f,1.0f}),
+
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {4.25,3.5f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Bolas, {7.0f,3.5f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {9.75f,3.5f - 20.0f, 0.0f,1.0f}),
+
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {-0.5f,3.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {-1.0f,5.5f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {-1.5f,3.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {15.0f,3.0f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {15.5f,5.5f - 20.0f, 0.0f,1.0f}),
+			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {16.0f,3.0f - 20.0f, 0.0f,1.0f}),
+
 		};
 
 		mBoxTexture = mGame->Content().Load<Texture2D>(L"Textures\\BlockWood_beige_size64.png");
@@ -92,6 +121,7 @@ namespace AngryBox2DGame
 		mFloorTexture = mGame->Content().Load<Texture2D>(L"Textures\\Ground_dirtMud1.png");
 
 		ResetWorld();
+		
 	}
 
 	void AngryBoxDemo::Update(const GameTime& gameTime)
@@ -106,6 +136,9 @@ namespace AngryBox2DGame
 		{
 			if (object->IsScheduledForDestruction()) 
 			{
+				if (object->Tag() == BehaviorType::Breakable)
+					mScore += object->As<Breakable>()->ScoreValue();
+
 				auto itObject = find_if(begin(mGameObjects), end(mGameObjects), [object](const shared_ptr<Box2DBehavior>& obj) {
 					return obj.get() == object.get();
 				});
@@ -121,14 +154,15 @@ namespace AngryBox2DGame
 			}
 		}
 
-		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left) && mDevEnvironmentActive)
 		{
+			
 			SpawnObjectWithMouse();
 		}
 
 		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Right))
 		{
-				CreateMouseJoint();
+			CreateMouseJoint();
 		}
 
 		if (mMouse->IsButtonHeldDown(MouseButtons::Right))
@@ -178,10 +212,59 @@ namespace AngryBox2DGame
 		}
 
 		wostringstream helpText;
-		helpText << HelpText << L"\nRigid Body Count: " << mPhysicsEngine->World().GetBodyCount();
-		helpText << L"\nShape Count: " << mShapeCount;
-		helpText << L"\nMouse Spawn Object: " << SpawnObjectNames.at(mMouseSpawnObject);
+		if (mDevEnvironmentActive) {
+			helpText << HelpText;
+			helpText << L"\nRigid Body Count: " << mPhysicsEngine->World().GetBodyCount();
+			helpText << L"\nShape Count: " << mShapeCount;
+			helpText << L"\nMouse Spawn Object: " << SpawnObjectNames.at(mMouseSpawnObject);
+		}
+		else {
+			helpText << GameText;
+		}
+		helpText << L"\nScore: " << mScore;
+
 		SpriteManager::DrawString(mHelpFont, helpText.str().c_str(), TextPosition);
+	}
+
+	void AngryBoxDemo::AddAmmo()
+	{
+		
+		FXMVECTOR position = { mSlingTarget.x, mSlingTarget.y, 0.0f,1.0f };
+		const float radius = 1.0f;
+		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
+		mAmmo = make_shared<Ammunition>(*mGame, mCamera, sprite, mGroundBody, mSlingTarget);
+		sprite->Body()->SetUserData(mAmmo.get());
+		sprite->Body()->GetFixtureList()->SetFriction(100.0f);
+		mAmmo->Initialize();
+		mGameObjects.push_back(mAmmo);
+		
+		mShapeCount++;
+	}
+
+	void AngryBoxDemo:: SpawnLevelObjects()
+	{
+	
+		for (std::pair<ObjectTypes, XMVECTOR> pair : mLevelObjectsDescription) {
+			SpawnObject(pair.first, pair.second);
+			
+		}
+	}
+
+	void AngryBoxDemo::AddBarrier()
+	{
+		auto size = XMFLOAT2(100.0f, 100.0f);
+		auto position = XMFLOAT2(0.0f, 0.0f);
+
+		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mFloorTexture, position, size);
+		sprite->SetVisible(false);
+		sprite->Body()->GetFixtureList()->SetSensor(true);
+		sprite->Body()->SetType(b2_staticBody);
+		auto barrier = make_shared<Barrier>(*mGame, mCamera, sprite);
+		sprite->Body()->SetUserData(barrier.get());
+
+		mGameObjects.push_back(barrier);
+
+		mShapeCount++;
 	}
 
 	void AngryBoxDemo::AddGround()
@@ -211,8 +294,14 @@ namespace AngryBox2DGame
 		b2Vec2 v2(-10.0f, 10.0f);
 		b2EdgeShape edge;
 		edge.Set(v1, v2);
+		
+		b2FixtureDef fixDef;
+		fixDef.shape = &(edge);
+		fixDef.isSensor = true;
 
-		mGroundBody->CreateFixture(&edge, 0.0f);
+		mGroundBody->CreateFixture(&fixDef);
+		
+		mSlingTarget = v2 + mGroundBody->GetPosition();
 		mShapeCount++;
 	}
 
@@ -224,7 +313,7 @@ namespace AngryBox2DGame
 			{ 0.0f, 12.0f },
 			{ 2.5f, 10.0f },
 		};
-
+		
 		b2ChainShape chain;
 		chain.CreateChain(vertices, ARRAYSIZE(vertices));
 		mGroundBody->CreateFixture(&chain, 0.0f);
@@ -241,10 +330,10 @@ namespace AngryBox2DGame
 	{
 		const XMFLOAT2 size = Vector2Helper::One;
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mBoxTexture, position, size);
-		auto breakableBox = make_shared<BreakableBox>(*mGame, mCamera, sprite, 100.0f);
-		breakableBox->Initialize();
-		sprite->Body()->SetUserData(breakableBox.get());
-		mGameObjects.push_back(breakableBox);
+		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 100.0f,50);
+		Breakable->Initialize();
+		sprite->Body()->SetUserData(Breakable.get());
+		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
@@ -252,9 +341,10 @@ namespace AngryBox2DGame
 	{
 		const float radius = 1.0f;
 		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
-		sprite->Initialize();
-		mSprites.push_back(sprite);
-		
+		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 200.0f,100);
+		Breakable->Initialize();
+		sprite->Body()->SetUserData(Breakable.get());
+		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
@@ -262,9 +352,10 @@ namespace AngryBox2DGame
 	{	
 		const XMFLOAT2 size = Vector2Helper::One;
 		auto sprite = Box2DSprite::CreateTriangle(*mGame, mCamera, mTriangleTexture, position, size);
-		sprite->Initialize();
-		mSprites.push_back(sprite);
-
+		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 300.0f,100);
+		Breakable->Initialize();
+		sprite->Body()->SetUserData(Breakable.get());
+		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
@@ -277,14 +368,20 @@ namespace AngryBox2DGame
 		const XMFLOAT2 leftSidePosition = XMFLOAT2(XMVectorGetX(position) - horizontalOffset, XMVectorGetY(position));
 		auto leftSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, leftSidePosition, radius);
 		leftSprite->Initialize();
-		mSprites.push_back(leftSprite);
+		auto breakableLeft = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, leftSprite, 500.0f,100);
+		breakableLeft->Initialize();
+		leftSprite->Body()->SetUserData(breakableLeft.get());
+		mGameObjects.push_back(breakableLeft);
 		mShapeCount++;
+
 
 		// Create right-side ball
 		const XMFLOAT2 rightSidePosition = XMFLOAT2(XMVectorGetX(position) + horizontalOffset, XMVectorGetY(position));
 		auto rightSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, rightSidePosition, radius);
-		rightSprite->Initialize();
-		mSprites.push_back(rightSprite);
+		auto breakableRight = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, rightSprite, 500.0f,100);
+		breakableRight->Initialize();
+		rightSprite->Body()->SetUserData(breakableRight.get());
+		mGameObjects.push_back(breakableRight);
 		mShapeCount++;
 
 		// Create tether
@@ -302,21 +399,29 @@ namespace AngryBox2DGame
 	{
 		const XMFLOAT2 size(0.5f, 2.0f);
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, position, size);
-		sprite->Initialize();
-		mSprites.push_back(sprite);
+		auto breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 500.0f,200);
+		breakable->Initialize();
+		sprite->Body()->SetUserData(breakable.get());
+		mGameObjects.push_back(breakable);
 		mShapeCount++;
 	}
 
+	//Will Break
 	void AngryBoxDemo::ResetWorld()
 	{
 		mShapeCount = 0U;
 		mSprites.clear();
+		mGameObjects.clear();
 		mPhysicsEngine->Clear();
 		AddGround();
 		AddEdge();
 		b2World& world = mPhysicsEngine->World();
 		world.SetContactListener(mContactListener.get());
 		world.SetDestructionListener(&mDestructionListener);
+		SpawnLevelObjects();
+		AddAmmo();
+		AddBarrier();
+
 	}
 
 	void AngryBoxDemo::SpawnObjectWithMouse()
@@ -356,6 +461,13 @@ namespace AngryBox2DGame
 		{
 			static const float forceMultiplier = 1000.0f;
 			b2Body* body = callback.Fixture->GetBody();
+
+			if (!mDevEnvironmentActive && body != mAmmo->Sprite()->Body())
+				return;
+
+			if (body == mAmmo->Sprite()->Body() && !mAmmo->Ready())
+				return;
+
 			b2MouseJointDef mouseJointDef;
 			mouseJointDef.bodyA = mGroundBody;
 			mouseJointDef.bodyB = body;
@@ -364,6 +476,16 @@ namespace AngryBox2DGame
 			mMouseJoint = static_cast<b2MouseJoint*>(world.CreateJoint(&mouseJointDef));
 			mDestructionListener.SetMouseJoint(mMouseJoint);
 			body->SetAwake(true);
+
+			if (body->GetUserData()) {
+				auto bahavior = static_cast<Box2DBehavior*>(body->GetUserData());
+				switch (bahavior->Tag()) {
+				case BehaviorType::Ammunition:
+					bahavior->As<Ammunition>()->OnClick();
+				default:
+					break;
+				}
+			}
 		}
 	}
 
@@ -374,6 +496,11 @@ namespace AngryBox2DGame
 		XMVECTOR mouseWorldPosition = GetMouseWorldPosition();
 		const b2Vec2 position(XMVectorGetX(mouseWorldPosition), XMVectorGetY(mouseWorldPosition));
 		mMouseJoint->SetTarget(position);
+	}
+
+	void AngryBoxDemo::ToggleDevEnvironment()
+	{
+		mDevEnvironmentActive = !mDevEnvironmentActive;
 	}
 
 	DirectX::XMVECTOR AngryBoxDemo::GetMouseWorldPosition() const
@@ -396,8 +523,8 @@ namespace AngryBox2DGame
 		if (userDataA) {
 			switch (behaviorA->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorA->As<BreakableBox>()->OnContactBegin(behaviorB, contact);
+			case BehaviorType::Breakable:
+				behaviorA->As<Breakable>()->OnContactBegin(behaviorB, contact);
 			default:
 				break;
 			}
@@ -405,8 +532,8 @@ namespace AngryBox2DGame
 		if (userDataB) {
 			switch (behaviorB->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorB->As<BreakableBox>()->OnContactBegin(behaviorA, contact);
+			case BehaviorType::Breakable:
+				behaviorB->As<Breakable>()->OnContactBegin(behaviorA, contact);
 			default:
 				break;
 			}
@@ -424,8 +551,8 @@ namespace AngryBox2DGame
 		if (userDataA) {
 			switch (behaviorA->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorA->As<BreakableBox>()->OnContactEnd(behaviorB, contact);
+			case BehaviorType::Breakable:
+				behaviorA->As<Breakable>()->OnContactEnd(behaviorB, contact);
 			default:
 				break;
 			}
@@ -433,8 +560,8 @@ namespace AngryBox2DGame
 		if (userDataB) {
 			switch (behaviorB->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorB->As<BreakableBox>()->OnContactEnd(behaviorA, contact);
+			case BehaviorType::Breakable:
+				behaviorB->As<Breakable>()->OnContactEnd(behaviorA, contact);
 			default:
 				break;
 			}
@@ -452,8 +579,8 @@ namespace AngryBox2DGame
 		if (userDataA) {
 			switch (behaviorA->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorA->As<BreakableBox>()->OnContactPreSolve(behaviorB, contact, oldManifold);
+			case BehaviorType::Breakable:
+				behaviorA->As<Breakable>()->OnContactPreSolve(behaviorB, contact, oldManifold);
 			default:
 				break;
 			}
@@ -461,8 +588,8 @@ namespace AngryBox2DGame
 		if (userDataB) {
 			switch (behaviorB->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorB->As<BreakableBox>()->OnContactPreSolve(behaviorA, contact, oldManifold);
+			case BehaviorType::Breakable:
+				behaviorB->As<Breakable>()->OnContactPreSolve(behaviorA, contact, oldManifold);
 			default:
 				break;
 			}
@@ -479,8 +606,8 @@ namespace AngryBox2DGame
 		if (userDataA) {
 			switch (behaviorA->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorA->As<BreakableBox>()->OnContactPostSolve(behaviorB, contact, impulse);
+			case BehaviorType::Breakable:
+				behaviorA->As<Breakable>()->OnContactPostSolve(behaviorB, contact, impulse);
 			default:
 				break;
 			}
@@ -488,8 +615,8 @@ namespace AngryBox2DGame
 		if (userDataB) {
 			switch (behaviorB->Tag())
 			{
-			case BehaviorType::BreakableBox:
-				behaviorB->As<BreakableBox>()->OnContactPostSolve(behaviorA, contact, impulse);
+			case BehaviorType::Breakable:
+				behaviorB->As<Breakable>()->OnContactPostSolve(behaviorA, contact, impulse);
 			default:
 				break;
 			}
@@ -497,6 +624,7 @@ namespace AngryBox2DGame
 	}
 
 #pragma endregion
+
 #pragma region QueryCallback
 
 	AngryBoxDemo::QueryCallback::QueryCallback(const b2Vec2& point) :

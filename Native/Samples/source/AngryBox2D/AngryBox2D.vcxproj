@@ -225,8 +225,10 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ammunition.cpp" />
+    <ClCompile Include="Barrier.cpp" />
     <ClCompile Include="Box2DBehavior.cpp" />
-    <ClCompile Include="BreakableBox.cpp" />
+    <ClCompile Include="Breakable.cpp" />
     <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -239,8 +241,10 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     <ClCompile Include="AngryBox2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ammunition.h" />
+    <ClInclude Include="Barrier.h" />
     <ClInclude Include="Box2DBehavior.h" />
-    <ClInclude Include="BreakableBox.h" />
+    <ClInclude Include="Breakable.h" />
     <ClInclude Include="JsonLoader.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="AngryBox2D.h" />

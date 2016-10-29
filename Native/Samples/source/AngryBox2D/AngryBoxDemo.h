@@ -29,11 +29,14 @@ namespace DirectX
 namespace AngryBox2DGame
 {
 	enum class BehaviorType {
-		BreakableBox,
+		Breakable,
+		Ammunition,
+		Barrier,
 		None
 	};
 
 	class Box2DBehavior;
+	class Ammunition;
 
 	class AngryBoxDemo final : public Library::DrawableGameComponent
 	{
@@ -95,16 +98,20 @@ namespace AngryBox2DGame
 			Triangle,
 			Bolas,
 			Stick,
-			BreakableBox,
 			End
 		};
 
 		static const DirectX::XMFLOAT2 TextPosition;
 		static const std::wstring HelpText;
+		static const std::wstring GameText;
 		static const DirectX::XMVECTORF32 BodySpawnPosition;
 		static const std::map<ObjectTypes, std::wstring> SpawnObjectNames;
 
+		void AddAmmo();
 
+		void SpawnLevelObjects();
+
+		void AddBarrier();
 		void AddGround();
 		void AddEdge();
 		void AddChain();
@@ -119,6 +126,11 @@ namespace AngryBox2DGame
 		void IncrementMouseSpawnObject();
 		void CreateMouseJoint();
 		void ApplyForceWithMouse();
+
+		void ToggleDevEnvironment();
+
+		bool mDevEnvironmentActive;
+
 		DirectX::XMVECTOR GetMouseWorldPosition() const;
 
 		Library::Box2DComponent* mPhysicsEngine;
@@ -137,6 +149,12 @@ namespace AngryBox2DGame
 
 		std::vector<std::shared_ptr<Library::Sprite>> mSprites;
 		std::vector<std::shared_ptr<Box2DBehavior>> mGameObjects;
+
+		std::shared_ptr<Ammunition> mAmmo;
+		b2Vec2 mSlingTarget;
+		int mScore;
+
+		std::vector<std::pair<ObjectTypes, DirectX::XMVECTOR>> mLevelObjectsDescription;
 
 		std::shared_ptr<Library::Texture2D> mBoxTexture;
 		std::shared_ptr<Library::Texture2D> mCatYellowTexture;

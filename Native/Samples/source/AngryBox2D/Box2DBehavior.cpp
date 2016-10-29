@@ -25,7 +25,8 @@ namespace AngryBox2DGame {
 	void Box2DBehavior::Initialize()
 	{
 		DrawableGameComponent::Initialize();
-		mSprite->Initialize();
+		if(mSprite != nullptr)
+			mSprite->Initialize();
 	}
 	void Box2DBehavior::Update(const Library::GameTime & gameTime)
 	{
@@ -35,7 +36,8 @@ namespace AngryBox2DGame {
 	void Box2DBehavior::Draw(const Library::GameTime & gameTime)
 	{
 		DrawableGameComponent::Draw(gameTime);
-		mSprite->Draw(gameTime);
+		if (mSprite->Visible())
+			mSprite->Draw(gameTime);
 	}
 
 	void Box2DBehavior::ScheduleToDestroy()

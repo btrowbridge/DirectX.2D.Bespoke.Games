@@ -1,28 +1,33 @@
 #include "pch.h"
-#include "BreakableBox.h"
-#include <numeric>
+#include "Breakable.h"
+
 
 using namespace std;
 using namespace Library;
 using namespace DirectX;
 
 namespace AngryBox2DGame {
-	BreakableBox::BreakableBox(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth) :
-		Box2DBehavior(game,camera,sprite,BehaviorType::BreakableBox), mHealth(startHealth)
+	const float Breakable::mDamageThreshold = 1.0f;
+
+	Breakable::Breakable(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth, int scorevalue) :
+		Box2DBehavior(game,camera,sprite,BehaviorType::Breakable), mHealth(startHealth), mScoreValue(scorevalue)
 	{
 
 	}
-	void BreakableBox::Initialize()
+	void Breakable::Initialize()
 	{
 		Box2DBehavior::Initialize();
 		mHealthFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");		
 
 	}
-	void BreakableBox::Update(const Library::GameTime & gameTime)
+	void Breakable::Update(const Library::GameTime & gameTime)
 	{
 		Box2DBehavior::Update(gameTime);
+		if (mSprite->Body()->GetPosition().Length() > 50.0f) {
+			ScheduleToDestroy();
+		}
 	}
-	void BreakableBox::Draw(const Library::GameTime & gameTime)
+	void Breakable::Draw(const Library::GameTime & gameTime)
 	{
 		Box2DBehavior::Draw(gameTime);
 
@@ -34,27 +39,27 @@ namespace AngryBox2DGame {
 		
 	}
 
-	void BreakableBox::OnContactBegin(Box2DBehavior * other, b2Contact * contact)
+	void Breakable::OnContactBegin(Box2DBehavior * other, b2Contact * contact)
 	{		
 		UNREFERENCED_PARAMETER(other);
 		UNREFERENCED_PARAMETER(contact);
 	}
 
-	void BreakableBox::OnContactEnd(Box2DBehavior * other, b2Contact * contact)
+	void Breakable::OnContactEnd(Box2DBehavior * other, b2Contact * contact)
 	{
 		UNREFERENCED_PARAMETER(other);
 		UNREFERENCED_PARAMETER(contact);
 
 	}
 
-	void BreakableBox::OnContactPreSolve(Box2DBehavior * other, b2Contact * contact, const b2Manifold * oldManifold)
+	void Breakable::OnContactPreSolve(Box2DBehavior * other, b2Contact * contact, const b2Manifold * oldManifold)
 	{
 		UNREFERENCED_PARAMETER(other);
 		UNREFERENCED_PARAMETER(contact);
 		UNREFERENCED_PARAMETER(oldManifold);
 	}
 
-	void BreakableBox::OnContactPostSolve(Box2DBehavior * other, b2Contact * contact, const b2ContactImpulse * impulse)
+	void Breakable::OnContactPostSolve(Box2DBehavior * other, b2Contact * contact, const b2ContactImpulse * impulse)
 	{	
 		UNREFERENCED_PARAMETER(other);
 		UNREFERENCED_PARAMETER(contact);
@@ -62,9 +67,14 @@ namespace AngryBox2DGame {
 		float calculatedDamage = std::round(impulse->normalImpulses[0]);
 		TakeDamage(calculatedDamage);
 	}
-	void BreakableBox::TakeDamage(float damageAmount)
+	int Breakable::ScoreValue()
 	{
-		mHealth -= damageAmount;
+		return mScoreValue;
+	}
+	void Breakable::TakeDamage(float damageAmount)
+	{	
+		if (damageAmount > mDamageThreshold)
+			mHealth -= damageAmount;
 		if (mHealth <= 0) {
 			ScheduleToDestroy();
 		}

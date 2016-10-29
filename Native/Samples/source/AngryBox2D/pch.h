@@ -126,19 +126,11 @@
 //local
 #include "AngryBox2D.h"
 #include "Box2DBehavior.h"
-#include "BreakableBox.h"
 #include "AngryBoxDemo.h"
+
 #include "JsonLoader.h"
 
+#include "Ammunition.h"
+#include "Breakable.h"
+#include "Barrier.h"
 
-//template <typename T,typename V>
-//T TryCast(V element) {
-//	T ptr = nullptr;
-//	try {
-//		ptr=static_cast<T>(element);
-//	}
-//	catch(...){
-//		ptr = nullptr;
-//	}
-//	return ptr;
-//};
