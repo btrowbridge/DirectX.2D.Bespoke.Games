@@ -99,7 +99,7 @@ namespace AngryBox2DGame {
 	{
 		json jdoc = { "Box2DSpriteDef" ,
 							{ "BodyDef", {
-								{"userData", reinterpret_cast<Box2DBehavior*>(spriteDef->BodyDef.userData)->Tag() }, //Use Tag as object identifier
+								{"userData", (int)reinterpret_cast<Box2DBehavior*>(spriteDef->BodyDef.userData)->Tag() }, //Use Tag as object identifier
 								{"position" , {
 									{"x", spriteDef->BodyDef.position.x},
 									{"y", spriteDef->BodyDef.position.y}

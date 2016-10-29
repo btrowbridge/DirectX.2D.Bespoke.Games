@@ -1,12 +1,16 @@
 #pragma once
 #include "Box2DBehavior.h"
 
+
+
+
 namespace AngryBox2DGame {
 
 	class BreakableBox : public Box2DBehavior
 	{
+
 	public:
-		BreakableBox(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, Library::Box2DSprite* sprite, float32 startHealth);
+		BreakableBox(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth);
 
 		virtual void Initialize();
 		virtual void Update(const Library::GameTime& gameTime);
@@ -18,12 +22,14 @@ namespace AngryBox2DGame {
 		virtual void OnContactPreSolve(Box2DBehavior * other, b2Contact * contact, const b2Manifold * oldManifold) override;
 		virtual void OnContactPostSolve(Box2DBehavior * other, b2Contact * contact, const b2ContactImpulse * impulse) override;
 
-		virtual void Destroy() override;
+		
 
-		void TakeDamage(float32 damageAmount );
+		void TakeDamage(float damageAmount);
 		
 	private:
-		float32 mHealth;
+		float mHealth;
+
+		std::shared_ptr<DirectX::SpriteFont> mHealthFont;
 
 	};
 

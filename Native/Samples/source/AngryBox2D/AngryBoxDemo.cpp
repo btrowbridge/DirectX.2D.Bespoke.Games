@@ -20,6 +20,7 @@ namespace AngryBox2DGame
 		{ ObjectTypes::End, L"" },
 	};
 
+
 	AngryBoxDemo::AngryBoxDemo(Game& game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera),
 		mPhysicsEngine(nullptr), mPhysicsDebugDraw(nullptr), mKeyboard(nullptr),
@@ -101,6 +102,24 @@ namespace AngryBox2DGame
 		{
 			sprite->Update(gameTime);
 		}
+		for (auto& object : mGameObjects)
+		{
+			if (object->IsScheduledForDestruction()) 
+			{
+				auto itObject = find_if(begin(mGameObjects), end(mGameObjects), [object](const shared_ptr<Box2DBehavior>& obj) {
+					return obj.get() == object.get();
+				});
+				if (itObject != mGameObjects.end())
+				{
+					mGameObjects.erase(itObject);
+					break;
+				}
+			}
+			else
+			{
+				object->Update(gameTime);
+			}
+		}
 
 		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
 		{
@@ -120,26 +139,26 @@ namespace AngryBox2DGame
 			}
 		}
 
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
+		{
+			if (mMouseJoint != nullptr)
+			{
+				mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
+				mMouseJoint = nullptr;
+				mDestructionListener.SetMouseJoint(nullptr);
+			}
+		}
+
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Middle))
+		{
+			IncrementMouseSpawnObject();
+		}
+
 		for (const auto& keyMapping : mKeyMappings)
 		{
 			if (mKeyboard->WasKeyPressedThisFrame(keyMapping.first))
 			{
 				keyMapping.second();
-			}
-
-			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Right))
-			{
-				if (mMouseJoint != nullptr)
-				{
-					mPhysicsEngine->ScheduleJointForDestruction(*mMouseJoint);
-					mMouseJoint = nullptr;
-					mDestructionListener.SetMouseJoint(nullptr);
-				}
-			}
-
-			if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Middle))
-			{
-				IncrementMouseSpawnObject();
 			}
 		}
 	}
@@ -152,6 +171,10 @@ namespace AngryBox2DGame
 		for (auto& sprite : mSprites)
 		{
 			sprite->Draw(gameTime);
+		}
+		for (auto& objects : mGameObjects)
+		{
+			objects->Draw(gameTime);
 		}
 
 		wostringstream helpText;
@@ -218,8 +241,10 @@ namespace AngryBox2DGame
 	{
 		const XMFLOAT2 size = Vector2Helper::One;
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mBoxTexture, position, size);
-		sprite->Initialize();
-		mSprites.push_back(sprite);
+		auto breakableBox = make_shared<BreakableBox>(*mGame, mCamera, sprite, 100.0f);
+		breakableBox->Initialize();
+		sprite->Body()->SetUserData(breakableBox.get());
+		mGameObjects.push_back(breakableBox);
 		mShapeCount++;
 	}
 
@@ -359,58 +384,117 @@ namespace AngryBox2DGame
 		return XMVector3Unproject(mouseScreenPosition, viewport.TopLeftX, viewport.TopLeftY, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth, mCamera->ProjectionMatrix(), mCamera->ViewMatrix(), XMMatrixIdentity());
 	}
 #pragma region CallbackListener
+
 	void AngryBoxDemo::ContactListener::BeginContact(b2Contact * contact)
 	{
-		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
+		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
+		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-		if (behaviorA != nullptr) {
-			behaviorA->OnContactBegin(behaviorB, contact);
-		}
-		if (behaviorB != nullptr) {
-			behaviorB->OnContactBegin(behaviorA, contact);
-		}
+		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(userDataA);
+		Box2DBehavior* behaviorB =  static_cast<Box2DBehavior*>(userDataB);
 
+		if (userDataA) {
+			switch (behaviorA->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorA->As<BreakableBox>()->OnContactBegin(behaviorB, contact);
+			default:
+				break;
+			}
+		}
+		if (userDataB) {
+			switch (behaviorB->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorB->As<BreakableBox>()->OnContactBegin(behaviorA, contact);
+			default:
+				break;
+			}
+		}
 	}
-	void  AngryBoxDemo::ContactListener::EndContact(b2Contact* contact)
-	{
-		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
 
-		if (behaviorA != nullptr) {
-			behaviorA->OnContactEnd(behaviorB, contact);
+	void  AngryBoxDemo::ContactListener::EndContact(b2Contact* contact)
+	{	
+		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
+		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
+
+		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(userDataA);
+		Box2DBehavior* behaviorB =  static_cast<Box2DBehavior*>(userDataB);
+
+		if (userDataA) {
+			switch (behaviorA->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorA->As<BreakableBox>()->OnContactEnd(behaviorB, contact);
+			default:
+				break;
+			}
 		}
-		if (behaviorB != nullptr) {
-			behaviorA->OnContactEnd(behaviorA, contact);
+		if (userDataB) {
+			switch (behaviorB->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorB->As<BreakableBox>()->OnContactEnd(behaviorA, contact);
+			default:
+				break;
+			}
 		}
 	}
 
 	void  AngryBoxDemo::ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 	{
-		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
+		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
+		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-		if (behaviorA != nullptr) {
-			behaviorA->OnContactPreSolve(behaviorB, contact, oldManifold);
+		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(userDataA);
+		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(userDataB);
+
+		if (userDataA) {
+			switch (behaviorA->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorA->As<BreakableBox>()->OnContactPreSolve(behaviorB, contact, oldManifold);
+			default:
+				break;
+			}
 		}
-		if (behaviorB != nullptr) {
-			behaviorB->OnContactPreSolve(behaviorA, contact, oldManifold);
+		if (userDataB) {
+			switch (behaviorB->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorB->As<BreakableBox>()->OnContactPreSolve(behaviorA, contact, oldManifold);
+			default:
+				break;
+			}
 		}
 	}
-
-	void AngryBoxDemo::ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+	void  AngryBoxDemo::ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 	{
-		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(contact->GetFixtureA()->GetUserData());
-		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(contact->GetFixtureB()->GetUserData());
+		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
+		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-		if (behaviorA != nullptr) {
-			behaviorA->OnContactPostSolve(behaviorB, contact, impulse);
+		Box2DBehavior* behaviorA = static_cast<Box2DBehavior*>(userDataA);
+		Box2DBehavior* behaviorB = static_cast<Box2DBehavior*>(userDataB);
+
+		if (userDataA) {
+			switch (behaviorA->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorA->As<BreakableBox>()->OnContactPostSolve(behaviorB, contact, impulse);
+			default:
+				break;
+			}
 		}
-		if (behaviorB != nullptr) {
-			behaviorB->OnContactPostSolve(behaviorA, contact, impulse);
+		if (userDataB) {
+			switch (behaviorB->Tag())
+			{
+			case BehaviorType::BreakableBox:
+				behaviorB->As<BreakableBox>()->OnContactPostSolve(behaviorA, contact, impulse);
+			default:
+				break;
+			}
 		}
 	}
-
 
 #pragma endregion
 #pragma region QueryCallback

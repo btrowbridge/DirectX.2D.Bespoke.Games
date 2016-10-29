@@ -2,15 +2,21 @@
 #include "BreakableBox.h"
 #include <numeric>
 
+using namespace std;
+using namespace Library;
+using namespace DirectX;
+
 namespace AngryBox2DGame {
-	BreakableBox::BreakableBox(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, Library::Box2DSprite * sprite, float32 startHealth) :
-		Box2DBehavior(game,camera,sprite,"Breakable"), mHealth(startHealth)
+	BreakableBox::BreakableBox(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth) :
+		Box2DBehavior(game,camera,sprite,BehaviorType::BreakableBox), mHealth(startHealth)
 	{
 
 	}
 	void BreakableBox::Initialize()
 	{
 		Box2DBehavior::Initialize();
+		mHealthFont = make_unique<SpriteFont>(mGame->Direct3DDevice(), L"Content\\Fonts\\Arial_14_Regular.spritefont");		
+
 	}
 	void BreakableBox::Update(const Library::GameTime & gameTime)
 	{
@@ -19,6 +25,13 @@ namespace AngryBox2DGame {
 	void BreakableBox::Draw(const Library::GameTime & gameTime)
 	{
 		Box2DBehavior::Draw(gameTime);
+
+		//wostringstream healthText;
+		//healthText << "HP:" << mHealth;
+
+		//XMFLOAT2 textPosition(Sprite()->Body()->GetPosition().x, Sprite()->Body()->GetPosition().y + 5);
+		//SpriteManager::DrawString(mHealthFont, healthText.str().c_str(), XMFLOAT2(textPositionProjection.x, textPositionProjection.y));
+		
 	}
 
 	void BreakableBox::OnContactBegin(Box2DBehavior * other, b2Contact * contact)
@@ -46,18 +59,14 @@ namespace AngryBox2DGame {
 		UNREFERENCED_PARAMETER(other);
 		UNREFERENCED_PARAMETER(contact);
 		//Calculate damages from impulse forces
-		float32 calculatedDamage = std::accumulate(std::begin(impulse->normalImpulses), std::end(impulse->normalImpulses), 0.0f);
+		float calculatedDamage = std::round(impulse->normalImpulses[0]);
 		TakeDamage(calculatedDamage);
 	}
-	void BreakableBox::Destroy()
+	void BreakableBox::TakeDamage(float damageAmount)
 	{
-		Box2DBehavior::Destroy();
-	}
-	void BreakableBox::TakeDamage(float32 damageAmount)
-	{
-		mHealth = damageAmount;
+		mHealth -= damageAmount;
 		if (mHealth <= 0) {
-			Destroy();
+			ScheduleToDestroy();
 		}
 	}
 }

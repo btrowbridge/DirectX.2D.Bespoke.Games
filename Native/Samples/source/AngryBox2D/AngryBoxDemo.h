@@ -28,6 +28,11 @@ namespace DirectX
 
 namespace AngryBox2DGame
 {
+	enum class BehaviorType {
+		BreakableBox,
+		None
+	};
+
 	class Box2DBehavior;
 
 	class AngryBoxDemo final : public Library::DrawableGameComponent
@@ -90,6 +95,7 @@ namespace AngryBox2DGame
 			Triangle,
 			Bolas,
 			Stick,
+			BreakableBox,
 			End
 		};
 
@@ -97,6 +103,7 @@ namespace AngryBox2DGame
 		static const std::wstring HelpText;
 		static const DirectX::XMVECTORF32 BodySpawnPosition;
 		static const std::map<ObjectTypes, std::wstring> SpawnObjectNames;
+
 
 		void AddGround();
 		void AddEdge();
@@ -129,6 +136,8 @@ namespace AngryBox2DGame
 		DestructionListener mDestructionListener;
 
 		std::vector<std::shared_ptr<Library::Sprite>> mSprites;
+		std::vector<std::shared_ptr<Box2DBehavior>> mGameObjects;
+
 		std::shared_ptr<Library::Texture2D> mBoxTexture;
 		std::shared_ptr<Library::Texture2D> mCatYellowTexture;
 		std::shared_ptr<Library::Texture2D> mDogTexture;
