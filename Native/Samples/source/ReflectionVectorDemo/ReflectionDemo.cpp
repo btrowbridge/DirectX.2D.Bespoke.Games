@@ -1,28 +1,27 @@
 #include "pch.h"
-#include "AngryBoxDemo.h"
+#include "ReflectionDemo.h"
 
 using namespace std;
 using namespace Library;
 using namespace DirectX;
 
-namespace AngryBox2DGame
+namespace Reflection2DGame
 {
-	const XMFLOAT2 AngryBoxDemo::TextPosition = { 0.0f, 42.0f };
-	const std::wstring AngryBoxDemo::HelpText = L"Toggle Dev Environment (Tab) \nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
-	const std::wstring AngryBoxDemo::GameText = L"Toggle Dev Environment (Tab) \nGrab Ammo Bird (Right Mouse Button)";
-	const XMVECTORF32 AngryBoxDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
-	const map<AngryBoxDemo::ObjectTypes, std::wstring> AngryBoxDemo::SpawnObjectNames =
+	const XMFLOAT2 ReflectionDemo::TextPosition = { 0.0f, 42.0f };
+	const std::wstring ReflectionDemo::HelpText = L"Toggle Dev Environment (Tab) \nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
+	const std::wstring ReflectionDemo::GameText = L"Toggle Dev Environment (Tab) \nGrab Ammo Bird (Right Mouse Button)";
+	const XMVECTORF32 ReflectionDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
+	const map<ReflectionDemo::ObjectTypes, std::wstring> ReflectionDemo::SpawnObjectNames =
 	{
 		{ ObjectTypes::Box, L"Box" },
 		{ ObjectTypes::Circle, L"Circle" },
 		{ ObjectTypes::Triangle, L"Triangle" },
-		{ ObjectTypes::Bolas, L"Bolas" },
 		{ ObjectTypes::Stick, L"Stick" },
 		{ ObjectTypes::End, L"" },
 	};
 
 
-	AngryBoxDemo::AngryBoxDemo(Game& game, const shared_ptr<Camera>& camera) :
+	ReflectionDemo::ReflectionDemo(Game& game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera),
 		mPhysicsEngine(nullptr), mPhysicsDebugDraw(nullptr), mKeyboard(nullptr),
 		mShapeCount(0U), mGroundBody(nullptr), mMouseSpawnObject(ObjectTypes::Box),
@@ -30,7 +29,7 @@ namespace AngryBox2DGame
 	{
 	}
 
-	void AngryBoxDemo::Initialize()
+	void ReflectionDemo::Initialize()
 	{
 		// Retrieve physics engine
 		mPhysicsEngine = reinterpret_cast<Box2DComponent*>(mGame->Services().GetService(Box2DComponent::TypeIdClass()));
@@ -62,17 +61,16 @@ namespace AngryBox2DGame
 		using namespace std::placeholders;
 		mSpawnMethods =
 		{
-			{ ObjectTypes::Box, bind(&AngryBoxDemo::SpawnBox, this, _1) },
-			{ ObjectTypes::Circle, bind(&AngryBoxDemo::SpawnCircle, this, _1) },
-			{ ObjectTypes::Triangle, bind(&AngryBoxDemo::SpawnTriangle, this, _1) },
-			{ ObjectTypes::Bolas, bind(&AngryBoxDemo::SpawnBolas, this, _1) },
-			{ ObjectTypes::Stick, bind(&AngryBoxDemo::SpawnStick, this, _1) },
+			{ ObjectTypes::Box, bind(&ReflectionDemo::SpawnBox, this, _1) },
+			{ ObjectTypes::Circle, bind(&ReflectionDemo::SpawnCircle, this, _1) },
+			{ ObjectTypes::Triangle, bind(&ReflectionDemo::SpawnTriangle, this, _1) },
+			{ ObjectTypes::Stick, bind(&ReflectionDemo::SpawnStick, this, _1) },
 		};
 
 		mKeyMappings =
 		{
 			{ Keys::V,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->SetVisible(!mPhysicsDebugDraw->Visible()); } },
-			{ Keys::R,		bind(&AngryBoxDemo::ResetWorld, this) }, //will break
+			{ Keys::R,		bind(&ReflectionDemo::ResetWorld, this) }, //will break
 			{ Keys::Space,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
 			{ Keys::Enter,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
 			{ Keys::Back,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
@@ -81,8 +79,8 @@ namespace AngryBox2DGame
 			{ Keys::B,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsAABBs); } },
 			{ Keys::C,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsCenterOfMass); } },
 			{ Keys::J,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints); } },
-			{ Keys::Add,	bind(&AngryBoxDemo::IncrementMouseSpawnObject, this) },
-			{ Keys::Tab,    bind(&AngryBoxDemo::ToggleDevEnvironment, this)},
+			{ Keys::Add,	bind(&ReflectionDemo::IncrementMouseSpawnObject, this) },
+			{ Keys::Tab,    bind(&ReflectionDemo::ToggleDevEnvironment, this)},
 		};
 
 		mLevelObjectsDescription = {
@@ -100,7 +98,6 @@ namespace AngryBox2DGame
 			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {12.0f,3.0f - 20.0f, 0.0f,1.0f}),
 
 			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {4.25,3.5f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Bolas, {7.0f,3.5f - 20.0f, 0.0f,1.0f}),
 			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {9.75f,3.5f - 20.0f, 0.0f,1.0f}),
 
 			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {-0.5f,3.0f - 20.0f, 0.0f,1.0f}),
@@ -124,7 +121,7 @@ namespace AngryBox2DGame
 		
 	}
 
-	void AngryBoxDemo::Update(const GameTime& gameTime)
+	void ReflectionDemo::Update(const GameTime& gameTime)
 	{
 		UNREFERENCED_PARAMETER(gameTime);
 
@@ -197,7 +194,7 @@ namespace AngryBox2DGame
 		}
 	}
 
-	void AngryBoxDemo::Draw(const GameTime& gameTime)
+	void ReflectionDemo::Draw(const GameTime& gameTime)
 	{
 		UNREFERENCED_PARAMETER(gameTime);
 		assert(mCamera != nullptr);
@@ -226,22 +223,7 @@ namespace AngryBox2DGame
 		SpriteManager::DrawString(mHelpFont, helpText.str().c_str(), TextPosition);
 	}
 
-	void AngryBoxDemo::AddAmmo()
-	{
-		
-		FXMVECTOR position = { mSlingTarget.x, mSlingTarget.y, 0.0f,1.0f };
-		const float radius = 1.0f;
-		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
-		mAmmo = make_shared<Ammunition>(*mGame, mCamera, sprite, mGroundBody, mSlingTarget);
-		sprite->Body()->SetUserData(mAmmo.get());
-		sprite->Body()->GetFixtureList()->SetFriction(100.0f);
-		mAmmo->Initialize();
-		mGameObjects.push_back(mAmmo);
-		
-		mShapeCount++;
-	}
-
-	void AngryBoxDemo:: SpawnLevelObjects()
+	void ReflectionDemo:: SpawnLevelObjects()
 	{
 	
 		for (std::pair<ObjectTypes, XMVECTOR> pair : mLevelObjectsDescription) {
@@ -250,7 +232,7 @@ namespace AngryBox2DGame
 		}
 	}
 
-	void AngryBoxDemo::AddBarrier()
+	void ReflectionDemo::AddWalls()
 	{
 		b2Vec2 vertices[] =
 		{
@@ -265,194 +247,125 @@ namespace AngryBox2DGame
 		b2ChainShape chain;
 		chain.CreateChain(vertices, ARRAYSIZE(vertices));
 
-		b2BodyDef barrierBodyDef;
-		barrierBodyDef.type = b2_staticBody;
+		b2BodyDef BouncyBodyDef;
+		BouncyBodyDef.type = b2_staticBody;
 		
-		b2FixtureDef barrierFixtureDef;
-		barrierFixtureDef.shape = &(chain);
-		barrierFixtureDef.isSensor = true;
+		b2FixtureDef BouncyFixtureDef;
+		BouncyFixtureDef.shape = &(chain);
 
-		b2Body* body = mPhysicsEngine->World().CreateBody(&barrierBodyDef);
+		b2Body* body = mPhysicsEngine->World().CreateBody(&BouncyBodyDef);
 
-		body->CreateFixture(&barrierFixtureDef);
-
-		//filler
-		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mFloorTexture, XMFLOAT2());
-		sprite->SetEnabled(false);
-		sprite->SetVisible(false);
-
-		auto barrier = make_shared<Barrier>(*mGame, mCamera, sprite ); //not used
+		body->CreateFixture(&BouncyFixtureDef);
 		
-		body->SetUserData(barrier.get());
-
-		mGameObjects.push_back(barrier);
+		body->SetUserData(NULL);
 
 		mShapeCount++;
 	}
 
-	void AngryBoxDemo::AddGround()
+	void ReflectionDemo::AddBall()
 	{
-		const XMFLOAT2 position(0.0f, -20.0f);
-		const XMFLOAT2 size(100.0f, 1.0f);
-
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_staticBody;
-		bodyDef.position.Set(position.x, position.y);
-
-		b2PolygonShape shape;
-		shape.SetAsBox(size.x, size.y);
-
-		auto sprite = make_shared<Box2DSprite>(*mGame, mCamera, mGroundTexture, Box2DSpritePolygonDef(bodyDef, shape), size);
-		sprite->Body()->SetUserData(NULL);
-		mGroundBody = sprite->Body();
-		mShapeCount++;		
-
-		sprite->Initialize();
-		mSprites.push_back(sprite);
-	}
-
-	void AngryBoxDemo::AddEdge()
-	{
-		b2Vec2 v1(-10.0f, 0.0f);
-		b2Vec2 v2(-10.0f, 10.0f);
-		b2EdgeShape edge;
-		edge.Set(v1, v2);
-		
-		b2FixtureDef fixDef;
-		fixDef.shape = &(edge);
-		fixDef.isSensor = true;
-
-		mGroundBody->CreateFixture(&fixDef);
-		
-		mSlingTarget = v2 + mGroundBody->GetPosition();
+		const float radius = 1.0f;
+		const b2Vec2 startVelocity(0.0f, -20.0f);
+		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, XMFLOAT2(0.0f,5.0f), radius);
+		auto bouncy = make_shared<Reflection2DGame::Bouncy>(*mGame, mCamera, sprite);
+		bouncy->Initialize();
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetUserData(bouncy.get());
+		sprite->Body()->SetLinearVelocity(startVelocity);
+		mGameObjects.push_back(bouncy);
 		mShapeCount++;
 	}
 
-	void AngryBoxDemo::AddChain()
+	void ReflectionDemo::AddPaddle()
 	{
-		b2Vec2 vertices[] =
-		{
-			{ -2.5f, 10.0f },
-			{ 0.0f, 12.0f },
-			{ 2.5f, 10.0f },
-		};
-		
-		b2ChainShape chain;
-		chain.CreateChain(vertices, ARRAYSIZE(vertices));
-		mGroundBody->CreateFixture(&chain, 0.0f);
+		const XMFLOAT2 size(0.5f, 2.0f);
+		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(), size);
+		auto paddle = make_shared<Reflection2DGame::Paddle>(*mGame, mCamera, sprite);
+		paddle->Initialize();
+		sprite->Body()->SetType(b2BodyType::b2_staticBody);
+		sprite->Body()->SetUserData(paddle.get());
+		mGameObjects.push_back(paddle);
 		mShapeCount++;
 	}
 
-	inline void AngryBoxDemo::SpawnObject(ObjectTypes type, DirectX::FXMVECTOR position)
+	inline void ReflectionDemo::SpawnObject(ObjectTypes type, DirectX::FXMVECTOR position)
 	{
 		assert(type != ObjectTypes::End);
 		mSpawnMethods.at(type)(position);
 	}
 
-	void AngryBoxDemo::SpawnBox(FXMVECTOR position)
+	void ReflectionDemo::SpawnBox(FXMVECTOR position)
 	{
 		const XMFLOAT2 size = Vector2Helper::One;
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mBoxTexture, position, size);
-		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 100.0f,50);
+		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 100.0f,50);
 		Breakable->Initialize();
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
-	void AngryBoxDemo::SpawnCircle(FXMVECTOR position)
+	void ReflectionDemo::SpawnCircle(FXMVECTOR position)
 	{
 		const float radius = 1.0f;
 		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
-		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 200.0f,100);
+		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 200.0f,100);
 		Breakable->Initialize();
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
-	void AngryBoxDemo::SpawnTriangle(FXMVECTOR position)
+	void ReflectionDemo::SpawnTriangle(FXMVECTOR position)
 	{	
 		const XMFLOAT2 size = Vector2Helper::One;
 		auto sprite = Box2DSprite::CreateTriangle(*mGame, mCamera, mTriangleTexture, position, size);
-		auto Breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 300.0f,100);
+		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 300.0f,100);
 		Breakable->Initialize();
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
 	}
 
-	void AngryBoxDemo::SpawnBolas(FXMVECTOR position)
-	{
-		const float radius = 0.75f;
-		static const float horizontalOffset = 2.0f;
-		
-		// Create left-side ball
-		const XMFLOAT2 leftSidePosition = XMFLOAT2(XMVectorGetX(position) - horizontalOffset, XMVectorGetY(position));
-		auto leftSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, leftSidePosition, radius);
-		leftSprite->Initialize();
-		auto breakableLeft = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, leftSprite, 500.0f,100);
-		breakableLeft->Initialize();
-		leftSprite->Body()->SetUserData(breakableLeft.get());
-		mGameObjects.push_back(breakableLeft);
-		mShapeCount++;
-
-
-		// Create right-side ball
-		const XMFLOAT2 rightSidePosition = XMFLOAT2(XMVectorGetX(position) + horizontalOffset, XMVectorGetY(position));
-		auto rightSprite = Box2DSprite::CreateCircle(*mGame, mCamera, mDogTexture, rightSidePosition, radius);
-		auto breakableRight = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, rightSprite, 500.0f,100);
-		breakableRight->Initialize();
-		rightSprite->Body()->SetUserData(breakableRight.get());
-		mGameObjects.push_back(breakableRight);
-		mShapeCount++;
-
-		// Create tether
-		b2RopeJointDef jointDef;
-		jointDef.bodyA = leftSprite->Body();
-		jointDef.bodyB = rightSprite->Body();
-		jointDef.maxLength = b2Distance(leftSprite->Body()->GetPosition(), rightSprite->Body()->GetPosition());
-		jointDef.localAnchorA.SetZero();
-		jointDef.localAnchorB.SetZero();
-		jointDef.collideConnected = true;
-		mPhysicsEngine->World().CreateJoint(&jointDef);
-	}
-
-	void AngryBoxDemo::SpawnStick(FXMVECTOR position)
+	void ReflectionDemo::SpawnStick(FXMVECTOR position)
 	{
 		const XMFLOAT2 size(0.5f, 2.0f);
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, position, size);
-		auto breakable = make_shared<AngryBox2DGame::Breakable>(*mGame, mCamera, sprite, 500.0f,200);
+		auto breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 500.0f,200);
 		breakable->Initialize();
 		sprite->Body()->SetUserData(breakable.get());
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
 		mGameObjects.push_back(breakable);
 		mShapeCount++;
 	}
 
 	//Will Break
-	void AngryBoxDemo::ResetWorld()
+	void ReflectionDemo::ResetWorld()
 	{
 		mShapeCount = 0U;
 		mSprites.clear();
 		mGameObjects.clear();
 		mPhysicsEngine->Clear();
-		AddGround();
-		AddEdge();
+
 		b2World& world = mPhysicsEngine->World();
 		world.SetContactListener(mContactListener.get());
 		world.SetDestructionListener(&mDestructionListener);
 		SpawnLevelObjects();
-		AddAmmo();
-		AddBarrier();
+		AddWalls();
+		AddBall();
+		AddPaddle();
 
 	}
 
-	void AngryBoxDemo::SpawnObjectWithMouse()
+	void ReflectionDemo::SpawnObjectWithMouse()
 	{
 		SpawnObject(mMouseSpawnObject, GetMouseWorldPosition());
 	}
 
-	void AngryBoxDemo::IncrementMouseSpawnObject()
+	void ReflectionDemo::IncrementMouseSpawnObject()
 	{
 		ObjectTypes newSpawnObject = ObjectTypes(static_cast<int>(mMouseSpawnObject) + 1);
 		if (newSpawnObject >= ObjectTypes::End)
@@ -463,7 +376,7 @@ namespace AngryBox2DGame
 		mMouseSpawnObject = newSpawnObject;
 	}
 
-	void AngryBoxDemo::CreateMouseJoint()
+	void ReflectionDemo::CreateMouseJoint()
 	{
 		XMVECTOR mouseWorldPosition = GetMouseWorldPosition();
 		const b2Vec2 position(XMVectorGetX(mouseWorldPosition), XMVectorGetY(mouseWorldPosition));
@@ -485,13 +398,6 @@ namespace AngryBox2DGame
 			static const float forceMultiplier = 1000.0f;
 			b2Body* body = callback.Fixture->GetBody();
 
-			if (!mDevEnvironmentActive) {
-				if (body != mAmmo->Sprite()->Body())
-					return;
-
-				if (body == mAmmo->Sprite()->Body() && !mAmmo->Ready())
-					return;
-			}
 			b2MouseJointDef mouseJointDef;
 			mouseJointDef.bodyA = mGroundBody;
 			mouseJointDef.bodyB = body;
@@ -500,20 +406,10 @@ namespace AngryBox2DGame
 			mMouseJoint = static_cast<b2MouseJoint*>(world.CreateJoint(&mouseJointDef));
 			mDestructionListener.SetMouseJoint(mMouseJoint);
 			body->SetAwake(true);
-
-			if (body->GetUserData()) {
-				auto bahavior = static_cast<Box2DBehavior*>(body->GetUserData());
-				switch (bahavior->Tag()) {
-				case BehaviorType::Ammunition:
-					bahavior->As<Ammunition>()->OnClick();
-				default:
-					break;
-				}
-			}
 		}
 	}
 
-	void AngryBoxDemo::ApplyForceWithMouse()
+	void ReflectionDemo::ApplyForceWithMouse()
 	{
 		assert(mMouseJoint != nullptr);
 
@@ -522,12 +418,12 @@ namespace AngryBox2DGame
 		mMouseJoint->SetTarget(position);
 	}
 
-	void AngryBoxDemo::ToggleDevEnvironment()
+	void ReflectionDemo::ToggleDevEnvironment()
 	{
 		mDevEnvironmentActive = !mDevEnvironmentActive;
 	}
 
-	DirectX::XMVECTOR AngryBoxDemo::GetMouseWorldPosition() const
+	DirectX::XMVECTOR ReflectionDemo::GetMouseWorldPosition() const
 	{
 		const auto& currentState = mMouse->CurrentState();
 		const XMVECTOR mouseScreenPosition = XMVectorSet(static_cast<float>(currentState.x), static_cast<float>(currentState.y), 0.0f, 1.0f);
@@ -536,7 +432,7 @@ namespace AngryBox2DGame
 	}
 #pragma region CallbackListener
 
-	void AngryBoxDemo::ContactListener::BeginContact(b2Contact * contact)
+	void ReflectionDemo::ContactListener::BeginContact(b2Contact * contact)
 	{
 		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
 		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
@@ -558,15 +454,15 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorB->As<Breakable>()->OnContactBegin(behaviorA, contact);
-			case BehaviorType::Barrier:
-				behaviorB->As<Barrier>()->OnContactBegin(behaviorA, contact);
+			case BehaviorType::Bouncy:
+				behaviorB->As<Bouncy>()->OnContactBegin(behaviorA, contact);
 			default:
 				break;
 			}
 		}
 	}
 
-	void  AngryBoxDemo::ContactListener::EndContact(b2Contact* contact)
+	void  ReflectionDemo::ContactListener::EndContact(b2Contact* contact)
 	{	
 		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
 		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
@@ -579,8 +475,8 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorA->As<Breakable>()->OnContactEnd(behaviorB, contact);
-			case BehaviorType::Barrier:
-				behaviorA->As<Barrier>()->OnContactEnd(behaviorB, contact);
+			case BehaviorType::Bouncy:
+				behaviorA->As<Bouncy>()->OnContactEnd(behaviorB, contact);
 			default:
 				break;
 			}
@@ -590,15 +486,15 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorB->As<Breakable>()->OnContactEnd(behaviorA, contact);
-			case BehaviorType::Barrier:
-				behaviorB->As<Barrier>()->OnContactEnd(behaviorA, contact);
+			case BehaviorType::Bouncy:
+				behaviorB->As<Bouncy>()->OnContactEnd(behaviorA, contact);
 			default:
 				break;
 			}
 		}
 	}
 
-	void  AngryBoxDemo::ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
+	void  ReflectionDemo::ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 	{
 		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
 		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
@@ -611,8 +507,8 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorA->As<Breakable>()->OnContactPreSolve(behaviorB, contact, oldManifold);
-			case BehaviorType::Barrier:
-				behaviorA->As<Barrier>()->OnContactPreSolve(behaviorB, contact, oldManifold);
+			case BehaviorType::Bouncy:
+				behaviorA->As<Bouncy>()->OnContactPreSolve(behaviorB, contact, oldManifold);
 			default:
 				break;
 			}
@@ -622,14 +518,14 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorB->As<Breakable>()->OnContactPreSolve(behaviorA, contact, oldManifold);
-			case BehaviorType::Barrier:
-				behaviorB->As<Barrier>()->OnContactPreSolve(behaviorA, contact, oldManifold);
+			case BehaviorType::Bouncy:
+				behaviorB->As<Bouncy>()->OnContactPreSolve(behaviorA, contact, oldManifold);
 			default:
 				break;
 			}
 		}
 	}
-	void  AngryBoxDemo::ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+	void  ReflectionDemo::ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 	{
 		auto userDataA = contact->GetFixtureA()->GetBody()->GetUserData();
 		auto userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
@@ -643,8 +539,8 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorA->As<Breakable>()->OnContactPostSolve(behaviorB, contact, impulse);
-			case BehaviorType::Barrier:
-				behaviorA->As<Barrier>()->OnContactPostSolve(behaviorB, contact, impulse);
+			case BehaviorType::Bouncy:
+				behaviorA->As<Bouncy>()->OnContactPostSolve(behaviorB, contact, impulse);
 			default:
 				break;
 			}
@@ -654,8 +550,8 @@ namespace AngryBox2DGame
 			{
 			case BehaviorType::Breakable:
 				behaviorB->As<Breakable>()->OnContactPostSolve(behaviorA, contact, impulse);
-			case BehaviorType::Barrier:
-				behaviorB->As<Barrier>()->OnContactPostSolve(behaviorA, contact, impulse);
+			case BehaviorType::Bouncy:
+				behaviorB->As<Bouncy>()->OnContactPostSolve(behaviorA, contact, impulse);
 			default:
 				break;
 			}
@@ -666,12 +562,12 @@ namespace AngryBox2DGame
 
 #pragma region QueryCallback
 
-	AngryBoxDemo::QueryCallback::QueryCallback(const b2Vec2& point) :
+	ReflectionDemo::QueryCallback::QueryCallback(const b2Vec2& point) :
 		Point(point), Fixture(nullptr)
 	{
 	}
 
-	bool AngryBoxDemo::QueryCallback::ReportFixture(b2Fixture* fixture)
+	bool ReflectionDemo::QueryCallback::ReportFixture(b2Fixture* fixture)
 	{
 		const b2Body* body = fixture->GetBody();
 		if (body->GetType() == b2_dynamicBody)
@@ -694,22 +590,22 @@ namespace AngryBox2DGame
 
 #pragma region DestructionListener
 
-	AngryBoxDemo::DestructionListener::DestructionListener() :
+	ReflectionDemo::DestructionListener::DestructionListener() :
 		mMouseJoint(nullptr)
 	{
 	}
 
-	void AngryBoxDemo::DestructionListener::SetMouseJoint(b2MouseJoint* mouseJoint)
+	void ReflectionDemo::DestructionListener::SetMouseJoint(b2MouseJoint* mouseJoint)
 	{
 		mMouseJoint = mouseJoint;
 	}
 
-	void AngryBoxDemo::DestructionListener::SetMouseJointDestroyedCallback(std::function<void()> callback)
+	void ReflectionDemo::DestructionListener::SetMouseJointDestroyedCallback(std::function<void()> callback)
 	{
 		mMouseJointDestroyedCallback = callback;
 	}
 
-	void AngryBoxDemo::DestructionListener::SayGoodbye(b2Joint* joint)
+	void ReflectionDemo::DestructionListener::SayGoodbye(b2Joint* joint)
 	{
 		if (joint == mMouseJoint)
 		{

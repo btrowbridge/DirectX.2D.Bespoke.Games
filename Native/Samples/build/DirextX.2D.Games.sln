@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{9F5AD6AA-E1FD-489E-93AE-61232C434AA4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngryBox2D", "..\source\AngryBox2D\AngryBox2D.vcxproj", "{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReflectionVectorDemo", "..\source\ReflectionVectorDemo\ReflectionVectorDemo.vcxproj", "{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

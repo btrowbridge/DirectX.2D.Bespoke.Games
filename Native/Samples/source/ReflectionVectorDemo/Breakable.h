@@ -1,12 +1,16 @@
 #pragma once
 #include "Box2DBehavior.h"
 
-namespace AngryBox2DGame {
 
-	class Ammunition : public Box2DBehavior
+
+
+namespace Reflection2DGame {
+
+	class Breakable : public Box2DBehavior
 	{
+
 	public:
-		Ammunition(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, b2Body* base, b2Vec2 target);
+		Breakable(Library::Game& game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth, int scorevalue);
 
 		virtual void Initialize();
 		virtual void Update(const Library::GameTime& gameTime);
@@ -17,28 +21,18 @@ namespace AngryBox2DGame {
 		virtual void OnContactEnd(Box2DBehavior * other, b2Contact * contact) override;
 		virtual void OnContactPreSolve(Box2DBehavior * other, b2Contact * contact, const b2Manifold * oldManifold) override;
 		virtual void OnContactPostSolve(Box2DBehavior * other, b2Contact * contact, const b2ContactImpulse * impulse) override;
+
 		
-		void AddForceToTarget(b2Vec2 direction);
-		void Reset();
-		void Launch();
-
-		void OnClick();
-		bool Ready();
+		int ScoreValue();
+		void TakeDamage(float damageAmount);
+		
 	private:
+		float mHealth;
+		static const float mDamageThreshold;
 
-		void ScheduledReset();
-		b2MouseJointDef mJointDef;
+		std::shared_ptr<DirectX::SpriteFont> mHealthFont;
 
-		b2Body* mBase;
-
-		b2Vec2 mTarget;
-
-		b2Joint* mSlingJoint;
-
-		bool mWasClicked;
-		bool mReadyToFire;
-		bool mWasFired;
-		bool mScheduledToResetLater;
+		int mScoreValue;
 	};
 
 }

@@ -26,22 +26,22 @@ namespace DirectX
 	class SpriteFont;
 }
 
-namespace AngryBox2DGame
+namespace Reflection2DGame
 {
 	enum class BehaviorType {
 		Breakable,
-		Ammunition,
-		Barrier,
+		Bouncy,
+		Paddle,
 		None = NULL,
 	};
 
 	class Box2DBehavior;
 	class Ammunition;
 
-	class AngryBoxDemo final : public Library::DrawableGameComponent
+	class ReflectionDemo final : public Library::DrawableGameComponent
 	{
 	public:
-		AngryBoxDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
+		ReflectionDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
 
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
@@ -107,19 +107,17 @@ namespace AngryBox2DGame
 		static const DirectX::XMVECTORF32 BodySpawnPosition;
 		static const std::map<ObjectTypes, std::wstring> SpawnObjectNames;
 
-		void AddAmmo();
 
 		void SpawnLevelObjects();
 
-		void AddBarrier();
-		void AddGround();
-		void AddEdge();
-		void AddChain();
+		void AddWalls();
+		void AddBall();
+		void AddPaddle();
+
 		void SpawnObject(ObjectTypes type, DirectX::FXMVECTOR position);
 		void SpawnBox(DirectX::FXMVECTOR position);
 		void SpawnCircle(DirectX::FXMVECTOR position);
 		void SpawnTriangle(DirectX::FXMVECTOR position);
-		void SpawnBolas(DirectX::FXMVECTOR position);
 		void SpawnStick(DirectX::FXMVECTOR position);
 		void ResetWorld();
 		void SpawnObjectWithMouse();

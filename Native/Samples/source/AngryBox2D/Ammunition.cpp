@@ -9,8 +9,9 @@ namespace AngryBox2DGame {
 
 	
 
-	Ammunition::Ammunition(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, b2Body* ground, b2Vec2 target ) :
-		Box2DBehavior(game,camera,sprite,BehaviorType::Ammunition), mBase(ground), mSlingJoint(nullptr), mTarget(target), mWasClicked(false), mReadyToFire(false), mWasFired(false)
+	Ammunition::Ammunition(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, b2Body* ground, b2Vec2 target) :
+		Box2DBehavior(game, camera, sprite, BehaviorType::Ammunition), mBase(ground), mSlingJoint(nullptr),
+		mTarget(target), mWasClicked(false), mReadyToFire(false), mWasFired(false), mScheduledToResetLater(false)
 	{
 		
 	}
@@ -25,22 +26,23 @@ namespace AngryBox2DGame {
 
 		b2Body* body = mSprite->Body();
 		b2Vec2 directionToSling = mTarget - mSprite->As<Box2DSprite>()->Body()->GetPosition();
+		float distanceToSling = directionToSling.Length();
 		if (mWasClicked) {
-			float distanceToSling = directionToSling.Length();
 			auto mouse = reinterpret_cast<MouseComponent*>(mGame->Services().GetService(MouseComponent::TypeIdClass()));
-			if (distanceToSling < 1.0f && mReadyToFire && !mouse->IsButtonDown(MouseButtons::Right) ){
+			if (distanceToSling < 1.0f && mReadyToFire && !mouse->IsButtonDown(MouseButtons::Right) && mSlingJoint != nullptr) {
 				Launch();
-			}
-			else if (distanceToSling > 2.0f) {
-				mReadyToFire = true;
-				if (!body->IsAwake() || body->GetPosition().Length() > 50.0f){
+			} else if (distanceToSling > 2.0f) {
+			mReadyToFire = true;
+				if (!body->IsAwake()) {
 					Reset();
 				}
-			}
-			
-		}
-		else {
+			} 
+		} else {
 			AddForceToTarget(directionToSling);
+		}
+
+		if (mScheduledToResetLater) {
+			ScheduledReset();
 		}
 
 
@@ -89,24 +91,8 @@ namespace AngryBox2DGame {
 	}
 
 	void Ammunition::Reset()
-	{
-		auto body = mSprite->Body();
-		body->SetTransform(mTarget,0.0f);
-		static const float forceMultiplier = 1000.0f;
-
-		mJointDef.bodyA = mBase;
-		mJointDef.bodyB =body;
-		mJointDef.target = mTarget;
-		mJointDef.maxForce = forceMultiplier * mSprite->As<Box2DSprite>()->Body()->GetMass();
-
-		auto physicsEngine = reinterpret_cast<Box2DComponent*>(mGame->Services().GetService(Box2DComponent::TypeIdClass()));
-		mSlingJoint = physicsEngine->World().CreateJoint(&mJointDef);
-
-		
-		mReadyToFire = false;
-		mWasFired = false;
-		mWasClicked = false;
-
+	{	
+		mScheduledToResetLater = true;
 	}
 
 	void Ammunition::Launch()
@@ -126,5 +112,29 @@ namespace AngryBox2DGame {
 	bool Ammunition::Ready()
 	{
 		return (!mWasFired);
+	}
+	void Ammunition::ScheduledReset()
+	{
+		auto physicsEngine = reinterpret_cast<Box2DComponent*>(mGame->Services().GetService(Box2DComponent::TypeIdClass()));
+		
+		auto body = mSprite->Body();
+		if (body->GetJointList() == nullptr) {
+
+			body->SetTransform(mTarget, 0.0f);
+			static const float forceMultiplier = 1000.0f;
+
+			mJointDef.bodyA = mBase;
+			mJointDef.bodyB = body;
+			mJointDef.target = mTarget;
+			mJointDef.maxForce = forceMultiplier * mSprite->As<Box2DSprite>()->Body()->GetMass();
+
+			mSlingJoint = physicsEngine->World().CreateJoint(&mJointDef);
+
+
+			mReadyToFire = false;
+			mWasFired = false;
+			mWasClicked = false;
+			mScheduledToResetLater = false;
+		}
 	}
 }

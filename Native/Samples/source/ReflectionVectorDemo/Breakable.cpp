@@ -6,7 +6,7 @@ using namespace std;
 using namespace Library;
 using namespace DirectX;
 
-namespace AngryBox2DGame {
+namespace Reflection2DGame {
 	const float Breakable::mDamageThreshold = 1.0f;
 
 	Breakable::Breakable(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite, float startHealth, int scorevalue) :
@@ -23,20 +23,10 @@ namespace AngryBox2DGame {
 	void Breakable::Update(const Library::GameTime & gameTime)
 	{
 		Box2DBehavior::Update(gameTime);
-		//if (mSprite->Body()->GetPosition().Length() > 50.0f) {
-		//	ScheduleToDestroy();
-		//}
 	}
 	void Breakable::Draw(const Library::GameTime & gameTime)
 	{
 		Box2DBehavior::Draw(gameTime);
-
-		//wostringstream healthText;
-		//healthText << "HP:" << mHealth;
-
-		//XMFLOAT2 textPosition(Sprite()->Body()->GetPosition().x, Sprite()->Body()->GetPosition().y + 5);
-		//SpriteManager::DrawString(mHealthFont, healthText.str().c_str(), XMFLOAT2(textPositionProjection.x, textPositionProjection.y));
-		
 	}
 
 	void Breakable::OnContactBegin(Box2DBehavior * other, b2Contact * contact)

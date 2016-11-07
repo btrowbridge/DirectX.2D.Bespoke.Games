@@ -20,9 +20,10 @@ namespace AngryBox2DGame {
 	{	
 		auto physicsEngine = reinterpret_cast<Box2DComponent*>(mGame->Services().GetService(Box2DComponent::TypeIdClass()));
 
-		if (other == nullptr) {
+		if (other == nullptr || other->IsScheduledForDestruction()) {
 			b2Body* otherBody = (contact->GetFixtureA()->IsSensor()) ? contact->GetFixtureB()->GetBody() : contact->GetFixtureA()->GetBody();
 			physicsEngine->BuryBody(*otherBody);
+			return;
 		}
 
 		switch (other->Tag()) {
