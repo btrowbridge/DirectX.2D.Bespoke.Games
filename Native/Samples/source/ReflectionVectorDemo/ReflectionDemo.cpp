@@ -39,6 +39,8 @@ namespace Reflection2DGame
 			mShapeCount--;
 		});
 
+		mPhysicsEngine->World().SetGravity(b2Vec2_zero); //Zero Gravity
+
 		// Retrieve the physics debug drawing system
 		mPhysicsDebugDraw = reinterpret_cast<Box2DDebugDraw*>(mGame->Services().GetService(Box2DDebugDraw::TypeIdClass()));
 		assert(mPhysicsDebugDraw != nullptr);
@@ -74,8 +76,7 @@ namespace Reflection2DGame
 			{ Keys::Space,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
 			{ Keys::Enter,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
 			{ Keys::Back,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
-			{ Keys::Insert,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Bolas, BodySpawnPosition); } },
-			{ Keys::K,		[&]() { if(mDevEnvironmentActive)SpawnObject(ObjectTypes::Stick, BodySpawnPosition); } },
+			{ Keys::K,		[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Stick, BodySpawnPosition); } },
 			{ Keys::B,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsAABBs); } },
 			{ Keys::C,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsCenterOfMass); } },
 			{ Keys::J,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->ToggleDrawingFlag(Box2DDebugDraw::DrawOptions::DrawOptionsJoints); } },
@@ -85,28 +86,6 @@ namespace Reflection2DGame
 
 		mLevelObjectsDescription = {
 			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {2.0f,1.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {4.0f,1.0f- 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {6.0f,1.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {8.0f,1.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {10.0f,1.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {12.0f,1.0f - 20.0f, 0.0f,1.0f}),
-
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {2.0f,3.0f - 20.0f, 0.0f,1.0f}),
-			//std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {5.0f,3.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {7.0f,3.0f - 20.0f, 0.0f,1.0f}),
-			//std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {9.0f,3.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {12.0f,3.0f - 20.0f, 0.0f,1.0f}),
-
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {4.25,3.5f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Circle, {9.75f,3.5f - 20.0f, 0.0f,1.0f}),
-
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {-0.5f,3.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {-1.0f,5.5f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {-1.5f,3.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {15.0f,3.0f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Triangle, {15.5f,5.5f - 20.0f, 0.0f,1.0f}),
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Stick, {16.0f,3.0f - 20.0f, 0.0f,1.0f}),
-
 		};
 
 		mBoxTexture = mGame->Content().Load<Texture2D>(L"Textures\\BlockWood_beige_size64.png");
@@ -153,7 +132,6 @@ namespace Reflection2DGame
 
 		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left) && mDevEnvironmentActive)
 		{
-			
 			SpawnObjectWithMouse();
 		}
 
@@ -225,7 +203,6 @@ namespace Reflection2DGame
 
 	void ReflectionDemo:: SpawnLevelObjects()
 	{
-	
 		for (std::pair<ObjectTypes, XMVECTOR> pair : mLevelObjectsDescription) {
 			SpawnObject(pair.first, pair.second);
 			
@@ -234,44 +211,60 @@ namespace Reflection2DGame
 
 	void ReflectionDemo::AddWalls()
 	{
-		b2Vec2 vertices[] =
-		{
-			{ -50.0f, -50.0f },
-			{ 50.0f, -50.0f },
-			{ 50.0f, 50.0f },
-			{ -50.0f, 50.0f },
-			{ -50.0f, -50.0f },
+		//scale and size
+		const float32 wallScale = 10.0f;
+		const XMFLOAT2 size(0.5f, wallScale+0.5);
 
-		};
-		
-		b2ChainShape chain;
-		chain.CreateChain(vertices, ARRAYSIZE(vertices));
+		//Top
+		auto top = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(0.0f,wallScale), size);
+		top->Body()->SetType(b2BodyType::b2_dynamicBody);
+		top->Body()->SetGravityScale(0);
+		top->Body()->GetFixtureList()->SetSensor(true);
+		top->Body()->SetTransform(b2Vec2(0.0f,wallScale), b2_pi/2);
+		top->Initialize();
+		mSprites.push_back(top);
+		mShapeCount++;
 
-		b2BodyDef BouncyBodyDef;
-		BouncyBodyDef.type = b2_staticBody;
-		
-		b2FixtureDef BouncyFixtureDef;
-		BouncyFixtureDef.shape = &(chain);
+		//Bottom
+		auto bottom = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(0.0f,-wallScale), size);
+		bottom->Body()->SetType(b2BodyType::b2_dynamicBody);
+		bottom->Body()->SetGravityScale(0);
+		//bottom->Body()->GetFixtureList()->SetSensor(true);
+		bottom->Body()->SetTransform(b2Vec2(0.0f,-wallScale), b2_pi/2);
+		bottom->Initialize();
+		mSprites.push_back(bottom);
+		mShapeCount++;
+		//Left
+		auto left = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(-wallScale,0.0f), size);
+		left->Body()->SetType(b2BodyType::b2_dynamicBody);
+		left->Body()->SetGravityScale(0);
+		//left->Body()->GetFixtureList()->SetSensor(true);
+		left->Initialize();
+		mSprites.push_back(left);
+		mShapeCount++;
 
-		b2Body* body = mPhysicsEngine->World().CreateBody(&BouncyBodyDef);
-
-		body->CreateFixture(&BouncyFixtureDef);
-		
-		body->SetUserData(NULL);
-
+		//Right
+		auto right = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(wallScale,0.0f), size);
+		right->Body()->SetType(b2BodyType::b2_dynamicBody);
+		right->Body()->SetGravityScale(0);
+		//right->Body()->GetFixtureList()->SetSensor(true);
+		right->Initialize();
+		mSprites.push_back(right);
 		mShapeCount++;
 	}
 
-	void ReflectionDemo::AddBall()
+	void ReflectionDemo::AddBall(XMFLOAT2 startPosition)
 	{
-		const float radius = 1.0f;
-		const b2Vec2 startVelocity(0.0f, -20.0f);
-		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, XMFLOAT2(0.0f,5.0f), radius);
+		const float radius = 0.5f;
+
+		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, startPosition, radius);
 		auto bouncy = make_shared<Reflection2DGame::Bouncy>(*mGame, mCamera, sprite);
 		bouncy->Initialize();
-		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetType(b2BodyType::b2_dynamicBody);
 		sprite->Body()->SetUserData(bouncy.get());
-		sprite->Body()->SetLinearVelocity(startVelocity);
+		sprite->Body()->SetLinearVelocity(b2Vec2(-startPosition.x,-startPosition.y));
+		sprite->Body()->GetFixtureList()->SetSensor(true);
+		sprite->Body()->SetGravityScale(0);
 		mGameObjects.push_back(bouncy);
 		mShapeCount++;
 	}
@@ -279,11 +272,16 @@ namespace Reflection2DGame
 	void ReflectionDemo::AddPaddle()
 	{
 		const XMFLOAT2 size(0.5f, 2.0f);
-		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(), size);
+		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(0.0f,0.0f), size);
 		auto paddle = make_shared<Reflection2DGame::Paddle>(*mGame, mCamera, sprite);
+
 		paddle->Initialize();
-		sprite->Body()->SetType(b2BodyType::b2_staticBody);
+
+		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->GetFixtureList()->SetSensor(true);
+		sprite->Body()->SetTransform(b2Vec2_zero, b2_pi/2);
 		sprite->Body()->SetUserData(paddle.get());
+		sprite->Body()->SetGravityScale(0);
 		mGameObjects.push_back(paddle);
 		mShapeCount++;
 	}
@@ -300,7 +298,7 @@ namespace Reflection2DGame
 		auto sprite = Box2DSprite::CreateBox(*mGame, mCamera, mBoxTexture, position, size);
 		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 100.0f,50);
 		Breakable->Initialize();
-		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetType(b2BodyType::b2_staticBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
@@ -312,7 +310,7 @@ namespace Reflection2DGame
 		auto sprite = Box2DSprite::CreateCircle(*mGame, mCamera, mCatYellowTexture, position, radius);
 		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 200.0f,100);
 		Breakable->Initialize();
-		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetType(b2BodyType::b2_staticBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
@@ -324,7 +322,7 @@ namespace Reflection2DGame
 		auto sprite = Box2DSprite::CreateTriangle(*mGame, mCamera, mTriangleTexture, position, size);
 		auto Breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 300.0f,100);
 		Breakable->Initialize();
-		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetType(b2BodyType::b2_staticBody);
 		sprite->Body()->SetUserData(Breakable.get());
 		mGameObjects.push_back(Breakable);
 		mShapeCount++;
@@ -337,7 +335,7 @@ namespace Reflection2DGame
 		auto breakable = make_shared<Reflection2DGame::Breakable>(*mGame, mCamera, sprite, 500.0f,200);
 		breakable->Initialize();
 		sprite->Body()->SetUserData(breakable.get());
-		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
+		sprite->Body()->SetType(b2BodyType::b2_staticBody);
 		mGameObjects.push_back(breakable);
 		mShapeCount++;
 	}
@@ -354,10 +352,9 @@ namespace Reflection2DGame
 		world.SetContactListener(mContactListener.get());
 		world.SetDestructionListener(&mDestructionListener);
 		SpawnLevelObjects();
-		AddWalls();
-		AddBall();
 		AddPaddle();
-
+		AddWalls();
+		AddBall(XMFLOAT2(0.0f, 5.0f));
 	}
 
 	void ReflectionDemo::SpawnObjectWithMouse()

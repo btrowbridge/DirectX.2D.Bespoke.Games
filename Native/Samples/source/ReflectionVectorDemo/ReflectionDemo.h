@@ -96,9 +96,8 @@ namespace Reflection2DGame
 			Box,
 			Circle,
 			Triangle,
-			Bolas,
 			Stick,
-			End
+			End,
 		};
 
 		static const DirectX::XMFLOAT2 TextPosition;
@@ -111,7 +110,7 @@ namespace Reflection2DGame
 		void SpawnLevelObjects();
 
 		void AddWalls();
-		void AddBall();
+		void AddBall(DirectX::XMFLOAT2 position);
 		void AddPaddle();
 
 		void SpawnObject(ObjectTypes type, DirectX::FXMVECTOR position);
@@ -119,6 +118,7 @@ namespace Reflection2DGame
 		void SpawnCircle(DirectX::FXMVECTOR position);
 		void SpawnTriangle(DirectX::FXMVECTOR position);
 		void SpawnStick(DirectX::FXMVECTOR position);
+
 		void ResetWorld();
 		void SpawnObjectWithMouse();
 		void IncrementMouseSpawnObject();

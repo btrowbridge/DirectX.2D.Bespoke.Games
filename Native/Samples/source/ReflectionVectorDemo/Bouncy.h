@@ -21,7 +21,7 @@ namespace Reflection2DGame {
 		virtual void OnContactPreSolve(Box2DBehavior * other, b2Contact * contact, const b2Manifold * oldManifold) override;
 
 		virtual void OnContactPostSolve(Box2DBehavior * other, b2Contact * contact, const b2ContactImpulse * impulse) override;
-
+	
 	};
 
 }
