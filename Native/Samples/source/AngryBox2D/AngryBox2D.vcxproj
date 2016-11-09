@@ -20,7 +20,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{40A8618C-659E-45A0-9B03-FB21CA0DE7B1}</ProjectGuid>
+    <ProjectGuid>{F2E1A64B-E638-4EA8-8C66-9CE28A93AB59}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

@@ -14,9 +14,6 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Breakable.cpp">
-      <Filter>Behaviors</Filter>
-    </ClCompile>
     <ClCompile Include="Box2DBehavior.cpp">
       <Filter>Behaviors</Filter>
     </ClCompile>
@@ -26,12 +23,12 @@
       <Filter>Behaviors</Filter>
     </ClCompile>
     <ClCompile Include="Paddle.cpp" />
+    <ClCompile Include="Breakable.cpp">
+      <Filter>Behaviors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Breakable.h">
-      <Filter>Behaviors</Filter>
-    </ClInclude>
     <ClInclude Include="Box2DBehavior.h">
       <Filter>Behaviors</Filter>
     </ClInclude>
@@ -41,6 +38,9 @@
       <Filter>Behaviors</Filter>
     </ClInclude>
     <ClInclude Include="Paddle.h" />
+    <ClInclude Include="Breakable.h">
+      <Filter>Behaviors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

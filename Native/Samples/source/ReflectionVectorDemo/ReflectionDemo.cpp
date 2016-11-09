@@ -9,7 +9,7 @@ namespace Reflection2DGame
 {
 	const XMFLOAT2 ReflectionDemo::TextPosition = { 0.0f, 42.0f };
 	const std::wstring ReflectionDemo::HelpText = L"Toggle Dev Environment (Tab) \nAdd Box (Space)\nAdd Circle (Enter)\nAdd Triangle (Backspace)\nAdd Stick (K)\nAdd Bolas (Insert)\nToggle Debug Draw (V)\nToggle AABBs (B)\nToggle Center of Mass (C)\nToggle Joints (J)\nSpawn w/ Mouse (Left Mouse Button)\nChange Mouse Spawn Object (+)\nGrab Object (Right Mouse Button)";
-	const std::wstring ReflectionDemo::GameText = L"Toggle Dev Environment (Tab) \nGrab Ammo Bird (Right Mouse Button)";
+	const std::wstring ReflectionDemo::GameText = L"Toggle Dev Environment (Tab) \nReset Ball (R)";
 	const XMVECTORF32 ReflectionDemo::BodySpawnPosition = { 0.0f, 8.0f, 0.0f, 1.0f };
 	const map<ReflectionDemo::ObjectTypes, std::wstring> ReflectionDemo::SpawnObjectNames =
 	{
@@ -72,7 +72,7 @@ namespace Reflection2DGame
 		mKeyMappings =
 		{
 			{ Keys::V,		[&]() { if(mDevEnvironmentActive) mPhysicsDebugDraw->SetVisible(!mPhysicsDebugDraw->Visible()); } },
-			{ Keys::R,		bind(&ReflectionDemo::ResetWorld, this) }, //will break
+			//{ Keys::R,		bind(&ReflectionDemo::ResetWorld, this) }, //will break
 			{ Keys::Space,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Box, BodySpawnPosition); } },
 			{ Keys::Enter,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Circle, BodySpawnPosition); } },
 			{ Keys::Back,	[&]() { if(mDevEnvironmentActive) SpawnObject(ObjectTypes::Triangle, BodySpawnPosition); } },
@@ -85,7 +85,7 @@ namespace Reflection2DGame
 		};
 
 		mLevelObjectsDescription = {
-			std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {2.0f,1.0f - 20.0f, 0.0f,1.0f}),
+			//std::pair<ObjectTypes,XMVECTOR>(ObjectTypes::Box, {2.0f,1.0f - 20.0f, 0.0f,1.0f}),
 		};
 
 		mBoxTexture = mGame->Content().Load<Texture2D>(L"Textures\\BlockWood_beige_size64.png");
@@ -205,52 +205,7 @@ namespace Reflection2DGame
 	{
 		for (std::pair<ObjectTypes, XMVECTOR> pair : mLevelObjectsDescription) {
 			SpawnObject(pair.first, pair.second);
-			
 		}
-	}
-
-	void ReflectionDemo::AddWalls()
-	{
-		//scale and size
-		const float32 wallScale = 10.0f;
-		const XMFLOAT2 size(0.5f, wallScale+0.5);
-
-		//Top
-		auto top = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(0.0f,wallScale), size);
-		top->Body()->SetType(b2BodyType::b2_dynamicBody);
-		top->Body()->SetGravityScale(0);
-		top->Body()->GetFixtureList()->SetSensor(true);
-		top->Body()->SetTransform(b2Vec2(0.0f,wallScale), b2_pi/2);
-		top->Initialize();
-		mSprites.push_back(top);
-		mShapeCount++;
-
-		//Bottom
-		auto bottom = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(0.0f,-wallScale), size);
-		bottom->Body()->SetType(b2BodyType::b2_dynamicBody);
-		bottom->Body()->SetGravityScale(0);
-		//bottom->Body()->GetFixtureList()->SetSensor(true);
-		bottom->Body()->SetTransform(b2Vec2(0.0f,-wallScale), b2_pi/2);
-		bottom->Initialize();
-		mSprites.push_back(bottom);
-		mShapeCount++;
-		//Left
-		auto left = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(-wallScale,0.0f), size);
-		left->Body()->SetType(b2BodyType::b2_dynamicBody);
-		left->Body()->SetGravityScale(0);
-		//left->Body()->GetFixtureList()->SetSensor(true);
-		left->Initialize();
-		mSprites.push_back(left);
-		mShapeCount++;
-
-		//Right
-		auto right = Box2DSprite::CreateBox(*mGame, mCamera, mStickTexture, XMFLOAT2(wallScale,0.0f), size);
-		right->Body()->SetType(b2BodyType::b2_dynamicBody);
-		right->Body()->SetGravityScale(0);
-		//right->Body()->GetFixtureList()->SetSensor(true);
-		right->Initialize();
-		mSprites.push_back(right);
-		mShapeCount++;
 	}
 
 	void ReflectionDemo::AddBall(XMFLOAT2 startPosition)
@@ -278,7 +233,6 @@ namespace Reflection2DGame
 		paddle->Initialize();
 
 		sprite->Body()->SetType(b2BodyType::b2_kinematicBody);
-		sprite->Body()->GetFixtureList()->SetSensor(true);
 		sprite->Body()->SetTransform(b2Vec2_zero, b2_pi/2);
 		sprite->Body()->SetUserData(paddle.get());
 		sprite->Body()->SetGravityScale(0);
@@ -353,7 +307,6 @@ namespace Reflection2DGame
 		world.SetDestructionListener(&mDestructionListener);
 		SpawnLevelObjects();
 		AddPaddle();
-		AddWalls();
 		AddBall(XMFLOAT2(0.0f, 5.0f));
 	}
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Bouncy.h"
 
+using namespace Library;
+
 namespace Reflection2DGame {
 	Bouncy::Bouncy(Library::Game & game, const std::shared_ptr<Library::Camera>& camera, std::shared_ptr<Library::Box2DSprite>& sprite)
 		: Box2DBehavior(game,camera,sprite,BehaviorType::Bouncy)
@@ -8,18 +10,22 @@ namespace Reflection2DGame {
 	}
 	void Bouncy::Initialize()
 	{
+		Box2DBehavior::Initialize();
+		mKeyboard = static_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
 	}
 	void Bouncy::Update(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
 
-		if (mSprite->Body()->GetPosition().Length() > 50.0f) {
-			this->ScheduleToDestroy();
+		Box2DBehavior::Update(gameTime);
+
+		if (mSprite->Body()->GetPosition().Length() > 20.0f || mKeyboard->WasKeyPressedThisFrame(Keys::R)) {
+			mSprite->Body()->SetTransform(b2Vec2(0.0f, 5.0f),0.0f);
+			mSprite->Body()->SetLinearVelocity(b2Vec2(0.0f, -5.0f));
 		}
 	}
 	void Bouncy::Draw(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
+		Box2DBehavior::Draw(gameTime);
 	}
 
 	void Bouncy::OnContactBegin(Box2DBehavior * other, b2Contact * contact)
@@ -28,7 +34,7 @@ namespace Reflection2DGame {
 		UNREFERENCED_PARAMETER(contact);
 
 		b2Vec2 direction = mSprite->Body()->GetLinearVelocity();
-		b2WorldManifold worldManifold;
+		
 
 		int32 childIndex;
 		b2Fixture* otherFixture;
@@ -38,11 +44,8 @@ namespace Reflection2DGame {
 		}
 		else {
 			otherFixture = contact->GetFixtureA();
-			childIndex = contact->GetChildIndexB();
+			childIndex = contact->GetChildIndexA();
 		}
-
-		b2Vec2 unitDir = direction;
-		unitDir.Normalize();
 
 		b2RayCastInput rayCastIN;
 		rayCastIN.p1 = mSprite->Body()->GetPosition();

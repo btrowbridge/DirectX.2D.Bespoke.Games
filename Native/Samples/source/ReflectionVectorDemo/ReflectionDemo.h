@@ -109,7 +109,6 @@ namespace Reflection2DGame
 
 		void SpawnLevelObjects();
 
-		void AddWalls();
 		void AddBall(DirectX::XMFLOAT2 position);
 		void AddPaddle();
 

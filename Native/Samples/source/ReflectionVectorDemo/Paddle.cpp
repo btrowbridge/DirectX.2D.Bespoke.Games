@@ -13,11 +13,13 @@ namespace Reflection2DGame {
 	}
 	void Paddle::Initialize()
 	{
+		Box2DBehavior::Initialize();
 		mKeyboard = static_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
 	}
 	void Paddle::Update(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
+		Box2DBehavior::Update(gameTime);
+
 		if (mKeyboard->IsKeyDown(Keys::A))
 		{
 			mSprite->Body()->SetAngularVelocity(mRotationSpeed);
@@ -32,7 +34,7 @@ namespace Reflection2DGame {
 	}
 	void Paddle::Draw(const Library::GameTime & gameTime)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
+		Box2DBehavior::Draw(gameTime);
 	}
 	void Paddle::OnContactBegin(Box2DBehavior * other, b2Contact * contact)
 	{
